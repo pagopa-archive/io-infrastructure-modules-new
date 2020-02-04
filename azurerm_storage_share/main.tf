@@ -7,7 +7,7 @@ terraform {
   backend "azurerm" {}
 }
 
-resource "azurerm_storage_share" "share" {
+resource "azurerm_storage_share" "storage_share" {
   name                 = local.resource_name
   storage_account_name = var.storage_account_name
   quota                = var.quota
