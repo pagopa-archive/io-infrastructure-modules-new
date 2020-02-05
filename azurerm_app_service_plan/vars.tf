@@ -22,8 +22,31 @@ variable "resource_group_name" {
 
 # App service plan specific variables
 
-variable "app_service_plan_parameters" {
-  type = any
+variable "kind" {
+  type = string
+}
+
+variable "sku_tier" {
+  type = string
+}
+
+variable "sku_size" {
+  type = string
+}
+
+variable "sku_capacity" {
+  type    = number
+  default = null
+}
+
+variable "maximum_elastic_worker_count" {
+  type    = number
+  default = null
+}
+
+variable "reserved" {
+  type    = bool
+  default = false
 }
 
 locals {

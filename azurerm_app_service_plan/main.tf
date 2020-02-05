@@ -14,16 +14,16 @@ resource "azurerm_app_service_plan" "app_service_plan" {
   resource_group_name = var.resource_group_name
   location            = var.region
 
-  kind                = lookup(var.app_service_plan_parameters,"kind",null)
+  kind                = var.kind
 
   sku {
-    tier     = lookup(var.app_service_plan_parameters,"sku_tier",null)
-    size     = lookup(var.app_service_plan_parameters,"sku_size",null)
-    capacity = lookup(var.app_service_plan_parameters,"sku_capacity",null)
+    tier     = var.sku_tier
+    size     = var.sku_size
+    capacity = var.sku_capacity
   }
 
-  maximum_elastic_worker_count = lookup(var.app_service_plan_parameters,"maximum_elastic_worker_count",null)
-  reserved                     = lookup(var.app_service_plan_parameters,"reserved",false)
+  maximum_elastic_worker_count = var.maximum_elastic_worker_count
+  reserved                     = var.reserved
 
   tags = {
     environment = var.environment
