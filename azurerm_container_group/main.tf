@@ -9,7 +9,7 @@ terraform {
 # Modules Section
 
 module "storage_account" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_account?ref=v0.0.4"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_account"
 
   // Global parameters
   region        = var.region
@@ -26,7 +26,7 @@ module "storage_account" {
 }
 
 module "storage_share" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_share?ref=v0.0.4"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_share"
   
   // Global parameters
   region        = var.region
@@ -49,13 +49,13 @@ resource "azurerm_container_group" "container_group" {
   os_type             = var.os_type
 
   dynamic "diagnostics" {
-    for_each = var.diagnostics_enabled ? var.log_analytics_log_type : []
+    for_each = var.diagnostics_enabled ? var.log_type : []
 
       content {
         log_analytics {
           workspace_id  = var.workspace_id
           workspace_key = var.workspace_key
-          log_type      = var.log_analytics_log_type
+          log_type      = diagnostics.value
         }
       }      
   }
@@ -66,7 +66,7 @@ resource "azurerm_container_group" "container_group" {
     memory   = var.container_object.memory
     port     = var.container_object.port
     protocol = var.container_object.protocol
-    command  = var.container_object.command
+    commands = var.container_object.commands
 
     dynamic "volume" {
       for_each = var.volume_enabled ? var.volume_object : []

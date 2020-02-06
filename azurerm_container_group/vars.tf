@@ -76,7 +76,7 @@ variable "container_object" {
     memory   = string
     port     = number
     protocol = string
-    command  = string
+    commands = list(string)
   })
 }
 
@@ -105,10 +105,9 @@ variable "workspace_id" {
 variable "workspace_key" {
   type = string
 }      
-          
-variable "log_analytics_log_type" {
-  type    = list
-  default = []
+
+variable "log_type" {
+  type    = list(string)
  }
 
 locals {
