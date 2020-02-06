@@ -1,4 +1,4 @@
-output "workspace_name" {
+output "resource_name" {
   description = "The name of the logs analytics workspace."
   value       = local.resource_name
 }
