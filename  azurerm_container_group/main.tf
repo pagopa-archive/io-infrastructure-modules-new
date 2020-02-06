@@ -8,18 +8,6 @@ terraform {
 
 # Modules Section
 
-module "rg" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_resource_group?ref=v0.0.1" 
-  
-  // Global parameters
-  region        = var.region
-  global_prefix = var.global_prefix
-  environment   = var.environment
-
-  // Module parameters
-  name = var.resource_group_name    
-}
-
 module "storage_account" {
   source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_account"
 
@@ -30,7 +18,7 @@ module "storage_account" {
 
   // Module parameters
   name                      = var.storage_account_name
-  resource_group_name       = module.rg.resource_name
+  resource_group_name       = var.resource_group_name
   account_kind              = var.account_kind
   account_tier              = var.account_tier
   account_replication_type  = var.account_replication_type
@@ -55,7 +43,7 @@ module "storage_share" {
 resource "azurerm_container_group" "container_group" {
   name                = local.resource_name
   location            = var.region
-  resource_group_name = module.rg.resource_name
+  resource_group_name = var.resource_group_name
   ip_address_type     = var.ip_address_type
   dns_name_label      = var.dns_name_label
   os_type             = var.os_type
