@@ -20,7 +20,7 @@ resource "azurerm_redis_cache" "redis_cache" {
   family                    = var.family
   sku_name                  = var.sku_name
 
-  redis_configuration   {
+  redis_configuration{
     rdb_backup_frequency          = var.rdb_backup_frequency
     rdb_backup_max_snapshot_count = var.rdb_backup_max_snapshot_count
     rdb_backup_enabled            = var.rdb_backup_enabled
@@ -30,10 +30,11 @@ resource "azurerm_redis_cache" "redis_cache" {
   tags = {
     environment = var.environment
   }
+  
   # NOTE: There's a bug in the Redis API where the original storage connection string isn't being returned,
   # which is being tracked here [https://github.com/Azure/azure-rest-api-specs/issues/3037].
   # In the interim we use the ignore_changes attribute to ignore changes to this field.
-#   lifecycle {
-#     ignore_changes = ["redis_configuration.*.rdb_storage_connection_string"]
-#   }
+  lifecycle {
+    ignore_changes = [redis_configuration[0].rdb_storage_connection_string]
+  }
 }
