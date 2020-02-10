@@ -49,13 +49,15 @@ resource "azurerm_container_group" "container_group" {
   os_type             = var.os_type
 
   dynamic "diagnostics" {
-    for_each = var.log_type != "" ? var.log_type : []
+    # for_each = var.log_type != "" ? var.log_type : []
+    for_each = var.log_type
+    iterator = diag
 
       content {
         log_analytics {
           workspace_id  = var.workspace_id
           workspace_key = var.workspace_key
-          log_type      = diagnostics.value
+          log_type      = diag.value
         }
       }      
   }
@@ -69,12 +71,14 @@ resource "azurerm_container_group" "container_group" {
     commands = var.container_object.commands
 
     dynamic "volume" {
-      for_each = var.volumes != "" ? var.volumes : []
+      for_each = var.volumes
+      iterator = vol
+      # for_each = var.volumes != "" ? var.volumes : []
 
       content {
-        name                 = volume.value["name"]
-        mount_path           = volume.value["mount_path"]
-        read_only            = volume.value["read_only"]
+        name                 = vol.value["name"]
+        mount_path           = vol.value["mount_path"]
+        read_only            = vol.value["read_only"]
         share_name           = module.storage_share.name
         storage_account_name = module.storage_account.resource_name
         storage_account_key  = module.storage_account.primary_access_key

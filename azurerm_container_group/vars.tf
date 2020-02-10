@@ -57,7 +57,7 @@ variable "ip_address_type" {
 }
 
 variable "dns_name_label" {
-  type = string
+  type        = string
   description = "The DNS label/name for the container groups IP"
   default     = null
 }
@@ -86,6 +86,7 @@ variable "volumes" {
     mount_path           = string
     read_only            = bool
   }))
+  default = []
  }
 
 variable "workspace_id" {
@@ -98,6 +99,7 @@ variable "workspace_key" {
 
 variable "log_type" {
   type    = list(string)
+  default = []
  }
 
 locals {
