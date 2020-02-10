@@ -16,7 +16,7 @@ resource "azurerm_cosmosdb_account" "cosmosdb_account" {
   enable_automatic_failover = true
 
   dynamic "geo_location" {
-    for_each = var.geo_location
+    for_each = var.geo_locations
     iterator = geo
 
     content {
@@ -36,7 +36,7 @@ resource "azurerm_cosmosdb_account" "cosmosdb_account" {
       max_staleness_prefix    = consistency.value["max_staleness_prefix"]
     }
   }
-  
+
   dynamic "capabilities" {
     for_each = var.capabilities
 
@@ -57,7 +57,7 @@ resource "azurerm_cosmosdb_account" "cosmosdb_account" {
     }
   }
 
-   // IP filtering
+  // IP filtering
   ip_range_filter = var.ip_range
 
 }

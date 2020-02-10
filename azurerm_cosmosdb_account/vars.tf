@@ -64,7 +64,7 @@ variable "consistency_policy" {
   ]
 }
 
-variable "geo_location" {
+variable "geo_locations" {
   type = list(object({
     prefix            = string
     location          = string
