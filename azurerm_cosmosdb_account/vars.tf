@@ -57,7 +57,7 @@ variable "consistency_policy" {
   }))
   default = [
     {
-      consistency_level = "BoundedStaleness"
+      consistency_level       = "BoundedStaleness"
       max_interval_in_seconds = 5
       max_staleness_prefix    = 100
     }
