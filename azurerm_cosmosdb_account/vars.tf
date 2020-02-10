@@ -43,7 +43,7 @@ variable "is_virtual_network_filter_enabled" {
   default     = true
 }
 
-variable "virtual_network_rule" {
+variable "allowed_virtual_network_subnet_ids" {
   type        = list(string)
   description = "The subnets id that are allowed to access this CosmosDB account."
   default     = []
@@ -70,7 +70,27 @@ variable "geo_location" {
     location          = string
     failover_priority = number
   }))
+  default = []
 }
+
+variable "enable_multiple_write_locations" {
+  type        = bool
+  description = "Enable multi-master support for this Cosmos DB account."
+  default     = false 
+}
+
+variable "ip_range" {
+  type        = string
+  description = "The set of IP addresses or IP address ranges in CIDR form to be included as the allowed list of client IP's for a given database account."
+  default     = ""
+}
+
+variable "capabilities" {
+  type        = map(string)
+  description = "The capabilities which should be enabled for this Cosmos DB account."
+  default     = {}
+}
+
 
 locals {
   resource_name = "${var.global_prefix}-${var.environment}-cosmosac-${var.name}"
