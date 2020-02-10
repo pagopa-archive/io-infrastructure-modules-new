@@ -58,7 +58,7 @@ variable "ip_address_type" {
 
 variable "dns_name_label" {
   type = string
-  description = "he DNS label/name for the container groups IP"
+  description = "The DNS label/name for the container groups IP"
   default     = null
 }
 
@@ -80,23 +80,13 @@ variable "container_object" {
   })
 }
 
-variable "volume_object" {
+variable "volumes" {
   type = list(object({
     name                 = string
     mount_path           = string
     read_only            = bool
   }))
  }
-
-variable "volume_enabled" {
-  type    = bool
-  default = false
-}
-
-variable "diagnostics_enabled" {
-  type    = bool
-  default = false
-}
 
 variable "workspace_id" {
   type = string
