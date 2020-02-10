@@ -1,17 +1,21 @@
 variable "global_prefix" {
   type = string
+  description = "Prefix used to define the resource name."
 }
 
 variable "environment" {
-  type = string
+  type          = string
+  description   = "The name of the environment"
 }
 
 variable "region" {
   type = string
+  description = "The location of the resource group."
 }
 
 variable "name" {
-  type = string
+  type        = string
+  description = "The name of the Redis instance."
 }
 
 variable "resource_group_name" {
@@ -34,6 +38,12 @@ variable "enable_non_ssl_port" {
     type        = bool
     description = "Enable the non-SSL port (6379) - disabled by default."
     default     = false
+}
+
+variable "minimum_tls_version" {
+    type        = string
+    description = "The minimum TLS version."
+    default     = "1.0"
 }
 
 variable "subnet_id" {

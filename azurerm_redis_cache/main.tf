@@ -15,6 +15,7 @@ resource "azurerm_redis_cache" "redis_cache" {
   capacity                  = var.capacity
   shard_count               = var.shard_count
   enable_non_ssl_port       = var.enable_non_ssl_port
+  minimum_tls_version       = var.minimum_tls_version
   subnet_id                 = var.subnet_id
   private_static_ip_address = var.private_static_ip_address
   family                    = var.family
