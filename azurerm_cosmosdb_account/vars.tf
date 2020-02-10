@@ -91,7 +91,6 @@ variable "capabilities" {
   default     = {}
 }
 
-
 locals {
   resource_name = "${var.global_prefix}-${var.environment}-cosmosac-${var.name}"
 }
