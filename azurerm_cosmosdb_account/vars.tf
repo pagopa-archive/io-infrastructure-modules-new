@@ -82,7 +82,7 @@ variable "enable_multiple_write_locations" {
 variable "ip_range" {
   type        = string
   description = "The set of IP addresses or IP address ranges in CIDR form to be included as the allowed list of client IP's for a given database account."
-  default     = ""
+  default     = null
 }
 
 variable "capabilities" {
