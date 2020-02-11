@@ -40,22 +40,16 @@ variable "enable_non_ssl_port" {
     default     = false
 }
 
-variable "minimum_tls_version" {
-    type        = string
-    description = "The minimum TLS version."
-    default     = "1.0"
-}
-
 variable "subnet_id" {
     type        = string 
     description = "The Subnet within which the Redis Cache should be deployed."
-    default     = "" 
+    default     = null 
 }
 
 variable "private_static_ip_address" {
     type        = string
     description = "The Static IP Address to assign to the Redis Cache when hosted inside the Virtual Network"
-    default     = ""
+    default     = null
 }
 
 variable "family" {
@@ -68,13 +62,18 @@ variable sku_name {
     description = "The SKU of Redis to use"
 }
 
-variable "rdb_backup_enabled" {
-    type        = bool
-    description = "Is Backup Enabled?"
-    default     = false
+# Redis configuration # 
+
+
+# NOTE: enable_authentication can only be set to false if a subnet_id is specified; and only works 
+# if there aren't existing instances within the subnet with enable_authentication set to true.
+variable enable_authentication {
+  type          = bool
+  description   = "If set to false, the Redis instance will be accessible without authentication. Defaults to true."
+  default       = true
 }
 
-variable rdb_backup_frequency {
+variable "rdb_backup_frequency" {
     type        = number
     description = "The Backup Frequency in Minutes."
     default = null
@@ -89,9 +88,10 @@ variable "rdb_backup_max_snapshot_count" {
 variable "rdb_storage_connection_string" {
     type        = string 
     description = "The Connection String to the Storage Account"
-    default     = ""
+    default     = null
 }
 
 locals {
-  resource_name = "${var.global_prefix}-${var.environment}-adgroup-${var.name}"
+  resource_name         = "${var.global_prefix}-${var.environment}-redis-${var.name}"
+  rdb_backup_enabled    = var.rdb_backup_frequency != null && var.rdb_backup_max_snapshot_count != null ? true: false
 }

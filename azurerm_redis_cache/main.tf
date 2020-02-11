@@ -15,16 +15,18 @@ resource "azurerm_redis_cache" "redis_cache" {
   capacity                  = var.capacity
   shard_count               = var.shard_count
   enable_non_ssl_port       = var.enable_non_ssl_port
-  minimum_tls_version       = var.minimum_tls_version
+  minimum_tls_version       = "1.2"
   subnet_id                 = var.subnet_id
   private_static_ip_address = var.private_static_ip_address
   family                    = var.family
   sku_name                  = var.sku_name
 
-  redis_configuration{
+
+  redis_configuration {
+    enable_authentication         = var.enable_authentication
+    rdb_backup_enabled            = local.rdb_backup_enabled
     rdb_backup_frequency          = var.rdb_backup_frequency
     rdb_backup_max_snapshot_count = var.rdb_backup_max_snapshot_count
-    rdb_backup_enabled            = var.rdb_backup_enabled
     rdb_storage_connection_string = var.rdb_storage_connection_string
   }
 
