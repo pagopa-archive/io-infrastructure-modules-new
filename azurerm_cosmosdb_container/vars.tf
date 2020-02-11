@@ -10,7 +10,7 @@ variable "environment" {
 
 variable "name" {
   type        = string
-  description = "The name of the Redis instance."
+  description = "The name of the Cosmos DB instance."
 }
 
 variable "resource_group_name" {
