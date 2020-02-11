@@ -26,20 +26,20 @@ variable "storage_account_name" {
   type = string
 }
 
-variable "account_kind" {
+variable "storage_account_account_kind" {
   type    = string
   default = "StorageV2"
 }
 
-variable "account_tier" {
+variable "storage_account_account_tier" {
   type = string
 }
 
-variable "account_replication_type" {
+variable "storage_account_account_replication_type" {
   type = string
 }
 
-variable "access_tier" {
+variable "storage_account_access_tier" {
   type = string
 }
 
@@ -97,7 +97,7 @@ variable "workspace_key" {
   type = string
 }      
 
-variable "log_type" {
+variable "log_types" {
   type    = list(string)
   default = []
  }

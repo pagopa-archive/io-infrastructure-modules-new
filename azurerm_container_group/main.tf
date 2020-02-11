@@ -19,10 +19,10 @@ module "storage_account" {
   // Module parameters
   name                      = var.storage_account_name
   resource_group_name       = var.resource_group_name
-  account_kind              = var.account_kind
-  account_tier              = var.account_tier
-  account_replication_type  = var.account_replication_type
-  access_tier               = var.access_tier
+  account_kind              = var.storage_account_account_kind
+  account_tier              = var.storage_account_account_tier
+  account_replication_type  = var.storage_account_account_replication_type
+  access_tier               = var.storage_account_access_tier
 }
 
 module "storage_share" {
@@ -49,17 +49,16 @@ resource "azurerm_container_group" "container_group" {
   os_type             = var.os_type
 
   dynamic "diagnostics" {
-    # for_each = var.log_type != "" ? var.log_type : []
-    for_each = var.log_type
+    for_each = var.log_types
     iterator = diag
 
-      content {
-        log_analytics {
-          workspace_id  = var.workspace_id
-          workspace_key = var.workspace_key
-          log_type      = diag.value
-        }
-      }      
+    content {
+      log_analytics {
+        workspace_id  = var.workspace_id
+        workspace_key = var.workspace_key
+        log_type      = diag.value
+      }
+    }      
   }
   container {
     name     = var.container_object.name
@@ -73,7 +72,6 @@ resource "azurerm_container_group" "container_group" {
     dynamic "volume" {
       for_each = var.volumes
       iterator = vol
-      # for_each = var.volumes != "" ? var.volumes : []
 
       content {
         name                 = vol.value["name"]
