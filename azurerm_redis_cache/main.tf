@@ -24,10 +24,10 @@ resource "azurerm_redis_cache" "redis_cache" {
 
   redis_configuration {
     enable_authentication         = var.enable_authentication
-    rdb_backup_enabled            = local.rdb_backup_enabled
-    rdb_backup_frequency          = var.rdb_backup_frequency
-    rdb_backup_max_snapshot_count = var.rdb_backup_max_snapshot_count
-    rdb_storage_connection_string = var.rdb_storage_connection_string
+    rdb_backup_enabled            = var.backup_configuration != null
+    rdb_backup_frequency          = var.backup_configuration != null ? var.backup_configuration.frequency : null
+    rdb_backup_max_snapshot_count = var.backup_configuration != null ? var.backup_configuration.max_snapshot_count : null
+    rdb_storage_connection_string = var.backup_configuration != null ? var.backup_configuration.storage_connection_string : null
   }
 
   tags = {

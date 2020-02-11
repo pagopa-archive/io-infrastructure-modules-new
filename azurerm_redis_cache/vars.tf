@@ -73,25 +73,15 @@ variable enable_authentication {
   default       = true
 }
 
-variable "rdb_backup_frequency" {
-    type        = number
-    description = "The Backup Frequency in Minutes."
-    default = null
-}
-
-variable "rdb_backup_max_snapshot_count" {
-    type        = number
-    description = "The maximum number of snapshots to create as a backup."
-    default     = null
-}
-
-variable "rdb_storage_connection_string" {
-    type        = string 
-    description = "The Connection String to the Storage Account"
-    default     = null
+variable backup_configuration {
+  type = object({
+    frequency = number
+    max_snapshot_count = number
+    storage_connection_string = string
+  })
+  default = null
 }
 
 locals {
   resource_name         = "${var.global_prefix}-${var.environment}-redis-${var.name}"
-  rdb_backup_enabled    = var.rdb_backup_frequency != null && var.rdb_backup_max_snapshot_count != null ? true: false
 }
