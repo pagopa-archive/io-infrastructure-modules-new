@@ -17,9 +17,12 @@ resource "azurerm_cosmosdb_sql_container" "cosmosdb_sql_container" {
   throughput         = var.throughput
   default_ttl        = var.default_ttl
 
-  unique_key {
-    paths = var.unique_key_paths
+  dynamic "unique_key" {
+    for_each = var.unique_key_paths
+      content {
+        paths = [unique_key.value]
+     }
   }
-
 }
+
 

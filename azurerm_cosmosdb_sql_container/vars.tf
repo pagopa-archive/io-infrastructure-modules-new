@@ -49,4 +49,5 @@ variable "default_ttl" {
 variable "unique_key_paths" {
   type        = list(string)
   description = "A list of paths to use for this unique key."
+  default     = []
 }
