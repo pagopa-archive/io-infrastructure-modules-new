@@ -92,5 +92,5 @@ variable "capabilities" {
 }
 
 locals {
-  resource_name = "${var.global_prefix}-${var.environment}-cosmosac-${var.name}"
+  resource_name = "${var.global_prefix}-${var.environment}-cosmos-${var.name}"
 }
