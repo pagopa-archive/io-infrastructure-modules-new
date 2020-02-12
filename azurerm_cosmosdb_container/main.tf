@@ -8,14 +8,14 @@ terraform {
 }
 
 resource "azurerm_cosmosdb_sql_container" "cosmosdb_sql_container" {
-  name                      = local.resource_name
-  resource_group_name       = var.resource_group_name
+  name                = local.resource_name
+  resource_group_name = var.resource_group_name
 
-  account_name              = var.account_name
-  database_name             = var.database_name
-  partition_key_path        = var.partition_key_path
-  throughput                = var.throughput
-  default_ttl               = var.default_ttl
+  account_name       = var.account_name
+  database_name      = var.database_name
+  partition_key_path = var.partition_key_path
+  throughput         = var.throughput
+  default_ttl        = var.default_ttl
 
   unique_key {
     paths = var.unique_key_paths
