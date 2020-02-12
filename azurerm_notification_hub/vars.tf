@@ -21,9 +21,9 @@ variable "resource_group_name" {
 }
 
 # Notification Hub related variables
-variable "key_vault_name" {
+variable "key_vault_id" {
   type        = string
-  description = "The azure key vault name."
+  description = "The azure key vault id."
 }
 
 variable "ntfns_namespace_type" {
