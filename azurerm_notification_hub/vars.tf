@@ -37,7 +37,7 @@ variable "ntfns_sku_name" {
 }
 
 variable "ntfns_enabled" {
-  type        = string
+  type        = bool
   description = "Is this Notification Hub Namespace enabled?"
   default     = true
 }
