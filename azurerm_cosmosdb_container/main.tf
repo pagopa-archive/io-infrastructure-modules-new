@@ -8,7 +8,7 @@ terraform {
 }
 
 resource "azurerm_cosmosdb_sql_container" "cosmosdb_sql_container" {
-  name                = local.resource_name
+  name                = var.name
   resource_group_name = var.resource_group_name
 
   account_name       = var.account_name

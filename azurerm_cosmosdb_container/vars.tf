@@ -50,7 +50,3 @@ variable "unique_key_paths" {
   type        = list(string)
   description = "A list of paths to use for this unique key."
 }
-
-locals {
-  resource_name = "${var.global_prefix}-${var.environment}-cosmosdb-${var.name}"
-}
