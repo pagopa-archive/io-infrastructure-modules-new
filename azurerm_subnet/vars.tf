@@ -25,7 +25,3 @@ variable "virtual_network_name" {
 variable "address_prefix" {
   type = string
 }
-
-locals {
-  resource_name = "${var.global_prefix}-${var.environment}-snet-${var.name}"
-}
