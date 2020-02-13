@@ -3,5 +3,5 @@ output "id" {
 }
 
 output "name" {
-  value = azurerm_subnet.subnet.id
+  value = azurerm_subnet.subnet.name
 }
