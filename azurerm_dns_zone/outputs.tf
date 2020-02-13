@@ -1,6 +1,6 @@
-output "domain_name" {
+output "name" {
   description = "The full DNS name of the new zone."
-  value       = var.dns_zone_name
+  value       = var.name
 }
 
 output "id" {
