@@ -1,11 +1,11 @@
-output "name" {
-    value = azurerm_storage_share.storage_share.name
+output "id" {
+  value = azurerm_storage_share.storage_share.id
 }
 
-output "id" {
-    value = azurerm_storage_share.storage_share.id
+output "name" {
+  value = azurerm_storage_share.storage_share.name
 }
 
 output "url" {
-    value = azurerm_storage_share.storage_share.url
+  value = azurerm_storage_share.storage_share.url
 }
