@@ -25,3 +25,15 @@ variable "virtual_network_name" {
 variable "address_prefix" {
   type = string
 }
+
+variable "delegation" {
+  type = object({
+    name = string
+    service_delegation = object({
+      name    = string
+      actions = list(string)
+    })
+  })
+
+  default = null
+}
