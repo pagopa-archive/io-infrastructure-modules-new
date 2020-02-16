@@ -8,7 +8,9 @@ terraform {
 }
 
 resource "azurerm_storage_share" "storage_share" {
-  name                 = local.resource_name
+  depends_on = [var.module_depends_on]
+
+  name                 = var.name
   storage_account_name = var.storage_account_name
   quota                = var.quota
 }

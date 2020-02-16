@@ -26,6 +26,7 @@ variable "quota" {
   default = 50
 }
 
-locals {
-  resource_name = "${var.global_prefix}-${var.environment}-share-${var.name}"
+variable "module_depends_on" {
+  type    = any
+  default = null
 }
