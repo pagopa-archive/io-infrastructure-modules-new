@@ -54,18 +54,18 @@ variable "maximum_throughput_units" {
 }
 
 variable "network_rulesets" {
-  type = object({
+  type = list(object({
     default_action = string
-    virtual_network_rule = object({
+    virtual_network_rule = list(object({
       subnet_id                                       = string
       ignore_missing_virtual_network_service_endpoint = bool
-    })
-    ip_rule = object({
+    }))
+    ip_rule = list(object({
       ip_mask = string
       action  = string
-    })
-  })
-  default = null
+    }))
+  }))
+  default = []
 }
 
 variable "eventhub_authorization_rules" {
