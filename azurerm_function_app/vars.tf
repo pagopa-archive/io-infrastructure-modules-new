@@ -58,6 +58,12 @@ variable application_insights_instrumentation_key {
   type = string
 }
 
+variable app_settings {
+  type = map(any)
+
+  default = {}
+}
+
 variable app_settings_secrets {
   type = object({
     key_vault_id = string

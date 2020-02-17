@@ -58,13 +58,6 @@ module "subnet" {
 module "secrets_from_keyvault" {
   source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault"
 
-  // TODO: Remove
-  global_prefix       = var.global_prefix
-  environment         = var.environment
-  region              = var.region
-  name                = " "
-  resource_group_name = " "
-
   key_vault_id = var.app_settings_secrets.key_vault_id
   secrets_map  = var.app_settings_secrets.map
 }
@@ -80,12 +73,16 @@ resource "azurerm_function_app" "function_app" {
     min_tls_version = "1.2"
   }
 
-  app_settings = merge({
-    APPINSIGHTS_INSTRUMENTATIONKEY = var.application_insights_instrumentation_key
-    // TODO: Remove after release with https://github.com/terraform-providers/terraform-provider-azurerm/pull/5761
-    WEBSITE_CONTENTAZUREFILECONNECTIONSTRING = module.storage_account.primary_connection_string
-    WEBSITE_CONTENTSHARE                     = "${lower(local.resource_name)}-content"
-  }, module.secrets_from_keyvault.secrets_with_value)
+  app_settings = merge(
+    {
+      APPINSIGHTS_INSTRUMENTATIONKEY = var.application_insights_instrumentation_key
+      // TODO: Remove after release with https://github.com/terraform-providers/terraform-provider-azurerm/pull/5761
+      WEBSITE_CONTENTAZUREFILECONNECTIONSTRING = module.storage_account.primary_connection_string
+      WEBSITE_CONTENTSHARE                     = "${lower(local.resource_name)}-content"
+    },
+    var.app_settings,
+    module.secrets_from_keyvault.secrets_with_value
+  )
 
   enable_builtin_logging = false
 
