@@ -1,5 +1,5 @@
 provider "azurerm" {
-  version = "=1.42.0"
+  version = "=1.44.0"
 }
 
 terraform {
@@ -10,9 +10,10 @@ terraform {
 module "storage_account" {
   source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_account?ref=v0.0.8"
 
-  global_prefix            = var.global_prefix
-  environment              = var.environment
-  region                   = var.region
+  global_prefix = var.global_prefix
+  environment   = var.environment
+  region        = var.region
+
   name                     = "func${var.name}"
   resource_group_name      = var.resource_group_name
   account_tier             = var.storage_account_info.account_tier
@@ -23,9 +24,10 @@ module "storage_account" {
 module "app_service_plan" {
   source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_app_service_plan?ref=v0.0.9"
 
-  global_prefix       = var.global_prefix
-  environment         = var.environment
-  region              = var.region
+  global_prefix = var.global_prefix
+  environment   = var.environment
+  region        = var.region
+
   name                = "func${var.name}"
   resource_group_name = var.resource_group_name
   kind                = var.app_service_plan_info.kind
@@ -36,9 +38,10 @@ module "app_service_plan" {
 module "subnet" {
   source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v0.0.9"
 
-  global_prefix        = var.global_prefix
-  environment          = var.environment
-  region               = var.region
+  global_prefix = var.global_prefix
+  environment   = var.environment
+  region        = var.region
+
   name                 = "func${var.name}"
   resource_group_name  = var.virtual_network_info.resource_group_name
   virtual_network_name = var.virtual_network_info.name
@@ -70,6 +73,8 @@ resource "azurerm_function_app" "function_app" {
 
   site_config {
     min_tls_version = "1.2"
+
+    ip_restriction = var.ip_restriction
   }
 
   app_settings = merge(

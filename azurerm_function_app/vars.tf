@@ -71,6 +71,12 @@ variable app_settings_secrets {
   })
 }
 
+variable ip_restriction {
+  type = list(string)
+
+  default = null
+}
+
 locals {
   resource_name = "${var.global_prefix}-${var.environment}-func-${var.name}"
 }
