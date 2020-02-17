@@ -21,7 +21,7 @@ module "storage_account" {
 }
 
 module "app_service_plan" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_app_service_plan?ref=v0.0.8"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_app_service_plan?ref=v0.0.9"
 
   global_prefix       = var.global_prefix
   environment         = var.environment
@@ -34,8 +34,7 @@ module "app_service_plan" {
 }
 
 module "subnet" {
-  //source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v0.0.8"
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v0.0.9"
 
   global_prefix        = var.global_prefix
   environment          = var.environment
@@ -56,7 +55,7 @@ module "subnet" {
 }
 
 module "secrets_from_keyvault" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault?ref=v0.0.9"
 
   key_vault_id = var.app_settings_secrets.key_vault_id
   secrets_map  = var.app_settings_secrets.map
