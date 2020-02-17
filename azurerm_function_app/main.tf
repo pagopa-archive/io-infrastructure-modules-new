@@ -20,19 +20,6 @@ module "storage_account" {
   access_tier              = var.storage_account_info.access_tier
 }
 
-module "storage_share" {
-  //source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_share?ref=v0.0.8"
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_share"
-
-  module_depends_on = module.storage_account.id
-
-  global_prefix        = var.global_prefix
-  environment          = var.environment
-  region               = var.region
-  name                 = "func${var.name}"
-  storage_account_name = module.storage_account.resource_name
-}
-
 module "app_service_plan" {
   source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_app_service_plan?ref=v0.0.8"
 
@@ -60,9 +47,10 @@ module "subnet" {
 
   delegation = {
     name = "default"
+
     service_delegation = {
       name    = "Microsoft.Web/serverFarms"
-      actions = []
+      actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
     }
   }
 }
@@ -82,7 +70,7 @@ resource "azurerm_function_app" "function_app" {
     APPINSIGHTS_INSTRUMENTATIONKEY = var.application_insights_instrumentation_key
     // TODO: Remove after release with https://github.com/terraform-providers/terraform-provider-azurerm/pull/5761
     WEBSITE_CONTENTAZUREFILECONNECTIONSTRING = module.storage_account.primary_connection_string
-    WEBSITE_CONTENTSHARE                     = module.storage_share.name
+    WEBSITE_CONTENTSHARE                     = "${lower(local.resource_name)}-content"
   }
 
   enable_builtin_logging = false
@@ -91,9 +79,10 @@ resource "azurerm_function_app" "function_app" {
     environment = var.environment
   }
 
-  // TODO: Remove after release with https://github.com/terraform-providers/terraform-provider-azurerm/pull/5761
   lifecycle {
-    ignore_changes = [app_settings.WEBSITE_CONTENTAZUREFILECONNECTIONSTRING, app_settings.WEBSITE_CONTENTSHARE]
+    ignore_changes = [
+      site_config[0].virtual_network_name,
+    ]
   }
 }
 
@@ -129,4 +118,12 @@ resource "azurerm_template_deployment" "function_keys" {
       }
   }
   BODY
+}
+
+// TODO: Remove
+data "azurerm_key_vault_secret" "key_vault_secret" {
+  for_each = var.secrets_map
+
+  name         = each.value
+  key_vault_id = var.key_vault_id
 }

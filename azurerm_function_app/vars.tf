@@ -61,3 +61,14 @@ variable application_insights_instrumentation_key {
 locals {
   resource_name = "${var.global_prefix}-${var.environment}-func-${var.name}"
 }
+
+// TODO: Remove
+variable "key_vault_id" {
+  type = string
+}
+
+variable "secrets_map" {
+  type = map(string)
+
+  default = {}
+}
