@@ -20,6 +20,43 @@ variable "resource_group_name" {
   type = string
 }
 
+// Module Variables
+
+variable "ip_sku" {
+  type        = string
+  description = "The SKU of the Public IP."
+}
+
+variable "ip_allocation_method" {
+  type        = string
+  description = "Defines the allocation method for this IP address."
+}
+
+variable "log_analytics_workspace_id" {
+  type        = string
+  description = ""
+}
+
+variable "virtual_network_name" {
+  type        = string
+  description = "The virtual network name."
+}
+
+variable "subnet_address_prefix" {
+  type        = string
+  description = "The subnet id for AG"
+}
+
+variable "key_vault_id" {
+  type        = string
+  description = "The keyvault id"
+}
+
+variable "frontend" {
+  type        = list(number)
+  description = "The frontend ports used by AG"
+  default     = []
+}
 
 # Application Gateway plan specific variables
 variable "azurerm_public_ip_allocation_method" {
@@ -58,6 +95,12 @@ variable "frontend_port_port" {
   default     = 443
 }
 
+variable "http2" {
+  type        = bool
+  description = "Is HTTP2 enabled on the application gateway resource?"
+  default     = false
+}
+
 variable "waf_configuration_enabled" {
   description = "Enable the Web Application Firewall."
   default     = true
@@ -80,42 +123,6 @@ variable "waf_configuration_rule_set_version" {
   default     = "3.1"
 }
 
-variable "backend_address_pool_ip_addresses" {
-  type        = list(string)
-  description = "The private ip address associated to the APIM"
-  default     = []
-}
-
-variable "probe_interval" {
-  type        = number
-  description = "The Interval between two consecutive probes in seconds."
-  default     = 30
-}
-
-variable "probe_protocol" {
-  type        = string
-  description = "The Protocol used for this Probe."
-  default     = "Http"
-}
-
-variable "probe_timeout" {
-  type        = number
-  description = "The Timeout used for this Probe, which indicates when a probe becomes unhealthy."
-  default     = 120
-}
-
-variable "probe_unhealthy_threshold" {
-  type        = number
-  description = "The Unhealthy Threshold for this Probe, which indicates the amount of retries which should be attempted before a node is deemed unhealthy."
-  default     = 8
-}
-
-variable "log_analytics_workspace_name" {
-  type        = string
-  description = "The Log Analytics workspace name."
-  default     = "log-analytics-workspace"
-}
-
 variable "diagnostic_logs_retention" {
   type        = number
   description = "The number of days for which this Retention Policy should apply."
@@ -128,23 +135,69 @@ variable "diagnostic_metrics_retention" {
   default     = 30
 }
 
+variable "ag" {
+  type = list(object({
+      hl_name                           = string
+      hl_host_name                      = string
+      hl_protocol                       = string
+      hl_require_sni                    = string
+      hl_ssl_certificate_name           = string
+      hl_custom_error_configuration     = map(string)
+
+      probe_name                                      = string
+      probe_interval                                  = number
+      probe_protocol                                  = string
+      probe_path                                      = string
+      probe_timeout                                   = number
+      probe_unhealthy_threshold                       = number
+      probe_host                                      = string
+      # probe_match                                     = map(string)
+      # probe_minimum_servers                           = number
+      # probe_pick_host_name_from_backend_http_settings = bool
+
+      bhs_name                                = string
+      bhs_cookie_based_affinity               = string
+      # bhs_affinity_cookie_name                = string
+      bhs_path                                = string
+      bhs_port                                = number
+      bhs_probe_name                          = string
+      bhs_protocol                            = string
+      bhs_request_timeout                     = number
+      bhs_host_name                           = string
+      # bhs_pick_host_name_from_backend_address = bool
+      # bhs_authentication_certificate          = map(string)
+      # bhs_trusted_root_certificate_names      = list(string)
+      # bhs_connection_draining                 = map(string)  
+
+      rrr_name                        = string
+      rrr_rule_type                   = string
+      rrr_http_listener_name          = string
+      rrr_backend_address_pool_name   = string
+      rrr_backend_http_settings_name  = string
+      # rrr_redirect_configuration_name = string
+      # rrr_rewrite_rule_set_name       = string
+      # rrr_url_path_map_name           = string
+
+      bap_name         = string
+      # bap_fqdns        = list(string)
+      bap_ip_addresses = list(string)
+
+  }))
+  # default = null
+}
+
 locals {
-  resource_name = "${var.global_prefix}-${var.environment}-ag-${var.name}"
+  resource_name        = "${var.global_prefix}-${var.environment}-ag-${var.name}"
+  ip_resource_name     = "${var.global_prefix}-${var.environment}-ip-${var.name}"
+  ag_ip_resource_name  = "${var.global_prefix}-${var.environment}-ag-ip-${var.name}"
+  subnet_resource_name = "${var.global_prefix}-${var.environment}-subnet-${var.name}"
 
-
-
-  gateway_ip_configuration_name  = "${var.resource_name_prefix}-${var.environment}-ag-ip-${var.application_gateway_name_suffix}"
-  frontend_port_name             = "${var.resource_name_prefix}-${var.environment}-ag-feport-${var.application_gateway_name_suffix}"
-  probe_name                     = "${var.resource_name_prefix}-${var.environment}-ag-probe-${var.application_gateway_name_suffix}"
-  backend_address_pool_name      = "${var.resource_name_prefix}-${var.environment}-ag-beap-${var.application_gateway_name_suffix}"
-  frontend_ip_configuration_name = "${var.resource_name_prefix}-${var.environment}-ag-feip-${var.application_gateway_name_suffix}"
-  backend_http_setting_name      = "${var.resource_name_prefix}-${var.environment}-ag-be-htst-${var.application_gateway_name_suffix}"
-  http_listener_name             = "${var.resource_name_prefix}-${var.environment}-ag-httplstn-${var.application_gateway_name_suffix}"
-  https_listener_name            = "${var.resource_name_prefix}-${var.environment}-ag-httpslstn-${var.application_gateway_name_suffix}"
-  request_routing_rule_name      = "${var.resource_name_prefix}-${var.environment}-ag-rqrt-${var.application_gateway_name_suffix}"
-  redirect_configuration_name    = "${var.resource_name_prefix}-${var.environment}-ag-rdrcfg-${var.application_gateway_name_suffix}"
-  ssl_certificate_name           = "${var.resource_name_prefix}-${var.environment}-ag-ssl-${var.application_gateway_name_suffix}"
-  diagnostic_name                = "${var.resource_name_prefix}-${var.environment}-ag-diagnostic-${var.application_gateway_name_suffix}"
-  host_name                      = "${var.application_gateway_hostname}${var.environment == "prod" ? "." : ".${var.environment}."}io.italia.it"
-  azurerm_key_vault_secret_certificate                       = "application-gateway-${var.application_gateway_name_suffix}-cert"
+  gateway_ip_configuration_name  = "${var.global_prefix}-${var.environment}-ag-ip-${var.name}"
+  frontend_port_name             = "${var.global_prefix}-${var.environment}-ag-feport-${var.name}"
+  frontend_ip_configuration_name = "${var.global_prefix}-${var.environment}-ag-feip-${var.name}"
+  redirect_configuration_name    = "${var.global_prefix}-${var.environment}-ag-rdrcfg-${var.name}"
+  ssl_certificate_name           = "${var.global_prefix}-${var.environment}-ag-ssl-${var.name}"
+  diagnostic_name                = "${var.global_prefix}-${var.environment}-ag-diagnostic-${var.name}"
+  #host_name                      = "${var.application_gateway_hostname}${var.environment == "prod" ? "." : ".${var.environment}."}io.italia.it"
+  # azurerm_key_vault_secret_certificate                       = "application-gateway-${var.application_gateway_name_suffix}-cert"
 }
