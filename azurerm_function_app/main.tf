@@ -8,7 +8,7 @@ terraform {
 }
 
 module "storage_account" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_account?ref=v0.0.8"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_account?ref=v0.0.10"
 
   global_prefix = var.global_prefix
   environment   = var.environment
@@ -22,7 +22,7 @@ module "storage_account" {
 }
 
 module "app_service_plan" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_app_service_plan?ref=v0.0.9"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_app_service_plan?ref=v0.0.10"
 
   global_prefix = var.global_prefix
   environment   = var.environment
@@ -36,7 +36,7 @@ module "app_service_plan" {
 }
 
 module "subnet" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v0.0.9"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v0.0.10"
 
   global_prefix = var.global_prefix
   environment   = var.environment
@@ -58,7 +58,7 @@ module "subnet" {
 }
 
 module "secrets_from_keyvault" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault?ref=v0.0.9"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault?ref=v0.0.10"
 
   key_vault_id = var.app_settings_secrets.key_vault_id
   secrets_map  = var.app_settings_secrets.map
@@ -73,8 +73,7 @@ resource "azurerm_function_app" "function_app" {
 
   site_config {
     min_tls_version = "1.2"
-
-    ip_restriction = var.ip_restriction
+    ip_restriction  = var.ip_restriction
   }
 
   app_settings = merge(

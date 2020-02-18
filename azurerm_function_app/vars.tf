@@ -72,7 +72,7 @@ variable app_settings_secrets {
 }
 
 variable ip_restriction {
-  type = list(string)
+  type = list(any)
 
   default = null
 }
