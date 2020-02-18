@@ -1,3 +1,7 @@
+variable "global_tenant_id" {
+  type = string
+}
+
 variable "key_vault_id" {
   type        = string
   description = "Specifies the id of the Key Vault resource."
@@ -6,6 +10,7 @@ variable "key_vault_id" {
 variable "tenant_id" {
   type        = string
   description = "The Azure Active Directory tenant ID that should be used for authenticating requests to the key vault."
+  default     = null
 }
 
 variable "object_id" {
@@ -39,4 +44,8 @@ variable "storage_permissions" {
   type        = list(string)
   description = "List of storage permissions."
   default     = null
+}
+
+locals {
+  tenant_id = var.tenant_id != null ? var.tenant_id : var.global_tenant_id
 }
