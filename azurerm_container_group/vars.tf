@@ -74,6 +74,15 @@ variable "storage_account_info" {
   }
 }
 
+variable "dns_cname_record" {
+  type = object({
+    zone_name                = string
+    zone_resource_group_name = string
+  })
+
+  default = null
+}
+
 locals {
   resource_name = "${var.global_prefix}-${var.environment}-cg-${var.name}"
 }

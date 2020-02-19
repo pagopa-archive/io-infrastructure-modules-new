@@ -74,3 +74,12 @@ resource "azurerm_container_group" "container_group" {
     environment = var.environment
   }
 }
+
+resource "azurerm_dns_cname_record" "dns_cname_record" {
+  count               = var.dns_cname_record == null ? 0 : 1
+  name                = var.name
+  zone_name           = var.dns_cname_record.zone_name
+  resource_group_name = var.dns_cname_record.zone_resource_group_name
+  ttl                 = 300
+  record              = azurerm_container_group.container_group.fqdn
+}
