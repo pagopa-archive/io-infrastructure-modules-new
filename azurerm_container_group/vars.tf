@@ -1,5 +1,4 @@
-# General Variables
-
+# Global variables
 variable "global_prefix" {
   type = string
 }
@@ -12,43 +11,14 @@ variable "region" {
   type = string
 }
 
+# Container Group variables
 variable "name" {
   type = string
 }
 
-// Resource Group 
 variable "resource_group_name" {
   type = string
 }
-
-// Storage Account
-variable "storage_account_name" {
-  type = string
-}
-
-variable "storage_account_account_kind" {
-  type    = string
-  default = "StorageV2"
-}
-
-variable "storage_account_account_tier" {
-  type = string
-}
-
-variable "storage_account_account_replication_type" {
-  type = string
-}
-
-variable "storage_account_access_tier" {
-  type = string
-}
-
-// Storage Share
-variable "storage_share_name" {
-  type = string
-}
-
-# Container Group specific variables
 
 variable "ip_address_type" {
   type        = string
@@ -68,39 +38,41 @@ variable "os_type" {
   default     = "Linux"
 }
 
-variable "container_object" {
+variable "container" {
   type = object({
-    name     = string
-    image    = string
-    cpu      = string
-    memory   = string
-    port     = number
-    protocol = string
+    name   = string
+    image  = string
+    cpu    = string
+    memory = string
+    ports = list(object({
+      port     = number
+      protocol = string
+    }))
     commands = list(string)
   })
 }
 
-variable "volumes" {
-  type = list(object({
-    name                 = string
-    mount_path           = string
-    read_only            = bool
-  }))
-  default = []
- }
+variable "storage_account_info" {
+  type = object({
+    account_tier             = string
+    account_replication_type = string
+    access_tier              = string
+    mount = object({
+      path      = string
+      read_only = bool
+    })
+  })
 
-variable "workspace_id" {
-  type = string
+  default = {
+    account_tier             = "Standard"
+    account_replication_type = "LRS"
+    access_tier              = "Cool"
+    mount = {
+      path      = "/containershare"
+      read_only = true
+    }
+  }
 }
-
-variable "workspace_key" {
-  type = string
-}      
-
-variable "log_types" {
-  type    = list(string)
-  default = []
- }
 
 locals {
   resource_name = "${var.global_prefix}-${var.environment}-cg-${var.name}"

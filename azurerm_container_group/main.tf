@@ -1,86 +1,72 @@
 provider "azurerm" {
-  version = "=1.42.0"
+  version = "=1.44.0"
 }
 
 terraform {
   backend "azurerm" {}
 }
 
-# Modules Section
-
 module "storage_account" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_account?ref=v0.0.5"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_account?ref=v0.0.12"
 
-  // Global parameters
-  region        = var.region
   global_prefix = var.global_prefix
   environment   = var.environment
+  region        = var.region
 
-  // Module parameters
-  name                      = var.storage_account_name
-  resource_group_name       = var.resource_group_name
-  account_kind              = var.storage_account_account_kind
-  account_tier              = var.storage_account_account_tier
-  account_replication_type  = var.storage_account_account_replication_type
-  access_tier               = var.storage_account_access_tier
+  name                     = "cg${replace(var.name, "/-|_/", "")}"
+  resource_group_name      = var.resource_group_name
+  account_tier             = var.storage_account_info.account_tier
+  account_replication_type = var.storage_account_info.account_replication_type
+  access_tier              = var.storage_account_info.access_tier
 }
 
 module "storage_share" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_share?ref=v0.0.5"
-  
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_share?ref=v0.0.12"
+
+  module_depends_on = module.storage_account.id
+
   // Global parameters
   region        = var.region
   global_prefix = var.global_prefix
   environment   = var.environment
 
   // Module parameters
-  name                 = var.storage_share_name
+  name                 = "containershare"
   storage_account_name = module.storage_account.resource_name
-
 }
-# New infrastructure
 
 resource "azurerm_container_group" "container_group" {
   name                = local.resource_name
   location            = var.region
   resource_group_name = var.resource_group_name
   ip_address_type     = var.ip_address_type
-  dns_name_label      = var.dns_name_label
+  dns_name_label      = var.dns_name_label == null ? local.resource_name : var.dns_name_label
   os_type             = var.os_type
 
-  dynamic "diagnostics" {
-    for_each = var.log_types
-    iterator = diag
-
-    content {
-      log_analytics {
-        workspace_id  = var.workspace_id
-        workspace_key = var.workspace_key
-        log_type      = diag.value
-      }
-    }      
-  }
   container {
-    name     = var.container_object.name
-    image    = var.container_object.image
-    cpu      = var.container_object.cpu
-    memory   = var.container_object.memory
-    port     = var.container_object.port
-    protocol = var.container_object.protocol
-    commands = var.container_object.commands
+    name   = var.container.name
+    image  = var.container.image
+    cpu    = var.container.cpu
+    memory = var.container.memory
 
-    dynamic "volume" {
-      for_each = var.volumes
-      iterator = vol
+    dynamic "ports" {
+      for_each = var.container.ports
 
       content {
-        name                 = vol.value["name"]
-        mount_path           = vol.value["mount_path"]
-        read_only            = vol.value["read_only"]
-        share_name           = module.storage_share.name
-        storage_account_name = module.storage_account.resource_name
-        storage_account_key  = module.storage_account.primary_access_key
+        port     = ports.value.port
+        protocol = ports.value.protocol
       }
+    }
+
+    commands = var.container.commands
+
+    volume {
+      name                 = "containershare"
+      mount_path           = var.storage_account_info.mount.path
+      read_only            = var.storage_account_info.mount.read_only
+      share_name           = module.storage_share.name
+      storage_account_name = module.storage_account.resource_name
+      storage_account_key  = module.storage_account.primary_access_key
     }
   }
 
