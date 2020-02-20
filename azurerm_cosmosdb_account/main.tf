@@ -15,26 +15,24 @@ resource "azurerm_cosmosdb_account" "cosmosdb_account" {
   kind                      = var.kind
   enable_automatic_failover = true
 
+  geo_location {
+    location          = var.main_geo_location_location
+    failover_priority = 0
+  }
+
   dynamic "geo_location" {
-    for_each = var.geo_locations
-    iterator = geo
+    for_each = var.additional_geo_locations
 
     content {
-      prefix            = "${local.resource_name}-${geo.value["prefix"]}"
-      location          = geo.value["location"]
-      failover_priority = geo.value["failover_priority"]
+      location          = geo_location.value.location
+      failover_priority = geo_location.value.failover_priority
     }
   }
 
-  dynamic "consistency_policy" {
-    for_each = var.consistency_policy
-    iterator = consistency
-
-    content {
-      consistency_level       = consistency.value["consistency_level"]
-      max_interval_in_seconds = consistency.value["max_interval_in_seconds"]
-      max_staleness_prefix    = consistency.value["max_staleness_prefix"]
-    }
+  consistency_policy {
+    consistency_level       = var.consistency_policy.consistency_level
+    max_interval_in_seconds = var.consistency_policy.max_interval_in_seconds
+    max_staleness_prefix    = var.consistency_policy.max_staleness_prefix
   }
 
   dynamic "capabilities" {
@@ -43,7 +41,7 @@ resource "azurerm_cosmosdb_account" "cosmosdb_account" {
     content {
       name = capabilities.value
     }
-  }  
+  }
 
   // Virtual network settings
   is_virtual_network_filter_enabled = var.is_virtual_network_filter_enabled
