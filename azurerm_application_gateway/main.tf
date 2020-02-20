@@ -98,122 +98,80 @@ resource "azurerm_application_gateway" "ag" {
   #   password = ""
   # }
 
-// DYNANIC PART
-
-
+  // DYNANIC PART
   dynamic "http_listener" {
-    for_each = var.ag
-    iterator = app
+    for_each = [
+      for k in var.ag: k["hl"]
+    ]
+    # iterator = app
 
     content {
-      name                           = app.value["hl_name"]
+      name                           = http_listener.value["name"]
       frontend_ip_configuration_name = local.frontend_ip_configuration_name
       frontend_port_name             = local.frontend_port_name
-      protocol                       = app.value["hl_protocol"]
-      ssl_certificate_name           = app.value["hl_ssl_certificate_name"]
-      require_sni                    = app.value["hl_require_sni"]
-      host_name                      = app.value["hl_host_name"]
+      protocol                       = http_listener.value["protocol"]
+      ssl_certificate_name           = http_listener.value["ssl_certificate_name"]
+      require_sni                    = http_listener.value["require_sni"]
+      host_name                      = http_listener.value["host_name"]
     }
   }
 
   dynamic "probe" {
-    for_each = var.ag
-    iterator = app
+    for_each = [
+      for k in var.ag: k["pb"]
+    ]
 
     content {
-      name                = app.value["probe_name"]
-      interval            = app.value["probe_interval"]
-      protocol            = app.value["probe_protocol"]
-      timeout             = app.value["probe_timeout"]
-      unhealthy_threshold = app.value["probe_unhealthy_threshold"]
-      path                = app.value["probe_path"]
+      name                = probe.value["name"]
+      interval            = probe.value["interval"]
+      protocol            = probe.value["protocol"]
+      timeout             = probe.value["timeout"]
+      unhealthy_threshold = probe.value["unhealthy_threshold"]
+      path                = probe.value["path"]
+      host                = probe.value["host"]
     }
   }
 
   dynamic "backend_http_settings" {
-    for_each = var.ag
-    iterator = app
+    for_each = [
+      for k in var.ag: k["bhs"]
+    ]
 
     content {
-      name                  = app.value["bhs_name"]
-      cookie_based_affinity = app.value["bhs_cookie_based_affinity"]
-      path                  = app.value["bhs_path"]
-      protocol              = app.value["bhs_protocol"]
-      port                  = app.value["bhs_port"]
+      name                  = backend_http_settings.value["name"]
+      cookie_based_affinity = backend_http_settings.value["cookie_based_affinity"]
+      path                  = backend_http_settings.value["path"]
+      protocol              = backend_http_settings.value["protocol"]
+      port                  = backend_http_settings.value["port"]
     }
   }
 
   dynamic "request_routing_rule" {
-    for_each = var.ag
-    iterator = app
+    for_each = [
+      for k in var.ag: k["rrr"]
+    ]
     
     content {
-      name                       = app.value["rrr_name"]
-      rule_type                  = app.value["rrr_rule_type"]
-      http_listener_name         = app.value["hl_name"]
-      backend_address_pool_name  = app.value["bap_name"]
-      backend_http_settings_name = app.value["bhs_name"]
+      name                       = request_routing_rule.value["name"]
+      rule_type                  = request_routing_rule.value["rule_type"]
+      http_listener_name         = "test"
+      backend_address_pool_name  = request_routing_rule.value["bap_name"]
+      backend_http_settings_name = request_routing_rule.value["bhs_name"]
     }
   }
 
   dynamic "backend_address_pool" {
-    for_each = var.ag
-    iterator = app
+    for_each = [
+      for k in var.ag: k["bap"]
+    ]
 
     content {
-      name         = app.value["bap_name"]
-      # fqdns        = app.value["bap_fqdns"]
-      ip_addresses = app.value["bap_ip_addresses"]
+      name         = backend_address_pool.value["name"]
+      # fqdns        = backend_address_pool.value["bap_fqdns"]
+      ip_addresses = backend_address_pool.value["ip_addresses"]
     }   
   }
 }
-
-
-  // Required
-
-
-#   probe {
-#     host                = local.application_gateway_host_name
-#     name                = local.probe_name
-#     interval            = var.probe_interval
-#     protocol            = var.probe_protocol
-#     path                = "/status-0123456789abcdef"
-#     timeout             = var.probe_timeout
-#     unhealthy_threshold = var.probe_unhealthy_threshold
-#   }
-
-#   // Required
-#   backend_http_settings {
-#     name                  = local.backend_http_setting_name
-#     cookie_based_affinity = "Disabled"
-#     path                  = "/"
-#     port                  = 80
-#     protocol              = "Http"
-#     request_timeout       = 180
-#     probe_name            = local.probe_name
-#   }
-
-#   // Required
-#   http_listener {
-#     name                           = local.https_listener_name
-#     frontend_ip_configuration_name = local.frontend_ip_configuration_name
-#     frontend_port_name             = local.frontend_port_name
-#     protocol                       = "Https"
-#     ssl_certificate_name           = local.ssl_certificate_name
-#     require_sni                    = true
-#     host_name                      = local.application_gateway_host_name
-#   }
-
-#   // Required
-#   request_routing_rule {
-#     name                       = local.request_routing_rule_name
-#     rule_type                  = "Basic"
-#     http_listener_name         = local.https_listener_name
-#     backend_address_pool_name  = local.backend_address_pool_name
-#     backend_http_settings_name = local.backend_http_setting_name
-#   }
-
-# }
 
 # # Get Diagnostic settings for AG
 data "azurerm_monitor_diagnostic_categories" "ag" {
