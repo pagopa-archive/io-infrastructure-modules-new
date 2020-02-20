@@ -23,7 +23,7 @@ variable "resource_group_name" {
 // CosmosDB specific variables
 variable "enable_automatic_failover" {
   type    = bool
-  default = true 
+  default = true
 }
 
 variable "offer_type" {
@@ -50,23 +50,25 @@ variable "allowed_virtual_network_subnet_ids" {
 }
 
 variable "consistency_policy" {
-  type = list(object({
+  type = object({
     consistency_level       = string
     max_interval_in_seconds = number
     max_staleness_prefix    = number
-  }))
-  default = [
-    {
-      consistency_level       = "BoundedStaleness"
-      max_interval_in_seconds = 5
-      max_staleness_prefix    = 100
-    }
-  ]
+  })
+
+  default = {
+    consistency_level       = "BoundedStaleness"
+    max_interval_in_seconds = 5
+    max_staleness_prefix    = 100
+  }
 }
 
-variable "geo_locations" {
+variable "main_geo_location_location" {
+  type = string
+}
+
+variable "additional_geo_locations" {
   type = list(object({
-    prefix            = string
     location          = string
     failover_priority = number
   }))
@@ -76,7 +78,7 @@ variable "geo_locations" {
 variable "enable_multiple_write_locations" {
   type        = bool
   description = "Enable multi-master support for this Cosmos DB account."
-  default     = false 
+  default     = false
 }
 
 variable "ip_range" {
