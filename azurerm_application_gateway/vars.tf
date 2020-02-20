@@ -34,7 +34,7 @@ variable "ip_allocation_method" {
 
 variable "log_analytics_workspace_id" {
   type        = string
-  description = ""
+  description = "The log_analytics workspace id"
 }
 
 variable "virtual_network_name" {
@@ -137,53 +137,57 @@ variable "diagnostic_metrics_retention" {
 
 variable "ag" {
   type = list(object({
-      hl_name                           = string
-      hl_host_name                      = string
-      hl_protocol                       = string
-      hl_require_sni                    = string
-      hl_ssl_certificate_name           = string
-      hl_custom_error_configuration     = map(string)
-
-      probe_name                                      = string
-      probe_interval                                  = number
-      probe_protocol                                  = string
-      probe_path                                      = string
-      probe_timeout                                   = number
-      probe_unhealthy_threshold                       = number
-      probe_host                                      = string
-      # probe_match                                     = map(string)
-      # probe_minimum_servers                           = number
-      # probe_pick_host_name_from_backend_http_settings = bool
-
-      bhs_name                                = string
-      bhs_cookie_based_affinity               = string
-      # bhs_affinity_cookie_name                = string
-      bhs_path                                = string
-      bhs_port                                = number
-      bhs_probe_name                          = string
-      bhs_protocol                            = string
-      bhs_request_timeout                     = number
-      bhs_host_name                           = string
-      # bhs_pick_host_name_from_backend_address = bool
-      # bhs_authentication_certificate          = map(string)
-      # bhs_trusted_root_certificate_names      = list(string)
-      # bhs_connection_draining                 = map(string)  
-
-      rrr_name                        = string
-      rrr_rule_type                   = string
-      rrr_http_listener_name          = string
-      rrr_backend_address_pool_name   = string
-      rrr_backend_http_settings_name  = string
-      # rrr_redirect_configuration_name = string
-      # rrr_rewrite_rule_set_name       = string
-      # rrr_url_path_map_name           = string
-
-      bap_name         = string
-      # bap_fqdns        = list(string)
-      bap_ip_addresses = list(string)
-
+    hl = object({
+      name                           = string
+      host_name                      = string
+      protocol                       = string
+      require_sni                    = string
+      ssl_certificate_name           = string
+      custom_error_configuration     = map(string)
+    })
+    pb = object({
+      name                                      = string
+      interval                                  = number
+      protocol                                  = string
+      path                                      = string
+      timeout                                   = number
+      unhealthy_threshold                       = number
+      host                                      = string
+      # match                                     = map(string)
+      # minimum_servers                           = number
+      # pick_host_name_from_backend_http_settings = bool
+    })
+    bhs = object({
+      name                                = string
+      cookie_based_affinity               = string
+      # affinity_cookie_name                = string
+      path                                = string
+      port                                = number
+      probe_name                          = string
+      protocol                            = string
+      request_timeout                     = number
+      host_name                           = string
+      # pick_host_name_from_backend_address = bool
+      # authentication_certificate          = map(string)
+      # trusted_root_certificate_names      = list(string)
+      # connection_draining                 = map(string)  
+    })
+    rrr = object({
+      name                        = string
+      rule_type                   = string
+      http_listener_name          = string
+      backend_address_pool_name   = string
+      backend_http_settings_name  = string
+      # redirect_configuration_name = string
+      # rewrite_rule_set_name       = string
+      # url_path_map_name           = string
+    })
+    bap = object({
+      name         = string
+      # fqdns        = list(string)
+      ip_addresses = list(string)
+    })
   }))
-  # default = null
 }
 
 locals {
