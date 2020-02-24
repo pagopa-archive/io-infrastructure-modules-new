@@ -35,7 +35,7 @@ module "subnet" {
   environment   = var.environment
   
   // Module paremeters
-  name                 = local.subnet_resource_name
+  name                 = var.name
   resource_group_name  = var.resource_group_name
   virtual_network_name = var.virtual_network_name
   address_prefix       = var.subnet_address_prefix
@@ -61,8 +61,8 @@ resource "azurerm_application_gateway" "ag" {
   }
 
   autoscale_configuration {
-    min_capacity = var.autoscaling_configuration_min_capacity
-    max_capacity = var.autoscaling_configuration_max_capacity
+    min_capacity = var.asc_min_capacity
+    max_capacity = var.asc_max_capacity
   }
 
   // Required
@@ -85,10 +85,10 @@ resource "azurerm_application_gateway" "ag" {
 
   # // Optional
   waf_configuration {
-    enabled          = var.waf_configuration_enabled
-    firewall_mode    = var.waf_configuration_firewall_mode
-    rule_set_type    = var.waf_configuration_rule_set_type
-    rule_set_version = var.waf_configuration_rule_set_version
+    enabled          = var.wc_enabled
+    firewall_mode    = var.wc_firewall_mode
+    rule_set_type    = var.wc_rule_set_type
+    rule_set_version = var.wc_rule_set_version
   }
 
   # // Required
@@ -103,7 +103,6 @@ resource "azurerm_application_gateway" "ag" {
     for_each = [
       for k in var.ag: k["hl"]
     ]
-    # iterator = app
 
     content {
       name                           = http_listener.value["name"]
@@ -147,16 +146,14 @@ resource "azurerm_application_gateway" "ag" {
   }
 
   dynamic "request_routing_rule" {
-    for_each = [
-      for k in var.ag: k["rrr"]
-    ]
-    
+    for_each = local.request_routing_rule
+
     content {
       name                       = request_routing_rule.value["name"]
       rule_type                  = request_routing_rule.value["rule_type"]
-      http_listener_name         = "test"
-      backend_address_pool_name  = request_routing_rule.value["bap_name"]
-      backend_http_settings_name = request_routing_rule.value["bhs_name"]
+      http_listener_name         = request_routing_rule.value["http_listener_name"]
+      backend_address_pool_name  = request_routing_rule.value["backend_address_pool_name"]
+      backend_http_settings_name = request_routing_rule.value["backend_http_settings_name"]
     }
   }
 
