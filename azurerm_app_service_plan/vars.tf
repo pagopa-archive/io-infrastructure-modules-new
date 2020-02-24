@@ -8,6 +8,10 @@ variable "environment" {
   type = string
 }
 
+variable "environment_short" {
+  type = string
+}
+
 variable "region" {
   type = string
 }
@@ -50,5 +54,5 @@ variable "reserved" {
 }
 
 locals {
-  resource_name = "${var.global_prefix}-${var.environment}-plan-${var.name}"
+  resource_name = "${var.global_prefix}-${var.environment_short}-plan-${var.name}"
 }

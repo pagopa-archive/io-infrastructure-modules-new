@@ -10,6 +10,10 @@ variable "environment" {
   type = string
 }
 
+variable "environment_short" {
+  type = string
+}
+
 variable "region" {
   type = string
 }
@@ -33,6 +37,6 @@ variable "sku_name" {
 }
 
 locals {
-  resource_name = "${var.global_prefix}-${var.environment}-kv-${var.name}"
+  resource_name = "${var.global_prefix}-${var.environment_short}-kv-${var.name}"
   tenant_id     = var.tenant_id != null ? var.tenant_id : var.global_tenant_id
 }

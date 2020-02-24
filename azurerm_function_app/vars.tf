@@ -6,6 +6,10 @@ variable "environment" {
   type = string
 }
 
+variable "environment_short" {
+  type = string
+}
+
 variable "region" {
   type = string
 }
@@ -78,5 +82,5 @@ variable ip_restriction {
 }
 
 locals {
-  resource_name = "${var.global_prefix}-${var.environment}-func-${var.name}"
+  resource_name = "${var.global_prefix}-${var.environment_short}-func-${var.name}"
 }

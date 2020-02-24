@@ -8,6 +8,10 @@ variable "environment" {
   description   = "The name of the environment"
 }
 
+variable "environment_short" {
+  type = string
+}
+
 variable "region" {
   type = string
   description = "The location of the resource group."
@@ -83,5 +87,5 @@ variable backup_configuration {
 }
 
 locals {
-  resource_name         = "${var.global_prefix}-${var.environment}-redis-${var.name}"
+  resource_name         = "${var.global_prefix}-${var.environment_short}-redis-${var.name}"
 }
