@@ -12,6 +12,10 @@ variable "region" {
   type = string
 }
 
+variable "environment_short" {
+  type = string
+}
+
 variable "name" {
   type = string
 }
@@ -35,6 +39,6 @@ variable "retention_in_days" {
 }
 
 locals {
-  resource_name = "${var.global_prefix}-${var.environment}-law-${var.name}"
+  resource_name = "${var.global_prefix}-${var.environment_short}-law-${var.name}"
 }
 

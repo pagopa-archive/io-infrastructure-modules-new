@@ -6,6 +6,10 @@ variable "environment" {
   type = string
 }
 
+variable "environment_short" {
+  type = string
+}
+
 variable "region" {
   type = string
 }
@@ -15,5 +19,5 @@ variable "name" {
 }
 
 locals {
-  resource_name = "${var.global_prefix}-${var.environment}-rg-${var.name}"
+  resource_name = "${var.global_prefix}-${var.environment_short}-rg-${var.name}"
 }

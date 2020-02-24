@@ -7,6 +7,10 @@ variable "environment" {
   type = string
 }
 
+variable "environment_short" {
+  type = string
+}
+
 variable "region" {
   type = string
 }
@@ -84,5 +88,5 @@ variable "dns_cname_record" {
 }
 
 locals {
-  resource_name = "${var.global_prefix}-${var.environment}-cg-${var.name}"
+  resource_name = "${var.global_prefix}-${var.environment_short}-cg-${var.name}"
 }

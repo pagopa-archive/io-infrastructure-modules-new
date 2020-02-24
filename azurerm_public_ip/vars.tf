@@ -6,6 +6,10 @@ variable "environment" {
   type = string
 }
 
+variable "environment_short" {
+  type = string
+}
+
 variable "region" {
   type = string
 }
@@ -27,5 +31,5 @@ variable "allocation_method" {
 }
 
 locals {
-  resource_name = "${var.global_prefix}-${var.environment}-pip-${var.name}"
+  resource_name = "${var.global_prefix}-${var.environment_short}-pip-${var.name}"
 }

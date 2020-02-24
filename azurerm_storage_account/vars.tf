@@ -6,6 +6,10 @@ variable "environment" {
   type = string
 }
 
+variable "environment_short" {
+  type = string
+}
+
 variable "region" {
   type = string
 }
@@ -36,5 +40,5 @@ variable "access_tier" {
 }
 
 locals {
-  resource_name = "${var.global_prefix}${var.environment}st${var.name}"
+  resource_name = "${var.global_prefix}${var.environment_short}st${var.name}"
 }

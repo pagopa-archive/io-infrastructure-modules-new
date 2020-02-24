@@ -8,6 +8,10 @@ variable "environment" {
   type = string
 }
 
+variable "environment_short" {
+  type = string
+}
+
 variable "region" {
   type = string
 }
@@ -48,6 +52,6 @@ variable "ntf_apns_credential_application_mode" {
 }
 
 locals {
-  resource_name       = "${var.global_prefix}-${var.environment}-ntf-${var.name}"
-  ntfns_resource_name = "${var.global_prefix}-${var.environment}-ntfns-${var.name}"
+  resource_name       = "${var.global_prefix}-${var.environment_short}-ntf-${var.name}"
+  ntfns_resource_name = "${var.global_prefix}-${var.environment_short}-ntfns-${var.name}"
 }
