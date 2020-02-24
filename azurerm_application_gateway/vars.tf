@@ -77,13 +77,13 @@ variable "sku_tier" {
   default     = "WAF_v2"
 }
 
-variable "autoscaling_configuration_min_capacity" {
+variable "asc_min_capacity" {
   type        = number
   description = "Minimum capacity for autoscaling."
   default     = 2
 }
 
-variable "autoscaling_configuration_max_capacity" {
+variable "asc_max_capacity" {
   type        = number
   description = "Maximum capacity for autoscaling."
   default     = 2
@@ -101,23 +101,23 @@ variable "http2" {
   default     = false
 }
 
-variable "waf_configuration_enabled" {
+variable "wc_enabled" {
   description = "Enable the Web Application Firewall."
   default     = true
 }
 
-variable "waf_configuration_firewall_mode" {
+variable "wc_firewall_mode" {
   description = "he Web Application Firewall Mode"
   default     = "Detection"
 }
 
-variable "waf_configuration_rule_set_type" {
+variable "wc_rule_set_type" {
   type        = string
   description = "The Type of the Rule Set used for this Web Application Firewall."
   default     = "OWASP"
 }
 
-variable "waf_configuration_rule_set_version" {
+variable "wc_rule_set_version" {
   type        = string
   description = "The Version of the Rule Set used for this Web Application Firewall."
   default     = "3.1"
@@ -138,53 +138,38 @@ variable "diagnostic_metrics_retention" {
 variable "ag" {
   type = list(object({
     hl = object({
-      name                           = string
-      host_name                      = string
-      protocol                       = string
-      require_sni                    = string
-      ssl_certificate_name           = string
-      custom_error_configuration     = map(string)
+      name                       = string
+      host_name                  = string
+      protocol                   = string
+      require_sni                = string
+      ssl_certificate_name       = string
+      custom_error_configuration = map(string)
     })
     pb = object({
-      name                                      = string
-      interval                                  = number
-      protocol                                  = string
-      path                                      = string
-      timeout                                   = number
-      unhealthy_threshold                       = number
-      host                                      = string
-      # match                                     = map(string)
-      # minimum_servers                           = number
-      # pick_host_name_from_backend_http_settings = bool
+      name                = string
+      interval            = number
+      protocol            = string
+      path                = string
+      timeout             = number
+      unhealthy_threshold = number
+      host                = string
     })
     bhs = object({
-      name                                = string
-      cookie_based_affinity               = string
-      # affinity_cookie_name                = string
-      path                                = string
-      port                                = number
-      probe_name                          = string
-      protocol                            = string
-      request_timeout                     = number
-      host_name                           = string
-      # pick_host_name_from_backend_address = bool
-      # authentication_certificate          = map(string)
-      # trusted_root_certificate_names      = list(string)
-      # connection_draining                 = map(string)  
+      name                  = string
+      cookie_based_affinity = string
+      path                  = string
+      port                  = number
+      probe_name            = string
+      protocol              = string
+      request_timeout       = number
+      host_name             = string
     })
     rrr = object({
-      name                        = string
-      rule_type                   = string
-      http_listener_name          = string
-      backend_address_pool_name   = string
-      backend_http_settings_name  = string
-      # redirect_configuration_name = string
-      # rewrite_rule_set_name       = string
-      # url_path_map_name           = string
+      name      = string
+      rule_type = string
     })
     bap = object({
       name         = string
-      # fqdns        = list(string)
       ip_addresses = list(string)
     })
   }))
@@ -196,12 +181,21 @@ locals {
   ag_ip_resource_name  = "${var.global_prefix}-${var.environment}-ag-ip-${var.name}"
   subnet_resource_name = "${var.global_prefix}-${var.environment}-subnet-${var.name}"
 
+  request_routing_rule =  [
+    for a in var.ag: {
+      name                       = a.rrr.name
+      rule_type                  = a.rrr.rule_type
+      http_listener_name         = a.hl.name
+      backend_address_pool_name  = a.bap.name
+      backend_http_settings_name = a.bhs.name 
+    }
+  ]
+
+
   gateway_ip_configuration_name  = "${var.global_prefix}-${var.environment}-ag-ip-${var.name}"
   frontend_port_name             = "${var.global_prefix}-${var.environment}-ag-feport-${var.name}"
   frontend_ip_configuration_name = "${var.global_prefix}-${var.environment}-ag-feip-${var.name}"
   redirect_configuration_name    = "${var.global_prefix}-${var.environment}-ag-rdrcfg-${var.name}"
   ssl_certificate_name           = "${var.global_prefix}-${var.environment}-ag-ssl-${var.name}"
   diagnostic_name                = "${var.global_prefix}-${var.environment}-ag-diagnostic-${var.name}"
-  #host_name                      = "${var.application_gateway_hostname}${var.environment == "prod" ? "." : ".${var.environment}."}io.italia.it"
-  # azurerm_key_vault_secret_certificate                       = "application-gateway-${var.application_gateway_name_suffix}-cert"
 }
