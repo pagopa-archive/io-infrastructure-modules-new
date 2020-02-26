@@ -14,7 +14,7 @@ module "storage_account" {
   environment   = var.environment
   region        = var.region
 
-  name                     = "func${var.name}"
+  name                     = "f${var.name}"
   resource_group_name      = var.resource_group_name
   account_tier             = var.storage_account_info.account_tier
   account_replication_type = var.storage_account_info.account_replication_type
@@ -28,7 +28,7 @@ module "app_service_plan" {
   environment   = var.environment
   region        = var.region
 
-  name                = "func${var.name}"
+  name                = "f${var.name}"
   resource_group_name = var.resource_group_name
   kind                = var.app_service_plan_info.kind
   sku_tier            = var.app_service_plan_info.sku_tier
@@ -42,7 +42,7 @@ module "subnet" {
   environment   = var.environment
   region        = var.region
 
-  name                 = "func${var.name}"
+  name                 = "f${var.name}"
   resource_group_name  = var.virtual_network_info.resource_group_name
   virtual_network_name = var.virtual_network_info.name
   address_prefix       = var.virtual_network_info.subnet_address_prefix
