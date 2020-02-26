@@ -7,7 +7,7 @@ terraform {
 }
 
 module "storage_account" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_account?ref=v0.0.12"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_account?ref=v0.0.17"
 
   global_prefix = var.global_prefix
   environment   = var.environment
@@ -21,7 +21,7 @@ module "storage_account" {
 }
 
 module "storage_share" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_share?ref=v0.0.12"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_share?ref=v0.0.17"
 
   module_depends_on = module.storage_account.id
 
