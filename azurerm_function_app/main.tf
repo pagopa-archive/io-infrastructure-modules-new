@@ -10,9 +10,10 @@ terraform {
 module "storage_account" {
   source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_account?ref=v0.0.17"
 
-  global_prefix = var.global_prefix
-  environment   = var.environment
-  region        = var.region
+  global_prefix     = var.global_prefix
+  environment       = var.environment
+  environment_short = var.environment_short
+  region            = var.region
 
   name                     = "f${var.name}"
   resource_group_name      = var.resource_group_name
@@ -24,9 +25,10 @@ module "storage_account" {
 module "app_service_plan" {
   source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_app_service_plan?ref=v0.0.17"
 
-  global_prefix = var.global_prefix
-  environment   = var.environment
-  region        = var.region
+  global_prefix     = var.global_prefix
+  environment       = var.environment
+  environment_short = var.environment_short
+  region            = var.region
 
   name                = "f${var.name}"
   resource_group_name = var.resource_group_name
@@ -38,9 +40,10 @@ module "app_service_plan" {
 module "subnet" {
   source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v0.0.17"
 
-  global_prefix = var.global_prefix
-  environment   = var.environment
-  region        = var.region
+  global_prefix     = var.global_prefix
+  environment       = var.environment
+  environment_short = var.environment_short
+  region            = var.region
 
   name                 = "f${var.name}"
   resource_group_name  = var.virtual_network_info.resource_group_name
