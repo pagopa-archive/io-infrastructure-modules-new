@@ -17,6 +17,7 @@ resource "azurerm_network_security_group" "network_security_group" {
     for_each = var.security_rules
     content {
       name                         = security_rule.value.name
+      description                  = security_rule.value.description
       priority                     = security_rule.value.priority
       direction                    = security_rule.value.direction
       access                       = security_rule.value.access
@@ -29,8 +30,19 @@ resource "azurerm_network_security_group" "network_security_group" {
   }
 
   tags = {
-    environment = "Production"
+    environment = var.environment
   }
+}
+
+resource "azurerm_public_ip" "public_ip" {
+    name                         = local.public_ip_name
+    location                     = var.region
+    resource_group_name          = var.resource_group_name
+    allocation_method            = var.allocation_method
+
+    tags = {
+      environment = var.environment
+    }
 }
 
 resource "azurerm_network_interface" "network_interface" {
@@ -42,6 +54,7 @@ resource "azurerm_network_interface" "network_interface" {
     name                          = "snet-${var.name}"
     subnet_id                     = var.subnet_id
     private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.public_ip.id
   }
 }
 
