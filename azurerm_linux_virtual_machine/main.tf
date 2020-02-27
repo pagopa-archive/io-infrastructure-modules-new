@@ -50,7 +50,7 @@ resource "azurerm_network_interface_security_group_association" "network_interfa
   network_security_group_id = azurerm_network_security_group.network_security_group.id
 }
 
-resource "azurerm_linux_virtual_machine" "virtual_machine" {
+resource "azurerm_linux_virtual_machine" "linux_virtual_machine" {
   name                = local.resource_name
   location            = var.region
   resource_group_name = var.resource_group_name
