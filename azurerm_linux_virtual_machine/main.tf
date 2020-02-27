@@ -35,14 +35,14 @@ resource "azurerm_network_security_group" "network_security_group" {
 }
 
 resource "azurerm_public_ip" "public_ip" {
-    name                         = local.public_ip_name
-    location                     = var.region
-    resource_group_name          = var.resource_group_name
-    allocation_method            = var.allocation_method
+  name                = local.public_ip_name
+  location            = var.region
+  resource_group_name = var.resource_group_name
+  allocation_method   = var.allocation_method
 
-    tags = {
-      environment = var.environment
-    }
+  tags = {
+    environment = var.environment
+  }
 }
 
 resource "azurerm_network_interface" "network_interface" {

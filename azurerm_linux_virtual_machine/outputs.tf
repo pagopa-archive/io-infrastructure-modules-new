@@ -7,7 +7,8 @@ output "name" {
 }
 
 output "admin_username" {
-  value = azurerm_linux_virtual_machine.linux_virtual_machine.admin_username
+  value     = azurerm_linux_virtual_machine.linux_virtual_machine.admin_username
+  sensitive = true
 }
 
 output "private_ip_address" {
