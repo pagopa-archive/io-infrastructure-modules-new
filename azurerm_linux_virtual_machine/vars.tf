@@ -99,5 +99,6 @@ variable "security_rules" {
 }
 
 locals {
-  resource_name = "${var.global_prefix}-${var.environment_short}-vm-${var.name}"
+  resource_name               = "${var.global_prefix}-${var.environment_short}-vm-${var.name}"
+  network_security_group_name = "${var.global_prefix}-${var.environment_short}-nsg-${var.name}"
 }
