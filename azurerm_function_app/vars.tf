@@ -22,6 +22,11 @@ variable "resource_group_name" {
   type = string
 }
 
+variable "runtime_version" {
+  type    = string
+  default = "~2"
+}
+
 variable "storage_account_info" {
   type = object({
     account_tier             = string
