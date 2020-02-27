@@ -95,10 +95,16 @@ variable "security_rules" {
     source_address_prefixes      = list(string)
     destination_address_prefixes = list(string)
   }))
+}
 
+variable "allocation_method" {
+  type        = string
+  description = ""
+  default     = "Dynamic"
 }
 
 locals {
   resource_name               = "${var.global_prefix}-${var.environment_short}-vm-${var.name}"
   network_security_group_name = "${var.global_prefix}-${var.environment_short}-nsg-${var.name}"
+  public_ip_name              = "${var.global_prefix}-${var.environment_short}-pip-${var.name}"
 }
