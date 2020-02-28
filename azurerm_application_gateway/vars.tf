@@ -176,10 +176,8 @@ variable "ag" {
 }
 
 locals {
-  resource_name        = "${var.global_prefix}-${var.environment}-ag-${var.name}"
-  ip_resource_name     = "${var.global_prefix}-${var.environment}-ip-${var.name}"
-  ag_ip_resource_name  = "${var.global_prefix}-${var.environment}-ag-ip-${var.name}"
-  subnet_resource_name = "${var.global_prefix}-${var.environment}-subnet-${var.name}"
+  resource_name                  = "${var.global_prefix}-${var.environment}-ag-${var.name}"
+  ag_ip_resource_name            = "${var.global_prefix}-${var.environment}-ag-ip-${var.name}"
 
   request_routing_rule =  [
     for a in var.ag: {
@@ -190,7 +188,6 @@ locals {
       backend_http_settings_name = a.bhs.name 
     }
   ]
-
 
   gateway_ip_configuration_name  = "${var.global_prefix}-${var.environment}-ag-ip-${var.name}"
   frontend_port_name             = "${var.global_prefix}-${var.environment}-ag-feport-${var.name}"

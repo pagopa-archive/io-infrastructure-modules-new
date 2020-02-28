@@ -1,12 +1,11 @@
 # Existing infrastructure
 provider "azurerm" {
-  version = "~>1.36"
+  version = "~>1.42"
 }
 
 terraform {
   backend "azurerm" {}
 }
-
 
 // Module 
 module "static_ip" {
@@ -19,7 +18,7 @@ module "static_ip" {
   environment   = var.environment
 
   // Module paremeters
-  name                = local.ip_resource_name
+  name                = var.name
   sku                 = var.ip_sku
   allocation_method   = var.ip_allocation_method
   resource_group_name = var.resource_group_name
@@ -40,12 +39,6 @@ module "subnet" {
   virtual_network_name = var.virtual_network_name
   address_prefix       = var.subnet_address_prefix
 }
-
-# Get certificate from keyvault
-# data "azurerm_key_vault_secret" "certificate" {
-#   name         = local.azurerm_key_vault_secret_certificate
-#   key_vault_id = var.key_vault_id
-# }
 
 # New infrastructure
 
