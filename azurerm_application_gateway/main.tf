@@ -10,12 +10,13 @@ terraform {
 // Module 
 module "static_ip" {
 
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_public_ip?ref=v0.0.5"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_public_ip?ref=v0.0.24"
 
   // Global parameters
-  region        = var.region
-  global_prefix = var.global_prefix
-  environment   = var.environment
+  region              = var.region
+  global_prefix       = var.global_prefix
+  environment         = var.environment
+  environment_short   = var.environment_short
 
   // Module paremeters
   name                = var.name
@@ -26,21 +27,32 @@ module "static_ip" {
 
 module "subnet" {
 
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v0.0.5"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v0.0.24"
 
   // Global parameters
-  region        = var.region
-  global_prefix = var.global_prefix
-  environment   = var.environment
+  region              = var.region
+  global_prefix       = var.global_prefix
+  environment         = var.environment
+  environment_short   = var.environment_short
   
   // Module paremeters
   name                 = var.name
-  resource_group_name  = var.resource_group_name
+  resource_group_name  = var.subnet_resource_group_name
   virtual_network_name = var.virtual_network_name
   address_prefix       = var.subnet_address_prefix
 }
 
+data "azurerm_key_vault_secret" "certificate_value" {
+  name         = var.certificate_name
+  key_vault_id = var.key_vault_id 
+}
+
+data "azurerm_key_vault_secret" "certificate_password" {
+  name         = var.certificate_password
+  key_vault_id = var.key_vault_id 
+}
 # New infrastructure
+
 
 # Application Gateway resource - SSL certificate
 resource "azurerm_application_gateway" "ag" {
@@ -73,7 +85,7 @@ resource "azurerm_application_gateway" "ag" {
   // Required
   frontend_port {
     name = local.frontend_port_name
-    port = var.frontend_port_port
+    port = var.frontend_port
   }
 
   # // Optional
@@ -85,16 +97,16 @@ resource "azurerm_application_gateway" "ag" {
   }
 
   # // Required
-  # ssl_certificate {
-  #   name     = local.ssl_certificate_name
-  #   data     = data.azurerm_key_vault_secret.certificate.value
-  #   password = ""
-  # }
+  ssl_certificate {
+    name     = local.ssl_certificate_name
+    data     = data.azurerm_key_vault_secret.certificate_value.value
+    password = data.azurerm_key_vault_secret.certificate_password.value
+  }
 
   // DYNANIC PART
   dynamic "http_listener" {
     for_each = [
-      for k in var.ag: k["hl"]
+      for k in var.services: k["hl"]
     ]
 
     content {
@@ -102,7 +114,7 @@ resource "azurerm_application_gateway" "ag" {
       frontend_ip_configuration_name = local.frontend_ip_configuration_name
       frontend_port_name             = local.frontend_port_name
       protocol                       = http_listener.value["protocol"]
-      ssl_certificate_name           = http_listener.value["ssl_certificate_name"]
+      ssl_certificate_name           = local.ssl_certificate_name
       require_sni                    = http_listener.value["require_sni"]
       host_name                      = http_listener.value["host_name"]
     }
@@ -110,7 +122,7 @@ resource "azurerm_application_gateway" "ag" {
 
   dynamic "probe" {
     for_each = [
-      for k in var.ag: k["pb"]
+      for k in var.services: k["pb"]
     ]
 
     content {
@@ -126,7 +138,7 @@ resource "azurerm_application_gateway" "ag" {
 
   dynamic "backend_http_settings" {
     for_each = [
-      for k in var.ag: k["bhs"]
+      for k in var.services: k["bhs"]
     ]
 
     content {
@@ -152,12 +164,11 @@ resource "azurerm_application_gateway" "ag" {
 
   dynamic "backend_address_pool" {
     for_each = [
-      for k in var.ag: k["bap"]
+      for k in var.services: k["bap"]
     ]
 
     content {
       name         = backend_address_pool.value["name"]
-      # fqdns        = backend_address_pool.value["bap_fqdns"]
       ip_addresses = backend_address_pool.value["ip_addresses"]
     }   
   }
@@ -179,7 +190,7 @@ resource "azurerm_monitor_diagnostic_setting" "ag" {
     iterator = lg 
 
     content {
-      category = lg.value["logs"]
+      category = lg.value
       enabled  = true
 
       retention_policy {
@@ -194,7 +205,7 @@ resource "azurerm_monitor_diagnostic_setting" "ag" {
     iterator = mt 
 
     content {
-      category = mt.value["metric"]
+      category = mt.value
       enabled  = true
 
       retention_policy {

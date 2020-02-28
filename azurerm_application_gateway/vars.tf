@@ -7,6 +7,10 @@ variable "environment" {
   type = string
 }
 
+variable "environment_short" {
+  type = string
+}
+
 variable "region" {
   type = string
 }
@@ -47,9 +51,23 @@ variable "subnet_address_prefix" {
   description = "The subnet id for AG"
 }
 
+variable "subnet_resource_group_name" {
+  type = string
+}
+
 variable "key_vault_id" {
   type        = string
   description = "The keyvault id"
+}
+
+variable "certificate_name" {
+  type        = string
+  description = "The name of the ssl certificate."
+}
+
+variable "certificate_password" {
+  type        = string
+  description = "The password of the ssl certificate."
 }
 
 variable "frontend" {
@@ -86,10 +104,10 @@ variable "asc_min_capacity" {
 variable "asc_max_capacity" {
   type        = number
   description = "Maximum capacity for autoscaling."
-  default     = 2
+  default     = 4
 }
 
-variable "frontend_port_port" {
+variable "frontend_port" {
   type        = number
   description = "The port used for this Frontend Port."
   default     = 443
@@ -135,14 +153,13 @@ variable "diagnostic_metrics_retention" {
   default     = 30
 }
 
-variable "ag" {
+variable "services" {
   type = list(object({
     hl = object({
       name                       = string
       host_name                  = string
       protocol                   = string
       require_sni                = string
-      ssl_certificate_name       = string
       custom_error_configuration = map(string)
     })
     pb = object({
@@ -176,11 +193,11 @@ variable "ag" {
 }
 
 locals {
-  resource_name                  = "${var.global_prefix}-${var.environment}-ag-${var.name}"
-  ag_ip_resource_name            = "${var.global_prefix}-${var.environment}-ag-ip-${var.name}"
+  resource_name                  = "${var.global_prefix}-${var.environment_short}-ag-${var.name}"
+  ag_ip_resource_name            = "${var.global_prefix}-${var.environment_short}-ag-ip-${var.name}"
 
   request_routing_rule =  [
-    for a in var.ag: {
+    for a in var.services: {
       name                       = a.rrr.name
       rule_type                  = a.rrr.rule_type
       http_listener_name         = a.hl.name
@@ -189,10 +206,10 @@ locals {
     }
   ]
 
-  gateway_ip_configuration_name  = "${var.global_prefix}-${var.environment}-ag-ip-${var.name}"
-  frontend_port_name             = "${var.global_prefix}-${var.environment}-ag-feport-${var.name}"
-  frontend_ip_configuration_name = "${var.global_prefix}-${var.environment}-ag-feip-${var.name}"
-  redirect_configuration_name    = "${var.global_prefix}-${var.environment}-ag-rdrcfg-${var.name}"
-  ssl_certificate_name           = "${var.global_prefix}-${var.environment}-ag-ssl-${var.name}"
-  diagnostic_name                = "${var.global_prefix}-${var.environment}-ag-diagnostic-${var.name}"
+  gateway_ip_configuration_name  = "${var.global_prefix}-${var.environment_short}-ag-ip-${var.name}"
+  frontend_port_name             = "${var.global_prefix}-${var.environment_short}-ag-feport-${var.name}"
+  frontend_ip_configuration_name = "${var.global_prefix}-${var.environment_short}-ag-feip-${var.name}"
+  redirect_configuration_name    = "${var.global_prefix}-${var.environment_short}-ag-rdrcfg-${var.name}"
+  ssl_certificate_name           = "${var.global_prefix}-${var.environment_short}-ag-ssl-${var.name}"
+  diagnostic_name                = "${var.global_prefix}-${var.environment_short}-ag-diagnostic-${var.name}"
 }
