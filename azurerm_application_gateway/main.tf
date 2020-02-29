@@ -147,6 +147,7 @@ resource "azurerm_application_gateway" "ag" {
       path                  = backend_http_settings.value["path"]
       protocol              = backend_http_settings.value["protocol"]
       port                  = backend_http_settings.value["port"]
+      request_timeout       = backend_http_settings.value["request_timeout"]
     }
   }
 
