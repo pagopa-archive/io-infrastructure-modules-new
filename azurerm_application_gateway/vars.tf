@@ -25,7 +25,6 @@ variable "resource_group_name" {
 }
 
 // Module Variables
-
 variable "ip_sku" {
   type        = string
   description = "The SKU of the Public IP."
@@ -70,12 +69,6 @@ variable "certificate_password" {
   description = "The password of the ssl certificate."
 }
 
-variable "frontend" {
-  type        = list(number)
-  description = "The frontend ports used by AG"
-  default     = []
-}
-
 # Application Gateway plan specific variables
 variable "azurerm_public_ip_allocation_method" {
   type        = string
@@ -107,7 +100,7 @@ variable "asc_max_capacity" {
   default     = 4
 }
 
-variable "frontend_port" {
+variable "frontend_port_number" {
   type        = number
   description = "The port used for this Frontend Port."
   default     = 443
@@ -125,7 +118,7 @@ variable "wc_enabled" {
 }
 
 variable "wc_firewall_mode" {
-  description = "he Web Application Firewall Mode"
+  description = "The Web Application Firewall Mode"
   default     = "Detection"
 }
 

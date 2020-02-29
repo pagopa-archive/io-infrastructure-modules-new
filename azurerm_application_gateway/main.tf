@@ -85,7 +85,7 @@ resource "azurerm_application_gateway" "ag" {
   // Required
   frontend_port {
     name = local.frontend_port_name
-    port = var.frontend_port
+    port = var.frontend_port_number
   }
 
   # // Optional
