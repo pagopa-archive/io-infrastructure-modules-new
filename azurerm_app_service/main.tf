@@ -106,7 +106,7 @@ resource "azurerm_app_service" "app_service" {
 }
 
 resource "azurerm_app_service_virtual_network_swift_connection" "app_service_virtual_network_swift_connection" {
-  app_service_id = azurerm_function_app.function_app.id
+  app_service_id = azurerm_app_service.app_service.id
   subnet_id      = module.subnet.id
 }
 
