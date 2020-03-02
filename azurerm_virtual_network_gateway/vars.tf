@@ -101,6 +101,43 @@ variable "subnet_id" {
   default     = null
 }
 
+# Local network gateway
+variable "gateway_address" {
+  type        = string
+  description = "The IP address of the gateway to which to connect."
+}
+
+variable "gateway_address_space" {
+  type        = list(string)
+  description = "The list of string CIDRs representing the address spaces the gateway exposes."
+}
+
+variable "bgp_settings" {
+  type        = list(object({
+    asn                 = string
+    bgp_peering_address = string
+    peer_weight         = string
+  }))
+  default     = []
+}
+
+## Virtual Network Gateway Connection
+
+variable "connection_type" {
+  type        = string
+  description = "The type of connection. Valid options are IPsec (Site-to-Site), ExpressRoute (ExpressRoute), and Vnet2Vnet (VNet-to-VNet)."
+}
+
+variable "shared_key" {
+  type        = string
+  description = "The shared IPSec key. A key must be provided if a Site-to-Site or VNet-to-VNet connection is created whereas ExpressRoute connections do not need a shared key."
+  default     = null
+}
+
+
+
 locals {
-  resource_name = "${var.global_prefix}-${var.environment_short}-vnetgw-${var.name}"
+  resource_name                           = "${var.global_prefix}-${var.environment_short}-vnetgw-${var.name}"
+  virtual_network_local_gateway_name      = "${var.global_prefix}-${var.environment_short}-vnetgw-l-${var.name}"
+  virtual_network_gateway_connection_name = "${var.global_prefix}-${var.environment_short}-cn-${var.name}"
 }

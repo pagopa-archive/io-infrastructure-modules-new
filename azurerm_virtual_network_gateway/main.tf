@@ -68,11 +68,35 @@ resource "azurerm_virtual_network_gateway" "virtual_network_gateway" {
       }
       radius_server_address = vpn_client_configuration.value.radius_server_address
       radius_server_secret  = vpn_client_configuration.value.radius_server_secret
-      vpn_client_protocols  = []
+      vpn_client_protocols  = vpn_client_configuration.value.vpn_client_protocols
     }
   }
 
   tags = {
     environment = var.environment
   }
+}
+
+resource "azurerm_local_network_gateway" "local_network_gateway" {
+  name                = local.virtual_network_local_gateway_name
+  resource_group_name = var.resource_group_name
+  location            = var.region
+  gateway_address     = var.gateway_address
+  address_space       = var.gateway_address_space
+
+  tags = {
+    environment = var.environment
+  }
+}
+
+resource "azurerm_virtual_network_gateway_connection" "virtual_network_gateway_connection" {
+  name                = local.virtual_network_gateway_connection_name
+  location            = var.region
+  resource_group_name = var.resource_group_name
+
+  type                       = var.connection_type
+  virtual_network_gateway_id = azurerm_virtual_network_gateway.virtual_network_gateway.id
+  local_network_gateway_id   = azurerm_local_network_gateway.local_network_gateway.id
+
+  shared_key = var.shared_key
 }
