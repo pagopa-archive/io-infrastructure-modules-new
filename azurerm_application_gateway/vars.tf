@@ -190,12 +190,12 @@ locals {
   ag_ip_resource_name            = "${var.global_prefix}-${var.environment_short}-ag-ip-${var.name}"
 
   request_routing_rule =  [
-    for a in var.services: {
-      name                       = a.rrr.name
-      rule_type                  = a.rrr.rule_type
-      http_listener_name         = a.hl.name
-      backend_address_pool_name  = a.bap.name
-      backend_http_settings_name = a.bhs.name 
+    for entry in var.services: {
+      name                       = entry.rrr.name
+      rule_type                  = entry.rrr.rule_type
+      http_listener_name         = entry.hl.name
+      backend_address_pool_name  = entry.bap.name
+      backend_http_settings_name = entry.bhs.name 
     }
   ]
 
