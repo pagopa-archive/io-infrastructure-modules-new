@@ -85,6 +85,13 @@ resource "azurerm_app_service" "app_service" {
   }
 }
 
+resource "azurerm_app_service_custom_hostname_binding" "hostname" {
+  hostname            = var.custom_hostname
+  app_service_name    = azurerm_app_service.app_service.name
+  resource_group_name = var.resource_group_name
+  ssl_state           = var.ssl_state
+}
+
 resource "azurerm_app_service_virtual_network_swift_connection" "app_service_virtual_network_swift_connection" {
   app_service_id = azurerm_app_service.app_service.id
   subnet_id      = module.subnet.id

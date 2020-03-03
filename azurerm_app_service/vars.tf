@@ -55,7 +55,7 @@ variable "app_service_plan_info" {
   }
 }
 
-variable virtual_network_info {
+variable "virtual_network_info" {
   type = object({
     resource_group_name   = string
     name                  = string
@@ -63,23 +63,23 @@ variable virtual_network_info {
   })
 }
 
-variable application_insights_instrumentation_key {
+variable "application_insights_instrumentation_key" {
   type = string
 }
 
-variable app_settings {
+variable "app_settings" {
   type    = map(any)
   default = {}
 }
 
-variable app_settings_secrets {
+variable "app_settings_secrets" {
   type = object({
     key_vault_id = string
     map          = map(string)
   })
 }
 
-variable ip_restriction {
+variable "ip_restriction" {
   type    = list(any)
   default = null
 }
@@ -93,6 +93,15 @@ variable "app_enabled" {
   type        = bool
   description = "Is the App Service Enabled?"
   default     = true
+}
+
+variable "custom_hostname" {
+  type = string
+}
+
+variable "ssl_state" {
+  type    = string
+  default = "SniEnabled"
 }
 
 locals {
