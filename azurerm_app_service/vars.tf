@@ -22,8 +22,9 @@ variable "resource_group_name" {
   type = string
 }
 
-variable "enabled" {
-  description = "Is the App Service Enabled?"
+variable "log_analytics_workspace_id" {
+  type        = string
+  description = "The log_analytics workspace id"
 }
 
 variable "storage_account_info" {
@@ -83,6 +84,18 @@ variable ip_restriction {
   default = null
 }
 
+variable "https_only" {
+  type    = bool
+  default = true
+}
+
+variable "app_enabled" {
+  type        = bool
+  description = "Is the App Service Enabled?"
+  default     = true
+}
+
 locals {
-  resource_name = "${var.global_prefix}-${var.environment_short}-app-${var.name}"
+  resource_name   = "${var.global_prefix}-${var.environment_short}-app-${var.name}"
+  diagnostic_name = "${var.global_prefix}-${var.environment_short}-app-diagnostic-${var.name}"
 }

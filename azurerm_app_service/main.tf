@@ -7,21 +7,6 @@ terraform {
   backend "azurerm" {}
 }
 
-module "storage_account" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_account?ref=v0.0.24"
-
-  global_prefix     = var.global_prefix
-  environment       = var.environment
-  environment_short = var.environment_short
-  region            = var.region
-
-  name                     = "app${var.name}"
-  resource_group_name      = var.resource_group_name
-  account_tier             = var.storage_account_info.account_tier
-  account_replication_type = var.storage_account_info.account_replication_type
-  access_tier              = var.storage_account_info.access_tier
-}
-
 module "app_service_plan" {
   source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_app_service_plan?ref=v0.0.24"
 
@@ -71,10 +56,10 @@ resource "azurerm_app_service" "app_service" {
   name                      = local.resource_name
   resource_group_name       = var.resource_group_name
   location                  = var.region
-  version                   = var.runtime_version
   app_service_plan_id       = module.app_service_plan.id
-  storage_connection_string = module.storage_account.primary_connection_string
-  enabled                   = var.enabled
+  enabled                   = var.app_enabled
+  https_only                = var.https_only
+
 
   site_config {
     min_tls_version = "1.2"
@@ -84,15 +69,10 @@ resource "azurerm_app_service" "app_service" {
   app_settings = merge(
     {
       APPINSIGHTS_INSTRUMENTATIONKEY = var.application_insights_instrumentation_key
-      // TODO: Remove after release with https://github.com/terraform-providers/terraform-provider-azurerm/pull/5761
-      WEBSITE_CONTENTAZUREFILECONNECTIONSTRING = module.storage_account.primary_connection_string
-      WEBSITE_CONTENTSHARE                     = "${lower(local.resource_name)}-content"
     },
     var.app_settings,
     module.secrets_from_keyvault.secrets_with_value
   )
-
-  https_only = var.https_only
 
   tags = {
     environment = var.environment
@@ -110,3 +90,44 @@ resource "azurerm_app_service_virtual_network_swift_connection" "app_service_vir
   subnet_id      = module.subnet.id
 }
 
+
+# Azure Monitor
+data "azurerm_monitor_diagnostic_categories" "app_service" {
+  resource_id = azurerm_app_service.app_service.id
+}
+
+resource "azurerm_monitor_diagnostic_setting" "app_service" {
+  name                       = local.diagnostic_name
+  target_resource_id         = azurerm_app_service.app_service.id
+  log_analytics_workspace_id = var.log_analytics_workspace_id
+
+  dynamic "log" {
+    for_each = data.azurerm_monitor_diagnostic_categories.app_service.logs
+    iterator = lg 
+
+    content {
+      category = lg.value
+      enabled  = true
+
+      retention_policy {
+        enabled = true
+        days    = var.diagnostic_logs_retention
+      }
+    }
+  }
+
+  dynamic "metric" {
+    for_each = data.azurerm_monitor_diagnostic_categories.app_service.metrics
+    iterator = mt 
+
+    content {
+      category = mt.value
+      enabled  = true
+
+      retention_policy {
+        enabled = true
+        days    = var.diagnostic_logs_retention
+      }
+    }
+  }
+}
