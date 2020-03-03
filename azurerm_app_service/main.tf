@@ -85,11 +85,30 @@ resource "azurerm_app_service" "app_service" {
   }
 }
 
+data "azurerm_key_vault_secret" "certificate_value" {
+  name         = var.certificate_name
+  key_vault_id = var.key_vault_id 
+}
+
+data "azurerm_key_vault_secret" "certificate_password" {
+  name         = var.certificate_password
+  key_vault_id = var.key_vault_id 
+}
+
+resource "azurerm_app_service_certificate" "certificate" {
+  name                = local.app_service_certificate
+  resource_group_name = var.resource_group_name
+  location            = var.region
+  pfx_blob            = data.azurerm_key_vault_secret.certificate_value.value
+  password            = data.azurerm_key_vault_secret.certificate_password.value
+}
+
 resource "azurerm_app_service_custom_hostname_binding" "hostname" {
   hostname            = var.custom_hostname
   app_service_name    = azurerm_app_service.app_service.name
   resource_group_name = var.resource_group_name
   ssl_state           = var.ssl_state
+  thumbprint          = azurerm_app_service_certificate.certificate.thumbprint
 }
 
 resource "azurerm_app_service_virtual_network_swift_connection" "app_service_virtual_network_swift_connection" {
@@ -97,6 +116,14 @@ resource "azurerm_app_service_virtual_network_swift_connection" "app_service_vir
   subnet_id      = module.subnet.id
 }
 
+resource "azurerm_dns_cname_record" "dns_cname_record" {
+  count               = var.dns_cname_record == null ? 0 : 1
+  name                = var.name
+  zone_name           = var.dns_cname_record.zone_name
+  resource_group_name = var.dns_cname_record.zone_resource_group_name
+  ttl                 = 300
+  record              = azurerm_app_service.app_service.default_site_hostname
+}
 
 # Azure Monitor
 data "azurerm_monitor_diagnostic_categories" "app_service" {
@@ -138,3 +165,4 @@ resource "azurerm_monitor_diagnostic_setting" "app_service" {
     }
   }
 }
+

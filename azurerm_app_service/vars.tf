@@ -104,7 +104,32 @@ variable "ssl_state" {
   default = "SniEnabled"
 }
 
+variable "key_vault_id" {
+  type        = string
+  description = "The keyvault id"
+}
+
+variable "certificate_name" {
+  type        = string
+  description = "The name of the ssl certificate."
+}
+
+variable "certificate_password" {
+  type        = string
+  description = "The password of the ssl certificate."
+}
+
+variable "dns_cname_record" {
+  type = object({
+    zone_name                = string
+    zone_resource_group_name = string
+  })
+
+  default = null
+}
+
 locals {
-  resource_name   = "${var.global_prefix}-${var.environment_short}-app-${var.name}"
-  diagnostic_name = "${var.global_prefix}-${var.environment_short}-app-diagnostic-${var.name}"
+  resource_name           = "${var.global_prefix}-${var.environment_short}-app-${var.name}"
+  diagnostic_name         = "${var.global_prefix}-${var.environment_short}-app-diagnostic-${var.name}"
+  app_service_certificate = "${var.global_prefix}-${var.environment_short}-app-certificate-${var.name}"
 }
