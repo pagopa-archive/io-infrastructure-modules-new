@@ -20,7 +20,6 @@ module "public_ip" {
   sku                 = var.public_ip_sku
 }
 
-
 resource "azurerm_virtual_network_gateway" "virtual_network_gateway" {
   name                = local.resource_name
   location            = var.region
@@ -89,6 +88,12 @@ resource "azurerm_local_network_gateway" "local_network_gateway" {
   }
 }
 
+data "azurerm_key_vault_secret" "siem_vpn_shared_key" {
+  count        = var.key_vault_id == null ? 0 : 1
+  name         = "siem-VPN-SHARED-KEY"
+  key_vault_id = var.key_vault_id
+}
+
 resource "azurerm_virtual_network_gateway_connection" "virtual_network_gateway_connection" {
   name                = local.virtual_network_gateway_connection_name
   location            = var.region
@@ -97,6 +102,6 @@ resource "azurerm_virtual_network_gateway_connection" "virtual_network_gateway_c
   type                       = var.connection_type
   virtual_network_gateway_id = azurerm_virtual_network_gateway.virtual_network_gateway.id
   local_network_gateway_id   = azurerm_local_network_gateway.local_network_gateway.id
-
-  shared_key = var.shared_key
+  
+  shared_key = length(data.azurerm_key_vault_secret.siem_vpn_shared_key.*.value) == 0 ? null : data.azurerm_key_vault_secret.siem_vpn_shared_key[0].value 
 }

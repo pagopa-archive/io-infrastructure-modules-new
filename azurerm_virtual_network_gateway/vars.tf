@@ -128,13 +128,10 @@ variable "connection_type" {
   description = "The type of connection. Valid options are IPsec (Site-to-Site), ExpressRoute (ExpressRoute), and Vnet2Vnet (VNet-to-VNet)."
 }
 
-variable "shared_key" {
-  type        = string
-  description = "The shared IPSec key. A key must be provided if a Site-to-Site or VNet-to-VNet connection is created whereas ExpressRoute connections do not need a shared key."
-  default     = null
+variable "key_vault_id" {
+  type    = string
+  default = null
 }
-
-
 
 locals {
   resource_name                           = "${var.global_prefix}-${var.environment_short}-vnetgw-${var.name}"
