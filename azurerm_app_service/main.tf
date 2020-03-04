@@ -22,29 +22,6 @@ module "app_service_plan" {
   sku_size            = var.app_service_plan_info.sku_size
 }
 
-module "subnet" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v0.0.24"
-
-  global_prefix     = var.global_prefix
-  environment       = var.environment
-  environment_short = var.environment_short
-  region            = var.region
-
-  name                 = "app${var.name}"
-  resource_group_name  = var.virtual_network_info.resource_group_name
-  virtual_network_name = var.virtual_network_info.name
-  address_prefix       = var.virtual_network_info.subnet_address_prefix
-
-  delegation = {
-    name = "default"
-
-    service_delegation = {
-      name    = "Microsoft.Web/serverFarms"
-      actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
-    }
-  }
-}
-
 module "secrets_from_keyvault" {
   source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault?ref=v0.0.24"
 
@@ -86,30 +63,63 @@ resource "azurerm_app_service" "app_service" {
   }
 }
 
-data "azurerm_key_vault_secret" "certificate_value" {
-  name         = var.certificate_name
-  key_vault_id = var.key_vault_id
+// Add a custom domain for the app_service
+data "azurerm_key_vault_secret" "certificate_data" {
+  name         = "certs-${var.custom_domain.certificate_name}-DATA"
+  key_vault_id = var.custom_domain.key_vault_id
 }
 
 data "azurerm_key_vault_secret" "certificate_password" {
-  name         = var.certificate_password
-  key_vault_id = var.key_vault_id
+  name         = "certs-${var.custom_domain.certificate_name}-PASSWORD"
+  key_vault_id = var.custom_domain.key_vault_id
 }
 
 resource "azurerm_app_service_certificate" "certificate" {
   name                = local.app_service_certificate
   resource_group_name = var.resource_group_name
   location            = var.region
-  pfx_blob            = data.azurerm_key_vault_secret.certificate_value.value
+  pfx_blob            = data.azurerm_key_vault_secret.certificate_data.value
   password            = data.azurerm_key_vault_secret.certificate_password.value
 }
 
+resource "azurerm_dns_cname_record" "dns_cname_record" {
+  name                = var.custom_domain.name
+  zone_name           = var.custom_domain.zone_name
+  resource_group_name = var.custom_domain.zone_resource_group_name
+  ttl                 = 300
+  record              = azurerm_app_service.app_service.default_site_hostname
+}
+
 resource "azurerm_app_service_custom_hostname_binding" "hostname" {
-  hostname            = var.custom_hostname
+  hostname            = trim(azurerm_dns_cname_record.dns_cname_record.fqdn, ".")
   app_service_name    = azurerm_app_service.app_service.name
   resource_group_name = var.resource_group_name
-  ssl_state           = var.ssl_state
+  ssl_state           = "SniEnabled"
   thumbprint          = azurerm_app_service_certificate.certificate.thumbprint
+}
+
+// Add the app_service to a subnet
+module "subnet" {
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v0.0.24"
+
+  global_prefix     = var.global_prefix
+  environment       = var.environment
+  environment_short = var.environment_short
+  region            = var.region
+
+  name                 = "app${var.name}"
+  resource_group_name  = var.virtual_network_info.resource_group_name
+  virtual_network_name = var.virtual_network_info.name
+  address_prefix       = var.virtual_network_info.subnet_address_prefix
+
+  delegation = {
+    name = "default"
+
+    service_delegation = {
+      name    = "Microsoft.Web/serverFarms"
+      actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
+    }
+  }
 }
 
 resource "azurerm_app_service_virtual_network_swift_connection" "app_service_virtual_network_swift_connection" {
@@ -117,21 +127,13 @@ resource "azurerm_app_service_virtual_network_swift_connection" "app_service_vir
   subnet_id      = module.subnet.id
 }
 
-resource "azurerm_dns_cname_record" "dns_cname_record" {
-  count               = var.dns_cname_record == null ? 0 : 1
-  name                = var.name
-  zone_name           = var.dns_cname_record.zone_name
-  resource_group_name = var.dns_cname_record.zone_resource_group_name
-  ttl                 = 300
-  record              = azurerm_app_service.app_service.default_site_hostname
-}
-
-# Azure Monitor
+# Enable diagnostics data for the app_service
 data "azurerm_monitor_diagnostic_categories" "app_service" {
   resource_id = azurerm_app_service.app_service.id
 }
 
 resource "azurerm_monitor_diagnostic_setting" "app_service" {
+  count                      = var.log_analytics_workspace_id == null ? 0 : 1
   name                       = local.diagnostic_name
   target_resource_id         = azurerm_app_service.app_service.id
   log_analytics_workspace_id = var.log_analytics_workspace_id

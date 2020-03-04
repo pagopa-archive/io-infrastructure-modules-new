@@ -22,11 +22,6 @@ variable "resource_group_name" {
   type = string
 }
 
-variable "log_analytics_workspace_id" {
-  type        = string
-  description = "The log_analytics workspace id"
-}
-
 variable "app_service_plan_info" {
   type = object({
     kind     = string
@@ -41,12 +36,20 @@ variable "app_service_plan_info" {
   }
 }
 
-variable "virtual_network_info" {
-  type = object({
-    resource_group_name   = string
-    name                  = string
-    subnet_address_prefix = string
-  })
+variable "app_enabled" {
+  type        = bool
+  description = "Is the App Service Enabled?"
+  default     = true
+}
+
+variable "client_cert_enabled" {
+  type    = bool
+  default = false
+}
+
+variable "https_only" {
+  type    = bool
+  default = true
 }
 
 variable "application_insights_instrumentation_key" {
@@ -65,62 +68,37 @@ variable "app_settings_secrets" {
   })
 }
 
-variable "client_cert_enabled" {
-  type    = bool
-  default = false
-}
-
 variable "ip_restriction" {
   type    = list(any)
-  default = null
+  default = []
 }
 
-variable "https_only" {
-  type    = bool
-  default = true
-}
-
-variable "app_enabled" {
-  type        = bool
-  description = "Is the App Service Enabled?"
-  default     = true
-}
-
-variable "custom_hostname" {
-  type = string
-}
-
-variable "ssl_state" {
-  type    = string
-  default = "SniEnabled"
-}
-
-variable "key_vault_id" {
-  type        = string
-  description = "The keyvault id"
-}
-
-variable "certificate_name" {
-  type        = string
-  description = "The name of the ssl certificate."
-}
-
-variable "certificate_password" {
-  type        = string
-  description = "The password of the ssl certificate."
-}
-
-variable "dns_cname_record" {
+variable "virtual_network_info" {
   type = object({
+    name                  = string
+    resource_group_name   = string
+    subnet_address_prefix = string
+  })
+}
+
+variable "custom_domain" {
+  type = object({
+    name                     = string
     zone_name                = string
     zone_resource_group_name = string
+    key_vault_id             = string
+    certificate_name         = string
   })
+}
 
-  default = null
+variable "log_analytics_workspace_id" {
+  type        = string
+  description = "The log_analytics workspace id"
+  default     = null
 }
 
 locals {
   resource_name           = "${var.global_prefix}-${var.environment_short}-app-${var.name}"
-  diagnostic_name         = "${var.global_prefix}-${var.environment_short}-app-diagnostic-${var.name}"
-  app_service_certificate = "${var.global_prefix}-${var.environment_short}-app-certificate-${var.name}"
+  diagnostic_name         = "${var.global_prefix}-${var.environment_short}-appdiagnostic-${var.name}"
+  app_service_certificate = "${var.global_prefix}-${var.environment_short}-appcertificate-${var.name}"
 }
