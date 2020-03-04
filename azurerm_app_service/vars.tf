@@ -79,6 +79,11 @@ variable "app_settings_secrets" {
   })
 }
 
+variable "client_cert_enabled" {
+  type    = bool
+  default = false
+}
+
 variable "ip_restriction" {
   type    = list(any)
   default = null

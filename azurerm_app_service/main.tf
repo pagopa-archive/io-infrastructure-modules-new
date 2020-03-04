@@ -53,12 +53,13 @@ module "secrets_from_keyvault" {
 }
 
 resource "azurerm_app_service" "app_service" {
-  name                      = local.resource_name
-  resource_group_name       = var.resource_group_name
-  location                  = var.region
-  app_service_plan_id       = module.app_service_plan.id
-  enabled                   = var.app_enabled
-  https_only                = var.https_only
+  name                = local.resource_name
+  resource_group_name = var.resource_group_name
+  location            = var.region
+  app_service_plan_id = module.app_service_plan.id
+  enabled             = var.app_enabled
+  https_only          = var.https_only
+  client_cert_enabled = var.client_cert_enabled
 
 
   site_config {
@@ -87,12 +88,12 @@ resource "azurerm_app_service" "app_service" {
 
 data "azurerm_key_vault_secret" "certificate_value" {
   name         = var.certificate_name
-  key_vault_id = var.key_vault_id 
+  key_vault_id = var.key_vault_id
 }
 
 data "azurerm_key_vault_secret" "certificate_password" {
   name         = var.certificate_password
-  key_vault_id = var.key_vault_id 
+  key_vault_id = var.key_vault_id
 }
 
 resource "azurerm_app_service_certificate" "certificate" {
@@ -137,7 +138,7 @@ resource "azurerm_monitor_diagnostic_setting" "app_service" {
 
   dynamic "log" {
     for_each = data.azurerm_monitor_diagnostic_categories.app_service.logs
-    iterator = lg 
+    iterator = lg
 
     content {
       category = lg.value
@@ -152,7 +153,7 @@ resource "azurerm_monitor_diagnostic_setting" "app_service" {
 
   dynamic "metric" {
     for_each = data.azurerm_monitor_diagnostic_categories.app_service.metrics
-    iterator = mt 
+    iterator = mt
 
     content {
       category = mt.value
