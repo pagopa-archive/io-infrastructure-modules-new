@@ -27,20 +27,6 @@ variable "log_analytics_workspace_id" {
   description = "The log_analytics workspace id"
 }
 
-variable "storage_account_info" {
-  type = object({
-    account_tier             = string
-    account_replication_type = string
-    access_tier              = string
-  })
-
-  default = {
-    account_tier             = "Standard"
-    account_replication_type = "LRS"
-    access_tier              = "Hot"
-  }
-}
-
 variable "app_service_plan_info" {
   type = object({
     kind     = string
