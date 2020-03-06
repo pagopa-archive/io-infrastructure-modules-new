@@ -10,6 +10,6 @@ output "resource_name" {
   value = local.resource_name
 }
 
-output "custom_hostname_id" {
-  value = azurerm_app_service_custom_hostname_binding.hostname.id
+output "default_site_hostname" {
+  value = azurerm_app_service.app_service.default_site_hostname
 }

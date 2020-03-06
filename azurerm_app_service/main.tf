@@ -38,10 +38,16 @@ resource "azurerm_app_service" "app_service" {
   https_only          = var.https_only
   client_cert_enabled = var.client_cert_enabled
 
-
   site_config {
     min_tls_version = "1.2"
-    ip_restriction  = var.ip_restriction
+
+    dynamic "ip_restriction" {
+      for_each = var.ip_addresses
+
+      content {
+        ip_address = ip_restriction.value
+      }
+    }
   }
 
   app_settings = merge(
@@ -61,41 +67,6 @@ resource "azurerm_app_service" "app_service" {
       site_config[0].virtual_network_name,
     ]
   }
-}
-
-// Add a custom domain for the app_service
-data "azurerm_key_vault_secret" "certificate_data" {
-  name         = "certs-${var.custom_domain.certificate_name}-DATA"
-  key_vault_id = var.custom_domain.key_vault_id
-}
-
-data "azurerm_key_vault_secret" "certificate_password" {
-  name         = "certs-${var.custom_domain.certificate_name}-PASSWORD"
-  key_vault_id = var.custom_domain.key_vault_id
-}
-
-resource "azurerm_app_service_certificate" "certificate" {
-  name                = local.app_service_certificate
-  resource_group_name = var.resource_group_name
-  location            = var.region
-  pfx_blob            = data.azurerm_key_vault_secret.certificate_data.value
-  password            = data.azurerm_key_vault_secret.certificate_password.value
-}
-
-resource "azurerm_dns_cname_record" "dns_cname_record" {
-  name                = var.custom_domain.name
-  zone_name           = var.custom_domain.zone_name
-  resource_group_name = var.custom_domain.zone_resource_group_name
-  ttl                 = 300
-  record              = azurerm_app_service.app_service.default_site_hostname
-}
-
-resource "azurerm_app_service_custom_hostname_binding" "hostname" {
-  hostname            = trim(azurerm_dns_cname_record.dns_cname_record.fqdn, ".")
-  app_service_name    = azurerm_app_service.app_service.name
-  resource_group_name = var.resource_group_name
-  ssl_state           = "SniEnabled"
-  thumbprint          = azurerm_app_service_certificate.certificate.thumbprint
 }
 
 // Add the app_service to a subnet

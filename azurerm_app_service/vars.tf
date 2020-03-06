@@ -68,9 +68,11 @@ variable "app_settings_secrets" {
   })
 }
 
-variable "ip_restriction" {
-  type    = list(any)
-  default = []
+variable "ip_addresses" {
+  type    = object({
+    ip_address = string
+  })
+  default = {}
 }
 
 variable "virtual_network_info" {
@@ -78,16 +80,6 @@ variable "virtual_network_info" {
     name                  = string
     resource_group_name   = string
     subnet_address_prefix = string
-  })
-}
-
-variable "custom_domain" {
-  type = object({
-    name                     = string
-    zone_name                = string
-    zone_resource_group_name = string
-    key_vault_id             = string
-    certificate_name         = string
   })
 }
 
