@@ -98,9 +98,18 @@ variable "security_rules" {
 }
 
 variable "allocation_method" {
-  type        = string
-  description = ""
-  default     = "Dynamic"
+  type    = string
+  default = "Dynamic"
+}
+
+variable "plans" {
+  type = list(object({
+    name      = string
+    product   = string
+    publisher = string
+    plan      = string
+  }))
+  default = []
 }
 
 locals {

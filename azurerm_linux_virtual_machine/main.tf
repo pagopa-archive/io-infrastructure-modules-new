@@ -63,6 +63,14 @@ resource "azurerm_network_interface_security_group_association" "network_interfa
   network_security_group_id = azurerm_network_security_group.network_security_group.id
 }
 
+# Create virtual machine and Accept the agreement.
+resource "azurerm_marketplace_agreement" "checkpoint" {
+  count     = length(var.plans)
+  publisher = var.plans[count.index].publisher
+  offer     = var.source_image_reference[count.index].offer
+  plan      = var.plans[count.index].plan
+}
+
 resource "azurerm_linux_virtual_machine" "linux_virtual_machine" {
   name                = local.resource_name
   location            = var.region
@@ -106,6 +114,14 @@ resource "azurerm_linux_virtual_machine" "linux_virtual_machine" {
     }
   }
 
+  dynamic "plan" {
+    for_each = var.plans
+    content {
+      name      = plan.value["name"]
+      product   = plan.value["product"]
+      publisher = plan.value["publisher"]
+    }
+  }
 
   tags = {
     environment = var.environment
