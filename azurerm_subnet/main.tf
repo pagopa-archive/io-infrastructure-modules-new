@@ -24,4 +24,6 @@ resource "azurerm_subnet" "subnet" {
       }
     }
   }
+
+  service_endpoints = var.service_endpoints
 }

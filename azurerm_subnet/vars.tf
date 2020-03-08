@@ -41,3 +41,8 @@ variable "delegation" {
 
   default = null
 }
+
+variable "service_endpoints" {
+  type    = list(string)
+  default = []
+}
