@@ -12,7 +12,7 @@ data "azurerm_key_vault_secret" "certificate_secret" {
 }
 
 module "subnet" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v0.0.30"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v0.0.33"
 
   global_prefix     = var.global_prefix
   environment       = var.environment
@@ -23,6 +23,10 @@ module "subnet" {
   resource_group_name  = var.virtual_network_info.resource_group_name
   virtual_network_name = var.virtual_network_info.name
   address_prefix       = var.virtual_network_info.subnet_address_prefix
+
+  service_endpoints = [
+    "Microsoft.Web"
+  ]
 }
 
 resource "azurerm_application_gateway" "application_gateway" {
