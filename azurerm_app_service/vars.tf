@@ -68,8 +68,20 @@ variable "app_settings_secrets" {
   })
 }
 
-variable "ip_restriction" {
-  type    = list(any)
+variable "always_on" {
+  type    = bool
+  default = true
+}
+
+variable "allowed_ips" {
+  // List of ip
+  type    = list(string)
+  default = []
+}
+
+variable "allowed_subnets" {
+  // List of subnet id
+  type    = list(string)
   default = []
 }
 
@@ -81,16 +93,6 @@ variable "virtual_network_info" {
   })
 }
 
-variable "custom_domain" {
-  type = object({
-    name                     = string
-    zone_name                = string
-    zone_resource_group_name = string
-    key_vault_id             = string
-    certificate_name         = string
-  })
-}
-
 variable "log_analytics_workspace_id" {
   type        = string
   description = "The log_analytics workspace id"
@@ -98,7 +100,5 @@ variable "log_analytics_workspace_id" {
 }
 
 locals {
-  resource_name           = "${var.global_prefix}-${var.environment_short}-app-${var.name}"
-  diagnostic_name         = "${var.global_prefix}-${var.environment_short}-appdiagnostic-${var.name}"
-  app_service_certificate = "${var.global_prefix}-${var.environment_short}-appcertificate-${var.name}"
+  resource_name = "${var.global_prefix}-${var.environment_short}-app-${var.name}"
 }
