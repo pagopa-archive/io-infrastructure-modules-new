@@ -6,13 +6,8 @@ terraform {
   backend "azurerm" {}
 }
 
-data "azurerm_key_vault_secret" "certificate_data" {
-  name         = "certs-${var.custom_domains.keyvault_certificate_name}-DATA"
-  key_vault_id = var.custom_domains.keyvault_id
-}
-
-data "azurerm_key_vault_secret" "certificate_password" {
-  name         = "certs-${var.custom_domains.keyvault_certificate_name}-PASSWORD"
+data "azurerm_key_vault_secret" "certificate_secret" {
+  name         = var.custom_domains.certificate_name
   key_vault_id = var.custom_domains.keyvault_id
 }
 
@@ -42,7 +37,8 @@ resource "azurerm_application_gateway" "application_gateway" {
   }
 
   identity {
-    type = ""
+    type         = "UserAssigned"
+    identity_ids = [var.custom_domains.identity_id]
   }
 
   gateway_ip_configuration {
@@ -52,7 +48,7 @@ resource "azurerm_application_gateway" "application_gateway" {
 
   frontend_ip_configuration {
     name                 = local.frontend_ip_configuration_name
-    public_ip_address_id = var.public_ip_id
+    public_ip_address_id = var.public_ip_info.id
   }
 
   frontend_port {
@@ -61,15 +57,13 @@ resource "azurerm_application_gateway" "application_gateway" {
   }
 
   ssl_certificate {
-    name     = "sslcertificate"
-    data     = data.azurerm_key_vault_secret.certificate_data.value
-    password = data.azurerm_key_vault_secret.certificate_password.value
+    name                = "sslcertificate"
+    key_vault_secret_id = trimsuffix(data.azurerm_key_vault_secret.certificate_secret.id, "${data.azurerm_key_vault_secret.certificate_secret.version}")
   }
 
   dynamic "http_listener" {
     for_each = var.services
     iterator = service
-
 
     content {
       name                           = "httplistener-${service.value.name}"
@@ -89,6 +83,7 @@ resource "azurerm_application_gateway" "application_gateway" {
     content {
       name         = "backendaddresspool-${service.value.name}"
       ip_addresses = service.value.backend_address_pool.ip_addresses
+      fqdns        = service.value.backend_address_pool.fqdns
     }
   }
 
@@ -119,6 +114,7 @@ resource "azurerm_application_gateway" "application_gateway" {
       cookie_based_affinity = service.value.backend_http_settings.cookie_based_affinity
       request_timeout       = service.value.backend_http_settings.request_timeout
       probe_name            = "probe-${service.value.name}"
+      host_name             = service.value.backend_http_settings.host_name
     }
   }
 
@@ -144,6 +140,6 @@ resource "azurerm_dns_a_record" "dns_a_record" {
   resource_group_name = var.custom_domains.zone_resource_group_name
   ttl                 = 300
   records = [
-    module.public_ip.ip_address
+    var.public_ip_info.ip
   ]
 }

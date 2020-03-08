@@ -36,8 +36,8 @@ variable "sku" {
 
 variable "public_ip_info" {
   type = object({
-    sku               = string
-    allocation_method = string
+    id = string
+    ip = string
   })
 }
 
@@ -55,25 +55,27 @@ variable "frontend_port" {
 
 variable "custom_domains" {
   type = object({
-    zone_name                 = string
-    zone_resource_group_name  = string
-    keyvault_id               = string
-    keyvault_certificate_name = string
+    zone_name                = string
+    zone_resource_group_name = string
+    identity_id              = string
+    keyvault_id              = string
+    certificate_name         = string
   })
 }
 
 variable "services" {
   type = list(object({
-    name  = string
+    name          = string
     a_record_name = string
 
     http_listener = object({
-      protocol = string
+      protocol  = string
       host_name = string
     })
 
     backend_address_pool = object({
       ip_addresses = list(string)
+      fqdns        = list(string)
     })
 
     probe = object({
@@ -91,6 +93,7 @@ variable "services" {
       path                  = string
       cookie_based_affinity = string
       request_timeout       = number
+      host_name             = string
     })
   }))
 }
