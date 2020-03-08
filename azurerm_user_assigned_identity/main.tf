@@ -1,5 +1,5 @@
 provider "azurerm" {
-  version = "=2.0.0"
+  version = "=1.44.0"
 }
 
 terraform {
@@ -7,13 +7,10 @@ terraform {
   backend "azurerm" {}
 }
 
-resource "azurerm_key_vault" "key_vault" {
+resource "azurerm_user_assigned_identity" "user_assigned_identity"{
   name                = local.resource_name
-  location            = var.region
   resource_group_name = var.resource_group_name
-  tenant_id           = local.tenant_id
-  sku_name            = var.sku_name
-  soft_delete_enabled = var.soft_delete_enabled
+  location            = var.region
 
   tags = {
     environment = var.environment
