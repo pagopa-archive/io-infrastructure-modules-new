@@ -16,22 +16,8 @@ data "azurerm_key_vault_secret" "certificate_password" {
   key_vault_id = var.custom_domains.keyvault_id
 }
 
-module "public_ip" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_public_ip?ref=v0.0.24"
-
-  global_prefix     = var.global_prefix
-  environment       = var.environment
-  environment_short = var.environment_short
-  region            = var.region
-
-  name                = "ag${var.name}"
-  resource_group_name = var.resource_group_name
-  sku                 = var.public_ip_info.sku
-  allocation_method   = var.public_ip_info.allocation_method
-}
-
 module "subnet" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v0.0.24"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v0.0.30"
 
   global_prefix     = var.global_prefix
   environment       = var.environment
@@ -55,6 +41,10 @@ resource "azurerm_application_gateway" "application_gateway" {
     capacity = var.sku.capacity
   }
 
+  identity {
+    type = ""
+  }
+
   gateway_ip_configuration {
     name      = local.gateway_ip_configuration_name
     subnet_id = module.subnet.id
@@ -62,7 +52,7 @@ resource "azurerm_application_gateway" "application_gateway" {
 
   frontend_ip_configuration {
     name                 = local.frontend_ip_configuration_name
-    public_ip_address_id = module.public_ip.id
+    public_ip_address_id = var.public_ip_id
   }
 
   frontend_port {
