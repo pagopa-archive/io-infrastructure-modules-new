@@ -68,11 +68,21 @@ variable "app_settings_secrets" {
   })
 }
 
-variable "ip_addresses" {
-  type    = object({
-    ip_address = string
-  })
-  default = {}
+variable "always_on" {
+  type    = bool
+  default = true
+}
+
+variable "allowed_ips" {
+  // List of ip
+  type    = list(string)
+  default = []
+}
+
+variable "allowed_subnets" {
+  // List of subnet id
+  type    = list(string)
+  default = []
 }
 
 variable "virtual_network_info" {
@@ -90,7 +100,5 @@ variable "log_analytics_workspace_id" {
 }
 
 locals {
-  resource_name           = "${var.global_prefix}-${var.environment_short}-app-${var.name}"
-  diagnostic_name         = "${var.global_prefix}-${var.environment_short}-appdiagnostic-${var.name}"
-  app_service_certificate = "${var.global_prefix}-${var.environment_short}-appcertificate-${var.name}"
+  resource_name = "${var.global_prefix}-${var.environment_short}-app-${var.name}"
 }

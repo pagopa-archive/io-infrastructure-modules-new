@@ -39,13 +39,24 @@ resource "azurerm_app_service" "app_service" {
   client_cert_enabled = var.client_cert_enabled
 
   site_config {
+    always_on       = var.always_on
     min_tls_version = "1.2"
 
     dynamic "ip_restriction" {
-      for_each = var.ip_addresses
+      for_each = var.allowed_ips
+      iterator = ip
 
       content {
-        ip_address = ip_restriction.value
+        ip_address = ip.value
+      }
+    }
+
+    dynamic "ip_restriction" {
+      for_each = var.allowed_subnets
+      iterator = subnet
+
+      content {
+        virtual_network_subnet_id = subnet.value
       }
     }
   }
@@ -97,46 +108,3 @@ resource "azurerm_app_service_virtual_network_swift_connection" "app_service_vir
   app_service_id = azurerm_app_service.app_service.id
   subnet_id      = module.subnet.id
 }
-
-# Enable diagnostics data for the app_service
-data "azurerm_monitor_diagnostic_categories" "app_service" {
-  resource_id = azurerm_app_service.app_service.id
-}
-
-resource "azurerm_monitor_diagnostic_setting" "app_service" {
-  count                      = var.log_analytics_workspace_id == null ? 0 : 1
-  name                       = local.diagnostic_name
-  target_resource_id         = azurerm_app_service.app_service.id
-  log_analytics_workspace_id = var.log_analytics_workspace_id
-
-  dynamic "log" {
-    for_each = data.azurerm_monitor_diagnostic_categories.app_service.logs
-    iterator = lg
-
-    content {
-      category = lg.value
-      enabled  = true
-
-      retention_policy {
-        enabled = true
-        days    = var.diagnostic_logs_retention
-      }
-    }
-  }
-
-  dynamic "metric" {
-    for_each = data.azurerm_monitor_diagnostic_categories.app_service.metrics
-    iterator = mt
-
-    content {
-      category = mt.value
-      enabled  = true
-
-      retention_policy {
-        enabled = true
-        days    = var.diagnostic_logs_retention
-      }
-    }
-  }
-}
-

@@ -27,8 +27,7 @@ variable "custom_domain" {
     name                     = string
     zone_name                = string
     zone_resource_group_name = string
-    key_vault_id             = string
-    certificate_name         = string
+    certificate_thumbprint   = string
   })
 }
 
@@ -43,9 +42,4 @@ variable "app_service_name" {
 
 variable "default_site_hostname" {
   type = string
-}
-
-
-locals {
-  app_service_certificate = "${var.global_prefix}-${var.environment_short}-appcertificate-${var.name}"
 }
