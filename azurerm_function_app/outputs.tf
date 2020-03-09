@@ -2,6 +2,11 @@ output "id" {
   value = azurerm_function_app.function_app.id
 }
 
+output "default_hostname" {
+  value     = azurerm_function_app.function_app.default_hostname
+  sensitive = true
+}
+
 output "default_key" {
   value     = azurerm_template_deployment.function_keys.outputs.functionkey
   sensitive = true
