@@ -7,6 +7,11 @@ terraform {
   backend "azurerm" {}
 }
 
+data "azurerm_key_vault_secret" "certificate_secret" {
+  name         = var.custom_domains.certificate_name
+  key_vault_id = var.custom_domains.key_vault_id
+}
+
 module "subnet" {
   source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v0.0.34"
 
@@ -34,9 +39,26 @@ resource "azurerm_api_management" "api_management" {
   notification_sender_email = var.notification_sender_email
   sku_name                  = var.sku_name
 
+  identity {
+    type = "SystemAssigned"
+  }
+
   virtual_network_type = "Internal"
   virtual_network_configuration {
     subnet_id = module.subnet.id
+  }
+
+  hostname_configuration {
+    dynamic proxy {
+      for_each = toset(var.custom_domains.domains)
+      iterator = domain
+
+      content {
+        default_ssl_binding = domain.value.default
+        host_name           = domain.value.name
+        key_vault_id        = trimsuffix(data.azurerm_key_vault_secret.certificate_secret.id, "${data.azurerm_key_vault_secret.certificate_secret.version}")
+      }
+    }
   }
 
   tags = {

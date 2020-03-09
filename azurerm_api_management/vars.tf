@@ -59,6 +59,17 @@ variable "named_values_map" {
   default = {}
 }
 
+variable "custom_domains" {
+  type = object({
+    key_vault_id     = string
+    certificate_name = string
+    domains = list(object({
+      name    = string
+      default = bool
+    }))
+  })
+}
+
 locals {
   resource_name = "${var.global_prefix}-${var.environment_short}-apim-${var.name}"
 }
