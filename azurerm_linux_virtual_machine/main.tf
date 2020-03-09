@@ -22,8 +22,10 @@ resource "azurerm_network_security_group" "network_security_group" {
       direction                    = security_rule.value.direction
       access                       = security_rule.value.access
       protocol                     = security_rule.value.protocol
-      source_port_ranges           = security_rule.value.source_port_ranges
-      destination_port_ranges      = security_rule.value.destination_port_ranges
+      source_port_range            = length(security_rule.value.source_port_ranges) == 1 ? security_rule.value.source_port_ranges[0]:null 
+      source_port_ranges           = length(security_rule.value.source_port_ranges) < 2 ? []: security_rule.value.source_port_ranges
+      destination_port_range       = length(security_rule.value.destination_port_ranges) == 1 ? security_rule.value.destination_port_ranges[0]:null
+      destination_port_ranges      = length(security_rule.value.destination_port_ranges) < 2 ? []: security_rule.value.destination_port_ranges
       source_address_prefixes      = security_rule.value.source_address_prefixes
       destination_address_prefixes = security_rule.value.destination_address_prefixes
     }
