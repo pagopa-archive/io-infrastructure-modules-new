@@ -71,6 +71,12 @@ resource "azurerm_marketplace_agreement" "checkpoint" {
   plan      = var.plans[count.index].plan
 }
 
+data "azurerm_key_vault_secret" "siem_vm_admin_password" {
+  count        = var.key_vault_id == null ? 0 : 1
+  name         = "siem-VM-ADMIN-PASSWORD"
+  key_vault_id = var.key_vault_id
+}
+
 resource "azurerm_linux_virtual_machine" "linux_virtual_machine" {
   name                = local.resource_name
   location            = var.region
@@ -81,9 +87,9 @@ resource "azurerm_linux_virtual_machine" "linux_virtual_machine" {
   ]
 
   admin_username = var.admin_username
-  admin_password = var.admin_password
+  admin_password = var.key_vault_id == null ? null: data.azurerm_key_vault_secret.siem_vm_admin_password[0].value
 
-  disable_password_authentication = var.admin_password == null ? true : false
+  disable_password_authentication = var.key_vault_id == null ? true : false
 
   size = var.size
 
