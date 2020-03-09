@@ -37,12 +37,6 @@ variable "computer_name" {
   default     = null
 }
 
-variable "admin_password" {
-  type        = string
-  description = "The Password which should be used for the local-administrator on this Virtual Machine. Changing this forces a new resource to be created."
-  default     = null
-}
-
 variable "subnet_id" {
   type        = string
   description = "The ID of the Subnet where this Network Interface should be located in."
@@ -98,9 +92,23 @@ variable "security_rules" {
 }
 
 variable "allocation_method" {
+  type    = string
+  default = "Dynamic"
+}
+
+variable "plans" {
+  type = list(object({
+    name      = string
+    product   = string
+    publisher = string
+    plan      = string
+  }))
+  default = []
+}
+
+variable "key_vault_id" {
   type        = string
-  description = ""
-  default     = "Dynamic"
+  default     = null
 }
 
 locals {

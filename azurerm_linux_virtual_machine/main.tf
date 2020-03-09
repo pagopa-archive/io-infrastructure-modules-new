@@ -22,8 +22,10 @@ resource "azurerm_network_security_group" "network_security_group" {
       direction                    = security_rule.value.direction
       access                       = security_rule.value.access
       protocol                     = security_rule.value.protocol
-      source_port_ranges           = security_rule.value.source_port_ranges
-      destination_port_ranges      = security_rule.value.destination_port_ranges
+      source_port_range            = length(security_rule.value.source_port_ranges) == 1 ? security_rule.value.source_port_ranges[0]:null 
+      source_port_ranges           = length(security_rule.value.source_port_ranges) < 2 ? []: security_rule.value.source_port_ranges
+      destination_port_range       = length(security_rule.value.destination_port_ranges) == 1 ? security_rule.value.destination_port_ranges[0]:null
+      destination_port_ranges      = length(security_rule.value.destination_port_ranges) < 2 ? []: security_rule.value.destination_port_ranges
       source_address_prefixes      = security_rule.value.source_address_prefixes
       destination_address_prefixes = security_rule.value.destination_address_prefixes
     }
@@ -63,6 +65,20 @@ resource "azurerm_network_interface_security_group_association" "network_interfa
   network_security_group_id = azurerm_network_security_group.network_security_group.id
 }
 
+# Create virtual machine and Accept the agreement.
+resource "azurerm_marketplace_agreement" "checkpoint" {
+  count     = length(var.plans)
+  publisher = var.plans[count.index].publisher
+  offer     = var.source_image_reference[count.index].offer
+  plan      = var.plans[count.index].plan
+}
+
+data "azurerm_key_vault_secret" "siem_vm_admin_password" {
+  count        = var.key_vault_id == null ? 0 : 1
+  name         = "siem-VM-ADMIN-PASSWORD"
+  key_vault_id = var.key_vault_id
+}
+
 resource "azurerm_linux_virtual_machine" "linux_virtual_machine" {
   name                = local.resource_name
   location            = var.region
@@ -73,9 +89,9 @@ resource "azurerm_linux_virtual_machine" "linux_virtual_machine" {
   ]
 
   admin_username = var.admin_username
-  admin_password = var.admin_password
+  admin_password = var.key_vault_id == null ? null: data.azurerm_key_vault_secret.siem_vm_admin_password[0].value
 
-  disable_password_authentication = var.admin_password == null ? true : false
+  disable_password_authentication = var.key_vault_id == null ? true : false
 
   size = var.size
 
@@ -106,6 +122,14 @@ resource "azurerm_linux_virtual_machine" "linux_virtual_machine" {
     }
   }
 
+  dynamic "plan" {
+    for_each = var.plans
+    content {
+      name      = plan.value["name"]
+      product   = plan.value["product"]
+      publisher = plan.value["publisher"]
+    }
+  }
 
   tags = {
     environment = var.environment
