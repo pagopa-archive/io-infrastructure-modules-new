@@ -56,7 +56,7 @@ resource "azurerm_api_management" "api_management" {
       content {
         default_ssl_binding = domain.value.default
         host_name           = domain.value.name
-        key_vault_id        = trimsuffix(data.azurerm_key_vault_secret.certificate_secret.id, "${data.azurerm_key_vault_secret.certificate_secret.version}")
+        key_vault_id        = data.azurerm_key_vault_secret.certificate_secret.id
       }
     }
   }
