@@ -12,6 +12,13 @@ data "azurerm_key_vault_secret" "certificate_secret" {
   key_vault_id = var.custom_domains.key_vault_id
 }
 
+module "secrets_from_keyvault" {
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault?ref=v0.0.17"
+
+  key_vault_id = var.named_values_secrets.key_vault_id
+  secrets_map  = var.named_values_secrets.map
+}
+
 module "subnet" {
   source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v0.0.34"
 
@@ -77,7 +84,7 @@ resource "azurerm_api_management_logger" "api_management_logger" {
 }
 
 resource "azurerm_api_management_property" "api_management_property" {
-  for_each = var.named_values_map
+  for_each = merge(var.named_values_map, module.secrets_from_keyvault.secrets_with_value)
 
   name                = each.key
   api_management_name = azurerm_api_management.api_management.name
