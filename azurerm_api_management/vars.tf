@@ -59,6 +59,13 @@ variable "named_values_map" {
   default = {}
 }
 
+variable "named_values_secrets" {
+  type = object({
+    key_vault_id = string
+    map          = map(string)
+  })
+}
+
 variable "custom_domains" {
   type = object({
     key_vault_id     = string
