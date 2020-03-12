@@ -14,5 +14,5 @@ output "namespace_name" {
 
 output "namespace_servicebus_endpoint" {
   description = "The ServiceBus Endpoint for this Notification Hub Namespace."
-  value       = azurerm_notification_hub.notification_hub.servicebus_endpoint
+  value       = azurerm_notification_hub_namespace.notification_hub_ns.servicebus_endpoint
 }
