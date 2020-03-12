@@ -45,6 +45,11 @@ resource "azurerm_application_gateway" "application_gateway" {
     identity_ids = [var.custom_domains.identity_id]
   }
 
+  ssl_policy {
+    policy_type = "Predefined"
+    policy_name = "AppGwSslPolicy20170401S"
+  }
+
   gateway_ip_configuration {
     name      = local.gateway_ip_configuration_name
     subnet_id = module.subnet.id
