@@ -9,9 +9,13 @@ terraform {
 }
 
 resource "azurerm_monitor_diagnostic_setting" "monitor_diagnostic_setting" {
-  name                       = "${var.name}-diagnostic-setting" 
+  name                       = "${var.name}-diagnostic-setting"
   target_resource_id         = var.target_resource_id
   log_analytics_workspace_id = var.log_analytics_workspace_id
+
+  eventhub_name                  = var.eventhub_name
+  eventhub_authorization_rule_id = var.eventhub_name == null ? null : var.eventhub_authorization_rule_id
+  storage_account_id             = var.storage_account_id
 
   # Note: retention_policies are still required even if it is not useful 
   #       when we use the log analytics workspace.  
