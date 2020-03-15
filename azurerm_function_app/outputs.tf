@@ -8,7 +8,7 @@ output "default_hostname" {
 }
 
 output "default_key" {
-  value     = azurerm_template_deployment.function_keys.outputs.functionkey
+  value     = var.export_default_key ? azurerm_template_deployment.function_keys[0].outputs.functionkey : null
   sensitive = true
 }
 

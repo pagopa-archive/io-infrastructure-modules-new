@@ -110,7 +110,8 @@ resource "azurerm_app_service_virtual_network_swift_connection" "app_service_vir
 }
 
 resource "azurerm_template_deployment" "function_keys" {
-  name = "javafunckeys"
+  count = var.export_default_key ? 1 : 0
+  name  = "javafunckeys"
   parameters = {
     functionApp = azurerm_function_app.function_app.name
   }
