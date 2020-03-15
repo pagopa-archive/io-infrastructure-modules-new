@@ -86,6 +86,11 @@ variable ip_restriction {
   default = null
 }
 
+variable export_default_key {
+  type    = bool
+  default = false
+}
+
 locals {
   resource_name = "${var.global_prefix}-${var.environment_short}-func-${var.name}"
 }
