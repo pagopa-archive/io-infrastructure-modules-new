@@ -1,3 +1,8 @@
+output "id" {
+  description = "The id of the CosmosDB account."
+  value       = azurerm_cosmosdb_account.cosmosdb_account.id
+}
+
 output "name" {
   description = "The name of the CosmosDB created."
   value       = local.resource_name
