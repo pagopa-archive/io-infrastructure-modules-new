@@ -113,12 +113,12 @@ variable "gateway_address_space" {
 }
 
 variable "bgp_settings" {
-  type        = list(object({
+  type = list(object({
     asn                 = string
     bgp_peering_address = string
     peer_weight         = string
   }))
-  default     = []
+  default = []
 }
 
 ## Virtual Network Gateway Connection
@@ -131,6 +131,12 @@ variable "connection_type" {
 variable "key_vault_id" {
   type    = string
   default = null
+}
+
+variable "vpn_connection_sercret_name" {
+  type        = string
+  description = "The name of the secret which contains the encryptin string used by the VPN connection"
+  default     = null
 }
 
 locals {

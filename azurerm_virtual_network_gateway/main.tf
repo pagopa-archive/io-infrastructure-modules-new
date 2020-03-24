@@ -88,9 +88,9 @@ resource "azurerm_local_network_gateway" "local_network_gateway" {
   }
 }
 
-data "azurerm_key_vault_secret" "siem_vpn_shared_key" {
+data "azurerm_key_vault_secret" "vpn_shared_key" {
   count        = var.key_vault_id == null ? 0 : 1
-  name         = "siem-VPN-SHARED-KEY"
+  name         = var.vpn_connection_sercret_name
   key_vault_id = var.key_vault_id
 }
 
@@ -102,6 +102,9 @@ resource "azurerm_virtual_network_gateway_connection" "virtual_network_gateway_c
   type                       = var.connection_type
   virtual_network_gateway_id = azurerm_virtual_network_gateway.virtual_network_gateway.id
   local_network_gateway_id   = azurerm_local_network_gateway.local_network_gateway.id
-  
-  shared_key = length(data.azurerm_key_vault_secret.siem_vpn_shared_key.*.value) == 0 ? null : data.azurerm_key_vault_secret.siem_vpn_shared_key[0].value 
+  shared_key                 = length(data.azurerm_key_vault_secret.vpn_shared_key.*.value) == 0 ? null : data.azurerm_key_vault_secret.vpn_shared_key[0].value
+
+  tags = {
+    environment = var.environment
+  }
 }
