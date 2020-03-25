@@ -1,5 +1,5 @@
 output "id" {
-  value = azurerm_storage_table.storage_table.id
+  value = azurerm_storage_queue.storage_queue.id
 }
 
 output "name" {
