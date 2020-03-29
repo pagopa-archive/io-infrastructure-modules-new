@@ -7,6 +7,10 @@ output "default_hostname" {
   sensitive = true
 }
 
+output "possible_outbound_ip_addresses" {
+  value = azurerm_function_app.function_app.possible_outbound_ip_addresses
+}
+
 output "default_key" {
   value     = var.export_default_key ? azurerm_template_deployment.function_keys[0].outputs.functionkey : null
   sensitive = true
