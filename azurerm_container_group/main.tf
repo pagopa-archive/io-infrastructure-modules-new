@@ -9,9 +9,10 @@ terraform {
 module "storage_account" {
   source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_account?ref=v0.0.17"
 
-  global_prefix = var.global_prefix
-  environment   = var.environment
-  region        = var.region
+  global_prefix     = var.global_prefix
+  environment       = var.environment
+  environment_short = var.environment_short
+  region            = var.region
 
   name                     = "cg${replace(var.name, "/-|_/", "")}"
   resource_group_name      = var.resource_group_name
@@ -26,9 +27,10 @@ module "storage_share" {
   module_depends_on = module.storage_account.id
 
   // Global parameters
-  region        = var.region
-  global_prefix = var.global_prefix
-  environment   = var.environment
+  region            = var.region
+  global_prefix     = var.global_prefix
+  environment       = var.environment
+  environment_short = var.environment_short
 
   // Module parameters
   name                 = "containershare"
