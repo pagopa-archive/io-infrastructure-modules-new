@@ -7,6 +7,12 @@ terraform {
   backend "azurerm" {}
 }
 
+data "azurerm_key_vault_secret" "secret_sas_url" {
+  count        = var.application_logs == null ? 0 : 1
+  name         = var.application_logs.key_vault_secret_sas_url
+  key_vault_id = var.application_logs.key_vault_id
+}
+
 module "app_service_plan" {
   source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_app_service_plan?ref=v0.0.24"
 
@@ -68,6 +74,21 @@ resource "azurerm_app_service" "app_service" {
     var.app_settings,
     module.secrets_from_keyvault.secrets_with_value
   )
+
+  logs {
+
+    dynamic "application_logs" {
+      for_each = var.application_logs == null ? [] : ["dummy"]
+
+      content {
+        azure_blob_storage {
+          sas_url           = data.azurerm_key_vault_secret.secret_sas_url[0].value
+          level             = var.application_logs.level
+          retention_in_days = var.application_logs.retention_in_days
+        }
+      }
+    }
+  }
 
   tags = {
     environment = var.environment

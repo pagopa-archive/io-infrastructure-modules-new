@@ -99,6 +99,17 @@ variable "log_analytics_workspace_id" {
   default     = null
 }
 
+variable "application_logs" {
+  type = object({
+    key_vault_id             = string
+    key_vault_secret_sas_url = string
+    level                    = string
+    retention_in_days        = number
+  })
+
+  default = null
+}
+
 locals {
   resource_name = "${var.global_prefix}-${var.environment_short}-app-${var.name}"
 }
