@@ -103,7 +103,7 @@ resource "azurerm_app_service" "app_service" {
 
 // Add the app_service to a subnet
 module "subnet" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v0.0.24"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v0.0.34"
 
   global_prefix     = var.global_prefix
   environment       = var.environment
@@ -123,6 +123,10 @@ module "subnet" {
       actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
     }
   }
+
+  service_endpoints = [
+    "Microsoft.Web"
+  ]
 }
 
 resource "azurerm_app_service_virtual_network_swift_connection" "app_service_virtual_network_swift_connection" {
