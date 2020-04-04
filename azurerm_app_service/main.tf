@@ -13,6 +13,13 @@ data "azurerm_key_vault_secret" "secret_sas_url" {
   key_vault_id = var.application_logs.key_vault_id
 }
 
+module "secrets_from_keyvault" {
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault?ref=v0.0.24"
+
+  key_vault_id = var.app_settings_secrets.key_vault_id
+  secrets_map  = var.app_settings_secrets.map
+}
+
 module "app_service_plan" {
   source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_app_service_plan?ref=v0.0.24"
 
@@ -26,13 +33,6 @@ module "app_service_plan" {
   kind                = var.app_service_plan_info.kind
   sku_tier            = var.app_service_plan_info.sku_tier
   sku_size            = var.app_service_plan_info.sku_size
-}
-
-module "secrets_from_keyvault" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault?ref=v0.0.24"
-
-  key_vault_id = var.app_settings_secrets.key_vault_id
-  secrets_map  = var.app_settings_secrets.map
 }
 
 resource "azurerm_app_service" "app_service" {
@@ -101,35 +101,9 @@ resource "azurerm_app_service" "app_service" {
   }
 }
 
-// Add the app_service to a subnet
-module "subnet" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v0.0.34"
-
-  global_prefix     = var.global_prefix
-  environment       = var.environment
-  environment_short = var.environment_short
-  region            = var.region
-
-  name                 = "app${var.name}"
-  resource_group_name  = var.virtual_network_info.resource_group_name
-  virtual_network_name = var.virtual_network_info.name
-  address_prefix       = var.virtual_network_info.subnet_address_prefix
-
-  delegation = {
-    name = "default"
-
-    service_delegation = {
-      name    = "Microsoft.Web/serverFarms"
-      actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
-    }
-  }
-
-  service_endpoints = [
-    "Microsoft.Web"
-  ]
-}
-
 resource "azurerm_app_service_virtual_network_swift_connection" "app_service_virtual_network_swift_connection" {
+  count = var.subnet_id == null ? 0 : 1
+
   app_service_id = azurerm_app_service.app_service.id
-  subnet_id      = module.subnet.id
+  subnet_id      = var.subnet_id
 }

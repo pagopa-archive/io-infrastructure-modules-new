@@ -85,12 +85,10 @@ variable "allowed_subnets" {
   default = []
 }
 
-variable "virtual_network_info" {
-  type = object({
-    name                  = string
-    resource_group_name   = string
-    subnet_address_prefix = string
-  })
+variable "subnet_id" {
+  type = string
+
+  default = null
 }
 
 variable "log_analytics_workspace_id" {
