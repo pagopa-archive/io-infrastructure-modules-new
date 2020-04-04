@@ -101,9 +101,38 @@ resource "azurerm_app_service" "app_service" {
   }
 }
 
+module "subnet" {
+  module_disabled = var.subnet_id != null || var.virtual_network_info == null
+
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v0.0.55"
+
+  global_prefix     = var.global_prefix
+  environment       = var.environment
+  environment_short = var.environment_short
+  region            = var.region
+
+  name                 = "app${var.name}"
+  resource_group_name  = var.virtual_network_info != null ? var.virtual_network_info.resource_group_name : "none"
+  virtual_network_name = var.virtual_network_info != null ? var.virtual_network_info.name : "none"
+  address_prefix       = var.virtual_network_info != null ? var.virtual_network_info.subnet_address_prefix : "none"
+
+  delegation = {
+    name = "default"
+
+    service_delegation = {
+      name    = "Microsoft.Web/serverFarms"
+      actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
+    }
+  }
+
+  service_endpoints = [
+    "Microsoft.Web"
+  ]
+}
+
 resource "azurerm_app_service_virtual_network_swift_connection" "app_service_virtual_network_swift_connection" {
-  count = var.subnet_id == null ? 0 : 1
+  count = var.subnet_id == null && var.virtual_network_info == null ? 0 : 1
 
   app_service_id = azurerm_app_service.app_service.id
-  subnet_id      = var.subnet_id
+  subnet_id      = var.subnet_id != null ? var.subnet_id : module.subnet.id
 }
