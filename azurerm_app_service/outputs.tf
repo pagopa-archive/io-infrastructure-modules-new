@@ -6,10 +6,6 @@ output "name" {
   value = azurerm_app_service.app_service.name
 }
 
-output "subnet_id" {
-  value = module.subnet.id
-}
-
 output "default_site_hostname" {
   value = azurerm_app_service.app_service.default_site_hostname
 }
