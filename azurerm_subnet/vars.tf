@@ -30,16 +30,15 @@ variable "address_prefix" {
   type = string
 }
 
-variable "delegation" {
-  type = object({
-    name = string
+variable "delegations" {
+  type = map(object({
     service_delegation = object({
       name    = string
       actions = list(string)
     })
-  })
+  }))
 
-  default = null
+  default = {}
 }
 
 variable "service_endpoints" {

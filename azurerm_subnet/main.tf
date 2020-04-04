@@ -1,5 +1,6 @@
 provider "azurerm" {
-  version = "=1.44.0"
+  version = "=2.4.0"
+  features {}
 }
 
 terraform {
@@ -14,13 +15,15 @@ resource "azurerm_subnet" "subnet" {
   address_prefix       = var.address_prefix
 
   dynamic "delegation" {
-    for_each = var.delegation == null ? [] : ["delegation"]
+    for_each = var.delegations
+    iterator = delegation
+
     content {
-      name = var.delegation.name
+      name = delegation.key
 
       service_delegation {
-        name    = var.delegation.service_delegation.name
-        actions = var.delegation.service_delegation.actions
+        name    = delegation.value.service_delegation.name
+        actions = delegation.value.service_delegation.actions
       }
     }
   }
