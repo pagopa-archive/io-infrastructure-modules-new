@@ -55,14 +55,6 @@ variable "app_service_plan_info" {
   }
 }
 
-variable virtual_network_info {
-  type = object({
-    resource_group_name   = string
-    name                  = string
-    subnet_address_prefix = string
-  })
-}
-
 variable application_insights_instrumentation_key {
   type = string
 }
@@ -82,6 +74,22 @@ variable app_settings_secrets {
 
 variable ip_restriction {
   type = list(any)
+
+  default = null
+}
+
+variable "subnet_id" {
+  type = string
+
+  default = null
+}
+
+variable virtual_network_info {
+  type = object({
+    name                  = string
+    resource_group_name   = string
+    subnet_address_prefix = string
+  })
 
   default = null
 }
