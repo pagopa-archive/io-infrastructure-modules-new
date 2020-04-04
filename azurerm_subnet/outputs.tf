@@ -1,7 +1,7 @@
 output "id" {
-  value = azurerm_subnet.subnet.id
+  value = var.module_disabled ? null : azurerm_subnet.subnet[0].id
 }
 
 output "name" {
-  value = azurerm_subnet.subnet.name
+  value = var.module_disabled ? null : azurerm_subnet.subnet[0].name
 }
