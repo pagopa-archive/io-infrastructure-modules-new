@@ -37,29 +37,6 @@ module "app_service_plan" {
   sku_size            = var.app_service_plan_info.sku_size
 }
 
-module "subnet" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v0.0.17"
-
-  global_prefix     = var.global_prefix
-  environment       = var.environment
-  environment_short = var.environment_short
-  region            = var.region
-
-  name                 = "f${var.name}"
-  resource_group_name  = var.virtual_network_info.resource_group_name
-  virtual_network_name = var.virtual_network_info.name
-  address_prefix       = var.virtual_network_info.subnet_address_prefix
-
-  delegation = {
-    name = "default"
-
-    service_delegation = {
-      name    = "Microsoft.Web/serverFarms"
-      actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
-    }
-  }
-}
-
 module "secrets_from_keyvault" {
   source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault?ref=v0.0.17"
 
@@ -104,13 +81,45 @@ resource "azurerm_function_app" "function_app" {
   }
 }
 
+module "subnet" {
+  module_disabled = var.subnet_id != null || var.virtual_network_info == null
+
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v0.0.55"
+
+  global_prefix     = var.global_prefix
+  environment       = var.environment
+  environment_short = var.environment_short
+  region            = var.region
+
+  name                 = "f${var.name}"
+  resource_group_name  = var.virtual_network_info != null ? var.virtual_network_info.resource_group_name : "none"
+  virtual_network_name = var.virtual_network_info != null ? var.virtual_network_info.name : "none"
+  address_prefix       = var.virtual_network_info != null ? var.virtual_network_info.subnet_address_prefix : "none"
+
+  delegation = {
+    name = "default"
+
+    service_delegation = {
+      name    = "Microsoft.Web/serverFarms"
+      actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
+    }
+  }
+
+  service_endpoints = [
+    "Microsoft.Web"
+  ]
+}
+
 resource "azurerm_app_service_virtual_network_swift_connection" "app_service_virtual_network_swift_connection" {
+  count = var.subnet_id == null && var.virtual_network_info == null ? 0 : 1
+
   app_service_id = azurerm_function_app.function_app.id
-  subnet_id      = module.subnet.id
+  subnet_id      = var.subnet_id != null ? var.subnet_id : module.subnet.id
 }
 
 resource "azurerm_template_deployment" "function_keys" {
   count = var.export_default_key ? 1 : 0
+
   name  = "javafunckeys"
   parameters = {
     functionApp = azurerm_function_app.function_app.name
