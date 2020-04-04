@@ -91,6 +91,16 @@ variable "subnet_id" {
   default = null
 }
 
+variable "virtual_network_info" {
+  type = object({
+    name                  = string
+    resource_group_name   = string
+    subnet_address_prefix = string
+  })
+
+  default = null
+}
+
 variable "log_analytics_workspace_id" {
   type        = string
   description = "The log_analytics workspace id"
