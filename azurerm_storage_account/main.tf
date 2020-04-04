@@ -1,5 +1,6 @@
 provider "azurerm" {
-  version = "=1.44.0"
+  version = "=2.4.0"
+  features {}
 }
 
 terraform {
@@ -16,6 +17,15 @@ resource "azurerm_storage_account" "storage_account" {
   account_replication_type  = var.account_replication_type
   access_tier               = var.access_tier
   enable_https_traffic_only = true
+
+  dynamic "static_website" {
+    for_each = var.static_website == null ? [] : ["static_website"]
+
+    content {
+      index_document     = var.static_website.index_document
+      error_404_document = var.static_website.error_404_document
+    }
+  }
 
   tags = {
     environment = var.environment

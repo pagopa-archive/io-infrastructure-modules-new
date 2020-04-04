@@ -39,6 +39,15 @@ variable "access_tier" {
   type = string
 }
 
+variable "static_website" {
+  type = object({
+    index_document     = string
+    error_404_document = string
+  })
+
+  default = null
+}
+
 locals {
   resource_name = "${var.global_prefix}${var.environment_short}st${var.name}"
 }
