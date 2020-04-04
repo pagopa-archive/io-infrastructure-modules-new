@@ -46,3 +46,9 @@ variable "service_endpoints" {
   type    = list(string)
   default = []
 }
+
+variable "module_disabled" {
+  type = bool
+
+  default = false
+}
