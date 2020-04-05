@@ -82,7 +82,7 @@ resource "azurerm_function_app" "function_app" {
 }
 
 module "subnet" {
-  module_disabled = var.subnet_id != null || var.virtual_network_info == null
+  module_disabled = var.avoid_old_subnet_delete == false && (var.subnet_id != null || var.virtual_network_info == null)
 
   source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v0.0.55"
 
