@@ -84,7 +84,7 @@ variable "subnet_id" {
   default = null
 }
 
-variable virtual_network_info {
+variable "virtual_network_info" {
   type = object({
     name                  = string
     resource_group_name   = string
@@ -92,6 +92,12 @@ variable virtual_network_info {
   })
 
   default = null
+}
+
+variable "avoid_old_subnet_delete" {
+  type = bool
+
+  default = false
 }
 
 variable export_default_key {
