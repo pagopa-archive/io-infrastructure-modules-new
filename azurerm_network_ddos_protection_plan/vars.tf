@@ -26,19 +26,6 @@ variable "resource_group_name" {
   type = string
 }
 
-variable "address_space" {
-  type = list(string)
-}
-
-variable "ddos_protection_plan" {
-  type = object({
-    id     = string
-    enable = bool
-  })
-
-  default = null
-}
-
 locals {
-  resource_name = "${var.global_prefix}-${var.environment_short}-vnet-${var.name}"
+  resource_name = "${var.global_prefix}-${var.environment_short}-ddospp-${var.name}"
 }
