@@ -41,12 +41,26 @@ variable "public_ip_info" {
   })
 }
 
+variable "subnet_id" {
+  type = string
+
+  default = null
+}
+
 variable "virtual_network_info" {
   type = object({
-    resource_group_name   = string
     name                  = string
+    resource_group_name   = string
     subnet_address_prefix = string
   })
+
+  default = null
+}
+
+variable "avoid_old_subnet_delete" {
+  type = bool
+
+  default = false
 }
 
 variable "frontend_port" {
