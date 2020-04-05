@@ -7,6 +7,13 @@ terraform {
   backend "azurerm" {}
 }
 
+data "azurerm_key_vault_secret" "allowed_ips_secret" {
+  count = var.allowed_ips_secret == null ? 0 : 1
+
+  name         = var.allowed_ips_secret.key_vault_secret
+  key_vault_id = var.allowed_ips_secret.key_vault_id
+}
+
 module "storage_account" {
   source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_account?ref=v0.0.17"
 
@@ -54,7 +61,33 @@ resource "azurerm_function_app" "function_app" {
 
   site_config {
     min_tls_version = "1.2"
-    ip_restriction  = var.ip_restriction
+    
+    dynamic "ip_restriction" {
+      for_each = var.allowed_ips
+      iterator = ip
+
+      content {
+        ip_address = ip.value
+      }
+    }
+
+    dynamic "ip_restriction" {
+      for_each = var.allowed_ips_secret == null ? [] : split(";", data.azurerm_key_vault_secret.allowed_ips_secret[0].value)
+      iterator = ip
+
+      content {
+        ip_address = ip.value
+      }
+    }
+
+    dynamic "ip_restriction" {
+      for_each = var.allowed_subnets
+      iterator = subnet
+
+      content {
+        virtual_network_subnet_id = subnet.value
+      }
+    }
   }
 
   app_settings = merge(

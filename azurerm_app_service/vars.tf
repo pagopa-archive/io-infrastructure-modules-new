@@ -79,6 +79,16 @@ variable "allowed_ips" {
   default = []
 }
 
+variable "allowed_ips_secret" {
+  // List of ip from a keyvault secret
+  type = object({
+    key_vault_id     = string
+    key_vault_secret = string
+  })
+
+  default = null
+}
+
 variable "allowed_subnets" {
   // List of subnet id
   type    = list(string)
