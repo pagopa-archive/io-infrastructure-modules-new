@@ -7,6 +7,13 @@ terraform {
   backend "azurerm" {}
 }
 
+data "azurerm_key_vault_secret" "allowed_ips_secret" {
+  count = var.allowed_ips_secret == null ? 0 : 1
+
+  name         = var.allowed_ips_secret.key_vault_secret
+  key_vault_id = var.allowed_ips_secret.key_vault_id
+}
+
 data "azurerm_key_vault_secret" "secret_sas_url" {
   count        = var.application_logs == null ? 0 : 1
   name         = var.application_logs.key_vault_secret_sas_url
@@ -50,6 +57,15 @@ resource "azurerm_app_service" "app_service" {
 
     dynamic "ip_restriction" {
       for_each = var.allowed_ips
+      iterator = ip
+
+      content {
+        ip_address = ip.value
+      }
+    }
+
+    dynamic "ip_restriction" {
+      for_each = var.allowed_ips_secret == null ? [] : split(";", data.azurerm_key_vault_secret.allowed_ips_secret[0].value)
       iterator = ip
 
       content {

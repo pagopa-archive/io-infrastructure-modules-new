@@ -72,10 +72,26 @@ variable app_settings_secrets {
   })
 }
 
-variable ip_restriction {
-  type = list(any)
+variable "allowed_ips" {
+  // List of ip
+  type    = list(string)
+  default = []
+}
+
+variable "allowed_ips_secret" {
+  // List of ip from a keyvault secret
+  type = object({
+    key_vault_id     = string
+    key_vault_secret = string
+  })
 
   default = null
+}
+
+variable "allowed_subnets" {
+  // List of subnet id
+  type    = list(string)
+  default = []
 }
 
 variable "subnet_id" {
