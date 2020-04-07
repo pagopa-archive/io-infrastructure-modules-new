@@ -3,15 +3,15 @@ output "eventhub_namespace_name" {
 }
 
 output "id" {
-  value = azurerm_eventhub.eventhub.id
+  value = azurerm_eventhub.eventhub[*].id
 }
 
 output "name" {
-  value = azurerm_eventhub.eventhub.name
+  value = azurerm_eventhub.eventhub[*].name
 }
 
 output "rule_ids" {
-  value = azurerm_eventhub_authorization_rule.eventhub_rule[*].name
+  value = azurerm_eventhub_authorization_rule.eventhub_rule[*].id
 }
 
 output "rule_names" {
