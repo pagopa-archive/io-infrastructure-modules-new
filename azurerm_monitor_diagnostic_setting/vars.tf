@@ -14,9 +14,21 @@ variable "eventhub_name" {
   default     = null
 }
 
-variable "eventhub_authorization_rule_id" {
+variable "eventhub_resource_group_name" {
   type        = string
-  description = "Specifies the ID of an Event Hub Namespace Authorization Rule used to send Diagnostics Data."
+  description = "The name of the resource group where the event hub has been created."
+  default     = null
+}
+
+variable "eventhub_namespace_name" {
+  type        = string
+  description = "The name of the eventhub namespace"
+  default     = null
+}
+
+variable "eventhub_authorization_rule" {
+  type        = string
+  description = "Specifies the name of an Event Hub Namespace Authorization Rule used to send Diagnostics Data."
   default     = null
 }
 
