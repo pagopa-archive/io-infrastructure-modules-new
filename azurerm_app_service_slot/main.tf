@@ -1,5 +1,6 @@
 provider "azurerm" {
-  version = "=1.44.0"
+  version = "=2.4.0"
+  features {}
 }
 
 terraform {
@@ -21,7 +22,7 @@ data "azurerm_key_vault_secret" "secret_sas_url" {
 }
 
 module "secrets_from_keyvault" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault?ref=v0.0.24"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault?ref=v2.0.0"
 
   key_vault_id = var.app_settings_secrets.key_vault_id
   secrets_map  = var.app_settings_secrets.map
