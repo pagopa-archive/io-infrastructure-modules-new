@@ -39,8 +39,9 @@ resource "azurerm_app_service_slot" "app_service_slot" {
   https_only = var.https_only
 
   site_config {
-    always_on       = var.always_on
-    min_tls_version = "1.2"
+    always_on           = var.always_on
+    min_tls_version     = "1.2"
+    auto_swap_slot_name = var.auto_swap_slot_name
 
     dynamic "ip_restriction" {
       for_each = var.allowed_ips
@@ -95,12 +96,6 @@ resource "azurerm_app_service_slot" "app_service_slot" {
 
   tags = {
     environment = var.environment
-  }
-
-  lifecycle {
-    ignore_changes = [
-      site_config[0].virtual_network_name,
-    ]
   }
 }
 
