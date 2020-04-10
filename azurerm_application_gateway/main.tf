@@ -13,7 +13,7 @@ data "azurerm_key_vault_secret" "certificate_secret" {
 }
 
 module "subnet" {
-    module_disabled = var.avoid_old_subnet_delete == false && (var.subnet_id != null || var.virtual_network_info == null)
+  module_disabled = var.avoid_old_subnet_delete == false && (var.subnet_id != null || var.virtual_network_info == null)
 
   source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v2.0.0"
 
@@ -140,6 +140,30 @@ resource "azurerm_application_gateway" "application_gateway" {
       backend_address_pool_name  = "backendaddresspool-${service.value.name}"
       backend_http_settings_name = "backendhttpsettings-${service.value.name}"
       rule_type                  = "Basic"
+    }
+  }
+
+  dynamic "waf_configuration" {
+    for_each = var.waf_configuration == null ? [] : ["dummy"]
+
+    content {
+      enabled                  = var.waf_configuration.enabled
+      firewall_mode            = var.waf_configuration.firewall_mode
+      rule_set_type            = var.waf_configuration.rule_set_type
+      rule_set_version         = var.waf_configuration.rule_set_version
+      request_body_check       = var.waf_configuration.request_body_check
+      file_upload_limit_mb     = var.waf_configuration.file_upload_limit_mb
+      max_request_body_size_kb = var.waf_configuration.max_request_body_size_kb
+
+      dynamic "disabled_rule_group" {
+        for_each = var.waf_configuration.disabled_rule_groups
+        iterator = disabled_rule_group
+
+        content {
+          rule_group_name = disabled_rule_group.value.rule_group_name
+          rules           = disabled_rule_group.value.rules
+        }
+      }
     }
   }
 }
