@@ -112,6 +112,24 @@ variable "services" {
   }))
 }
 
+variable "waf_configuration" {
+  type = object({
+    enabled          = bool
+    firewall_mode    = string
+    rule_set_type    = string
+    rule_set_version = string
+    disabled_rule_groups = list(object({
+      rule_group_name = string
+      rules            = list(string)
+    }))
+    request_body_check       = bool
+    file_upload_limit_mb     = number
+    max_request_body_size_kb = number
+  })
+
+  default = null
+}
+
 locals {
   resource_name                  = "${var.global_prefix}-${var.environment_short}-ag-${var.name}"
   gateway_ip_configuration_name  = "gatewayipconfiguration"
