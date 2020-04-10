@@ -41,6 +41,11 @@ variable "https_only" {
   default = true
 }
 
+variable "auto_swap_slot_name" {
+  type    = string
+  default = null
+}
+
 variable "application_insights_instrumentation_key" {
   type = string
 }
