@@ -110,7 +110,7 @@ resource "azurerm_function_app" "function_app" {
 
   lifecycle {
     ignore_changes = [
-      site_config[0].virtual_network_name,
+      site_config[0].scm_type,
     ]
   }
 }
