@@ -107,12 +107,6 @@ resource "azurerm_function_app" "function_app" {
   tags = {
     environment = var.environment
   }
-
-  lifecycle {
-    ignore_changes = [
-      site_config[0].scm_type,
-    ]
-  }
 }
 
 module "subnet" {
