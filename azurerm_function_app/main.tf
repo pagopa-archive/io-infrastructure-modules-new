@@ -94,9 +94,6 @@ resource "azurerm_function_app" "function_app" {
   app_settings = merge(
     {
       APPINSIGHTS_INSTRUMENTATIONKEY = var.application_insights_instrumentation_key
-      // TODO: Remove after release with https://github.com/terraform-providers/terraform-provider-azurerm/pull/5761
-      WEBSITE_CONTENTAZUREFILECONNECTIONSTRING = module.storage_account.primary_connection_string
-      WEBSITE_CONTENTSHARE                     = "${lower(local.resource_name)}-content"
     },
     var.app_settings,
     module.secrets_from_keyvault.secrets_with_value
