@@ -97,6 +97,12 @@ resource "azurerm_app_service_slot" "app_service_slot" {
   tags = {
     environment = var.environment
   }
+
+  lifecycle {
+    ignore_changes = [
+      site_config[0].scm_type,
+    ]
+  }
 }
 
 resource "azurerm_app_service_virtual_network_swift_connection" "app_service_virtual_network_swift_connection" {
