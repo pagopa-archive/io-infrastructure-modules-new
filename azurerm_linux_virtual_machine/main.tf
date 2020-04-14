@@ -22,10 +22,10 @@ resource "azurerm_network_security_group" "network_security_group" {
       direction                    = security_rule.value.direction
       access                       = security_rule.value.access
       protocol                     = security_rule.value.protocol
-      source_port_range            = length(security_rule.value.source_port_ranges) == 1 ? security_rule.value.source_port_ranges[0]:null 
-      source_port_ranges           = length(security_rule.value.source_port_ranges) < 2 ? []: security_rule.value.source_port_ranges
-      destination_port_range       = length(security_rule.value.destination_port_ranges) == 1 ? security_rule.value.destination_port_ranges[0]:null
-      destination_port_ranges      = length(security_rule.value.destination_port_ranges) < 2 ? []: security_rule.value.destination_port_ranges
+      source_port_range            = length(security_rule.value.source_port_ranges) == 1 ? security_rule.value.source_port_ranges[0] : null
+      source_port_ranges           = length(security_rule.value.source_port_ranges) < 2 ? [] : security_rule.value.source_port_ranges
+      destination_port_range       = length(security_rule.value.destination_port_ranges) == 1 ? security_rule.value.destination_port_ranges[0] : null
+      destination_port_ranges      = length(security_rule.value.destination_port_ranges) < 2 ? [] : security_rule.value.destination_port_ranges
       source_address_prefixes      = security_rule.value.source_address_prefixes
       destination_address_prefixes = security_rule.value.destination_address_prefixes
     }
@@ -37,6 +37,7 @@ resource "azurerm_network_security_group" "network_security_group" {
 }
 
 resource "azurerm_public_ip" "public_ip" {
+  count               = var.assign_public_ip ? 1 : 0
   name                = local.public_ip_name
   location            = var.region
   resource_group_name = var.resource_group_name
@@ -56,7 +57,7 @@ resource "azurerm_network_interface" "network_interface" {
     name                          = "snet-${var.name}"
     subnet_id                     = var.subnet_id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.public_ip.id
+    public_ip_address_id          = var.assign_public_ip ? azurerm_public_ip.public_ip[0].id : null
   }
 }
 
@@ -89,7 +90,7 @@ resource "azurerm_linux_virtual_machine" "linux_virtual_machine" {
   ]
 
   admin_username = var.admin_username
-  admin_password = var.key_vault_id == null ? null: data.azurerm_key_vault_secret.siem_vm_admin_password[0].value
+  admin_password = var.key_vault_id == null ? null : data.azurerm_key_vault_secret.siem_vm_admin_password[0].value
 
   disable_password_authentication = var.key_vault_id == null ? true : false
 
