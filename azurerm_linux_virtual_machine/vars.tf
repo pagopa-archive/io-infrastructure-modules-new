@@ -91,6 +91,12 @@ variable "security_rules" {
   }))
 }
 
+variable "assign_public_ip" {
+  type        = bool
+  description = "Assign a public ip to the vm. Default true"
+  default     = true
+}
+
 variable "allocation_method" {
   type    = string
   default = "Dynamic"
@@ -107,8 +113,8 @@ variable "plans" {
 }
 
 variable "key_vault_id" {
-  type        = string
-  default     = null
+  type    = string
+  default = null
 }
 
 locals {
