@@ -41,6 +41,7 @@ variable "storage_account_id" {
 variable "log_analytics_workspace_id" {
   type        = string
   description = "Specifies the ID of a Log Analytics Workspace where Diagnostics Data should be sent. Changing this forces a new resource to be created."
+  default     = null
 }
 
 variable "logs" {
