@@ -44,20 +44,21 @@ resource "azurerm_eventhub_namespace" "eventhub_ns" {
 }
 
 resource "azurerm_eventhub" "eventhub" {
-  name                = local.resource_name
+  count               = length(var.eventhubs)
+  name                = var.eventhubs[count.index].name
   namespace_name      = azurerm_eventhub_namespace.eventhub_ns.name
   resource_group_name = var.resource_group_name
-  partition_count     = var.partition_count
-  message_retention   = var.message_retention
+  partition_count     = var.eventhubs[count.index].partition_count
+  message_retention   = var.eventhubs[count.index].message_retention
 }
 
 resource "azurerm_eventhub_authorization_rule" "eventhub_rule" {
   count               = length(var.eventhub_authorization_rules)
-  name                = "${var.global_prefix}-${var.environment}-ehr-${lookup(var.eventhub_authorization_rules[count.index], "listen")}"
+  name                = var.eventhub_authorization_rules[count.index].name
   namespace_name      = azurerm_eventhub_namespace.eventhub_ns.name
   resource_group_name = var.resource_group_name
-  eventhub_name       = azurerm_eventhub.eventhub.name
-  listen              = lookup(var.eventhub_authorization_rules[count.index], "listen")
-  send                = lookup(var.eventhub_authorization_rules[count.index], "send")
-  manage              = lookup(var.eventhub_authorization_rules[count.index], "manage")
+  eventhub_name       = var.eventhub_authorization_rules[count.index].eventhub_name
+  listen              = var.eventhub_authorization_rules[count.index].listen
+  send                = var.eventhub_authorization_rules[count.index].send
+  manage              = var.eventhub_authorization_rules[count.index].manage
 }
