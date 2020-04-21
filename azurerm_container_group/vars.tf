@@ -53,6 +53,22 @@ variable "container" {
       protocol = string
     }))
     commands = list(string)
+
+    // Optional: use liveness_probe = null in your module. 
+    liveness_probe = object({
+      exec                  = list(string)
+      initial_delay_seconds = number
+      period_seconds        = number
+      failure_threshold     = number
+      success_threshold     = number
+      timeout_seconds       = number
+      // Optional: use http_get = null in your module.
+      http_get = object({
+        path   = string
+        port   = number
+        scheme = string
+      })
+    })
   })
 }
 
