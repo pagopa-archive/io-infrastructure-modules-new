@@ -55,6 +55,7 @@ resource "azurerm_app_service" "app_service" {
   site_config {
     always_on       = var.always_on
     min_tls_version = "1.2"
+    ftps_state = "Disabled"
 
     dynamic "ip_restriction" {
       for_each = var.allowed_ips

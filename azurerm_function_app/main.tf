@@ -62,6 +62,7 @@ resource "azurerm_function_app" "function_app" {
 
   site_config {
     min_tls_version = "1.2"
+    ftps_state = "Disabled"
     
     dynamic "ip_restriction" {
       for_each = var.allowed_ips
