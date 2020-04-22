@@ -15,7 +15,7 @@ variable "region" {
   type = string
 }
 
-variable "namespce_name" {
+variable "namespace_name" {
   type = string
 }
 
@@ -78,5 +78,5 @@ variable "eventhub_authorization_rules" {
 
 locals {
   # Eventhub namespace.
-  evhns_resource_name = "${var.global_prefix}-${var.environment_short}-evhns-${var.namespce_name}"
+  evhns_resource_name = "${var.global_prefix}-${var.environment_short}-evhns-${var.namespace_name}"
 }
