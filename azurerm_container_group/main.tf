@@ -71,6 +71,28 @@ resource "azurerm_container_group" "container_group" {
       storage_account_name = module.storage_account.resource_name
       storage_account_key  = module.storage_account.primary_access_key
     }
+
+    dynamic "liveness_probe" {
+      for_each = var.container.liveness_probe == null ? [] : list(var.container.liveness_probe)
+
+      content {
+        exec                  = liveness_probe.value.exec
+        initial_delay_seconds = liveness_probe.value.initial_delay_seconds
+        period_seconds        = liveness_probe.value.period_seconds
+        failure_threshold     = liveness_probe.value.failure_threshold
+        success_threshold     = liveness_probe.value.success_threshold
+        timeout_seconds       = liveness_probe.value.timeout_seconds
+
+        dynamic "http_get" {
+          for_each = liveness_probe.value.http_get == null ? [] : list(liveness_probe.value.http_get)
+          content {
+            path   = http_get.value.path
+            port   = http_get.value.port
+            scheme = http_get.value.scheme
+          }
+        }
+      }
+    }
   }
 
   tags = {
