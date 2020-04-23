@@ -2,6 +2,10 @@ output "id" {
   value = azurerm_function_app.function_app.id
 }
 
+output "name" {
+  value = var.name
+}
+
 output "default_hostname" {
   value     = azurerm_function_app.function_app.default_hostname
   sensitive = true
@@ -18,6 +22,10 @@ output "default_key" {
 
 output "subnet_id" {
   value = module.subnet.id
+}
+
+output "app_service_plan_id" {
+  value = module.app_service_plan.id
 }
 
 output "resource_name" {
