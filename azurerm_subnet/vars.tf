@@ -52,3 +52,9 @@ variable "module_disabled" {
 
   default = false
 }
+
+variable "enforce_private_link_endpoint_network_policies" {
+  type        = bool
+  description = "Enable or Disable network policies for the private link endpoint on the subnet."
+  default     = false
+}

@@ -9,8 +9,8 @@ terraform {
 }
 
 resource "azurerm_subnet" "subnet" {
-  count                = var.module_disabled ? 0 : 1
-  
+  count = var.module_disabled ? 0 : 1
+
   name                 = var.name
   resource_group_name  = var.resource_group_name
   virtual_network_name = var.virtual_network_name
@@ -29,4 +29,6 @@ resource "azurerm_subnet" "subnet" {
   }
 
   service_endpoints = var.service_endpoints
+
+  enforce_private_link_endpoint_network_policies = var.enforce_private_link_endpoint_network_policies
 }
