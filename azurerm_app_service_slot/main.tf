@@ -41,6 +41,7 @@ resource "azurerm_app_service_slot" "app_service_slot" {
   site_config {
     always_on           = var.always_on
     min_tls_version     = "1.2"
+    ftps_state          = "Disabled"
     auto_swap_slot_name = var.auto_swap_slot_name
 
     dynamic "ip_restriction" {
