@@ -29,3 +29,9 @@ variable "approval_required" {
 variable "published" {
   type = bool
 }
+
+variable "policy_xml" {
+  type = string
+
+  default = null
+}
