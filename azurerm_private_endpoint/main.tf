@@ -21,3 +21,31 @@ resource "azurerm_private_endpoint" "private_endpoint" {
   }
 
 }
+
+
+module "private_dns_zone" {
+  module_disabled = var.private_dns_zone_name == null ? true : false
+  #source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_private_dns_zone?ref=v2.0.22"
+  source = "/home/uolter/src/pagoPa/io-infrastructure-modules-new/azurerm_private_dns_zone"
+
+  global_prefix     = var.global_prefix
+  environment       = var.environment
+  environment_short = var.environment_short
+  region            = var.region
+
+  name                = var.private_dns_zone_name
+  resource_group_name = var.resource_group_name
+
+}
+
+module "private_dns_a_record" {
+  source              = "/home/uolter/src/pagoPa/io-infrastructure-modules-new/azurerm_private_dns_a_record"
+  #source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_private_dns_a_record?ref=v2.0.22"
+  global_prefix       = var.global_prefix
+  environment         = var.environment
+  environment_short   = var.environment_short
+  region              = var.region
+  resource_group_name = var.resource_group_name
+  zone_name           = var.private_dns_zone_name
+  dns_records         = var.dns_records
+}

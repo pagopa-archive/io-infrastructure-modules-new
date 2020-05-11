@@ -38,3 +38,19 @@ variable "private_service_connection" {
     }
   )
 }
+
+variable "private_dns_zone_name" {
+  type        = string
+  description = "Name of the private dns zone"
+  default     = null
+}
+
+variable "dns_records" {
+  type = list(object({
+    name    = string
+    ttl     = number
+    records = list(string)
+  }))
+  default = []
+}
+
