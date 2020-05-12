@@ -16,8 +16,3 @@ output "private_dns_zone_name" {
   description = "The name of the privae dns zone."
   value       = module.private_dns_zone.*.name
 }
-
-output "private_record_a_fqdn" {
-  description = "The name of the privae dns zone."
-  value       = module.private_dns_a_record.*.name
-}
