@@ -44,13 +44,3 @@ variable "private_dns_zone_name" {
   description = "Name of the private dns zone"
   default     = null
 }
-
-variable "dns_records" {
-  type = list(object({
-    name    = string
-    ttl     = number
-    records = list(string)
-  }))
-  default = []
-}
-
