@@ -20,16 +20,22 @@ variable "resource_group_name" {
   type = string
 }
 
+variable "name" {
+  type        = string
+  description = "The name of the DNS A Record."
+}
+
 variable "zone_name" {
   type        = string
   description = "The name of private dns zone."
 }
 
-variable "dns_records" {
-  type = list(object({
-    name    = string
-    ttl     = number
-    records = list(string)
-  }))
-  default = []
+variable "ttl" {
+  type        = number
+  description = "The Time To Live (TTL) of the DNS record in seconds."
+}
+
+variable "records" {
+  type        = list(string)
+  description = "List of IPv4 Addresses."
 }
