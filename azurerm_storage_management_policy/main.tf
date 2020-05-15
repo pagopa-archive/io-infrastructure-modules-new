@@ -29,8 +29,11 @@ resource "azurerm_storage_management_policy" "storage_management_policy" {
           tier_to_archive_after_days_since_modification_greater_than = rule.value.actions.base_blob.tier_to_archive_after_days_since_modification_greater_than
           delete_after_days_since_modification_greater_than          = rule.value.actions.base_blob.delete_after_days_since_modification_greater_than
         }
-        snapshot {
-          delete_after_days_since_creation_greater_than = rule.value.actions.snapshot.delete_after_days_since_creation_greater_than
+        dynamic "snapshot" {
+          for_each = rule.value.actions.snapshot == null ? [] : [rule.value.actions.snapshot]
+          content {
+            delete_after_days_since_creation_greater_than = snapshot.value.delete_after_days_since_creation_greater_than
+          }
         }
       }
     }
