@@ -20,10 +20,10 @@ resource "azurerm_storage_account" "storage_account" {
 
   blob_properties {
     dynamic "delete_retention_policy" {
-      for_each = var.blob_properties_delete_retention_policy_days == null ? [] : ["dummy"]
+      for_each = var.blob_properties_delete_retention_policy == null ? [] : ["dummy"]
 
       content {
-        days = var.blob_properties_delete_retention_policy_days
+        days = var.blob_properties_delete_retention_policy.days
       }
     }
   }

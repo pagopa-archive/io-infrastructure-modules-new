@@ -39,8 +39,12 @@ variable "access_tier" {
   type = string
 }
 
-variable "blob_properties_delete_retention_policy_days" {
-  type    = number
+variable "blob_properties_delete_retention_policy" {
+  type = object({
+    days = number
+  })
+  
+  description = "Enable blob soft delete policy"
   default = null
 }
 
