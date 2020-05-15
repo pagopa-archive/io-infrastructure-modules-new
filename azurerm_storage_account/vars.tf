@@ -39,6 +39,11 @@ variable "access_tier" {
   type = string
 }
 
+variable "blob_properties_delete_retention_policy_days" {
+  type    = number
+  default = null
+}
+
 locals {
   resource_name = "${var.global_prefix}${var.environment_short}st${var.name}"
 }

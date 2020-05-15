@@ -20,7 +20,7 @@ resource "azurerm_storage_account" "storage_account" {
 
   blob_properties {
     delete_retention_policy {
-      days = 1
+      days = var.blob_properties_delete_retention_policy_days
     }
   }
 
