@@ -18,8 +18,10 @@ resource "azurerm_storage_account" "storage_account" {
   access_tier               = var.access_tier
   enable_https_traffic_only = true
 
-  delete_retention_policy {
-    days = 1
+  blob_properties {
+    delete_retention_policy {
+      days = 1
+    }
   }
 
   tags = {
