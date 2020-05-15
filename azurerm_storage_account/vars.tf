@@ -40,9 +40,9 @@ variable "access_tier" {
 }
 
 variable "blob_properties_delete_retention_policy_days" {
-  type = number
+  type        = number
   description = "Enable soft delete policy and specify the number of days that the blob should be retained"
-  default = null
+  default     = null
 }
 
 locals {
