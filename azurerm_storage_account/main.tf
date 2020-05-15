@@ -19,8 +19,12 @@ resource "azurerm_storage_account" "storage_account" {
   enable_https_traffic_only = true
 
   blob_properties {
-    delete_retention_policy {
-      days = var.blob_properties_delete_retention_policy_days
+    dynamic "delete_retention_policy" {
+      for_each = var.blob_properties_delete_retention_policy_days == null ? [] : ["dummy"]
+
+      content {
+        days = var.blob_properties_delete_retention_policy_days
+      }
     }
   }
 
