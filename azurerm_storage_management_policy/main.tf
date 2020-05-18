@@ -13,7 +13,7 @@ resource "azurerm_storage_management_policy" "storage_management_policy" {
   storage_account_id = var.storage_account_id
 
   dynamic "rule" {
-    for_each = var.rules
+    for_each = toset(var.rules)
     content {
       name    = rule.value.name
       enabled = rule.value.enabled
