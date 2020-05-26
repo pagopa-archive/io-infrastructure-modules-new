@@ -25,7 +25,7 @@ resource "azurerm_monitor_autoscale_setting" "monitor_autoscale_setting" {
       }
 
       dynamic "rule" {
-        for_each = profile.value.rule
+        for_each = profile.value.rules
         content {
           metric_trigger {
             metric_name        = rule.value.metric_trigger.metric_name
@@ -45,9 +45,39 @@ resource "azurerm_monitor_autoscale_setting" "monitor_autoscale_setting" {
           }
         }
       }
+
+      dynamic "fixed_date" {
+        for_each = profile.value.fixed_date != null ? [profile.value.fixed_date] : []
+        content {
+          timezone = fixed_date.value.timezone
+          start    = fixed_date.value.start
+          end      = fixed_date.value.end
+        }
+      }
+
+      dynamic "recurrence" {
+        for_each = profile.value.recurrence != null ? [profile.value.recurrence] : []
+        content {
+          timezone = recurrence.value.timezone
+          days     = recurrence.value.days
+          hours    = recurrence.value.hours
+          minutes  = recurrence.value.minutes
+        }
+      }
+
     }
   }
 
+  dynamic "notification" {
+    for_each = var.notification != null ? [var.notification] : []
+    content {
+      email {
+        send_to_subscription_administrator    = notification.value.email.send_to_subscription_administrator
+        send_to_subscription_co_administrator = notification.value.email.send_to_subscription_co_administrator
+        custom_emails                         = notification.value.email.custom_emails
+      }
+    }
+  }
 
   tags = {
     environment = var.environment
