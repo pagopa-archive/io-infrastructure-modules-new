@@ -43,7 +43,7 @@ variable "profiles" {
         minimum = number
       })
       rules = list(object({
-        name = string  # it should be unique among rules ensure sorting.
+        name = string # it should be unique among rules ensure sorting.
         metric_trigger = object({
           metric_name        = string
           metric_resource_id = string
@@ -83,8 +83,8 @@ variable "profiles" {
 variable "notification" {
   type = object({
     email = object({
-      send_to_subscription_administrator    = string
-      send_to_subscription_co_administrator = string
+      send_to_subscription_administrator    = bool
+      send_to_subscription_co_administrator = bool
       custom_emails                         = list(string)
     })
   })

@@ -15,7 +15,7 @@ resource "azurerm_monitor_autoscale_setting" "monitor_autoscale_setting" {
   target_resource_id  = var.target_resource_id
 
   dynamic "profile" {
-    for_each = { for p in var.profiles: p.name => p }
+    for_each = { for p in var.profiles : p.name => p }
     content {
       name = profile.key
       capacity {
@@ -25,7 +25,7 @@ resource "azurerm_monitor_autoscale_setting" "monitor_autoscale_setting" {
       }
 
       dynamic "rule" {
-        for_each = {for r in profile.value.rules: r.name  => r }
+        for_each = { for r in profile.value.rules : r.name => r }
         content {
           metric_trigger {
             metric_name        = rule.value.metric_trigger.metric_name
