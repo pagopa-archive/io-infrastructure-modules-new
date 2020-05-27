@@ -120,11 +120,20 @@ variable "waf_configuration" {
     rule_set_version = string
     disabled_rule_groups = list(object({
       rule_group_name = string
-      rules            = list(string)
+      rules           = list(string)
     }))
     request_body_check       = bool
     file_upload_limit_mb     = number
     max_request_body_size_kb = number
+  })
+
+  default = null
+}
+
+variable "autoscale_configuration" {
+  type = object({
+    min_capacity = number # in the range 0 to 100.
+    max_capacity = number # in the range 2 to 125.
   })
 
   default = null
