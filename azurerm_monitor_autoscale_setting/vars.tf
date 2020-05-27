@@ -43,6 +43,7 @@ variable "profiles" {
         minimum = number
       })
       rules = list(object({
+        name = string  # it should be unique among rules ensure sorting.
         metric_trigger = object({
           metric_name        = string
           metric_resource_id = string
