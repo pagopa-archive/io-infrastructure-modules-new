@@ -15,9 +15,9 @@ resource "azurerm_monitor_autoscale_setting" "monitor_autoscale_setting" {
   target_resource_id  = var.target_resource_id
 
   dynamic "profile" {
-    for_each = toset(var.profiles)
+    for_each = { for p in var.profiles: p.name => p }
     content {
-      name = profile.value.name
+      name = profile.key
       capacity {
         default = profile.value.capacity.default
         minimum = profile.value.capacity.minimum
@@ -25,7 +25,7 @@ resource "azurerm_monitor_autoscale_setting" "monitor_autoscale_setting" {
       }
 
       dynamic "rule" {
-        for_each = toset(profile.value.rules)
+        for_each = {for r in profile.value.rules: join("-", [r.metric_trigger.metric_name, r.scale_action.direction])  => r }
         content {
           metric_trigger {
             metric_name        = rule.value.metric_trigger.metric_name
@@ -64,7 +64,6 @@ resource "azurerm_monitor_autoscale_setting" "monitor_autoscale_setting" {
           minutes  = recurrence.value.minutes
         }
       }
-
     }
   }
 

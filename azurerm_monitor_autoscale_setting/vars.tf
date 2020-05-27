@@ -78,6 +78,7 @@ variable "profiles" {
     })
   )
 }
+
 variable "notification" {
   type = object({
     email = object({
