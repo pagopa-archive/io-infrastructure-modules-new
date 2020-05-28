@@ -172,6 +172,14 @@ resource "azurerm_application_gateway" "application_gateway" {
       }
     }
   }
+
+  dynamic "autoscale_configuration" {
+    for_each = var.autoscale_configuration != null ? [var.autoscale_configuration] : []
+    content {
+      min_capacity = autoscale_configuration.value.min_capacity
+      max_capacity = autoscale_configuration.value.max_capacity
+    }
+  }
 }
 
 resource "azurerm_dns_a_record" "dns_a_record" {
