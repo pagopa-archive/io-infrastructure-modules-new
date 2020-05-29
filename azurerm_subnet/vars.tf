@@ -27,7 +27,15 @@ variable "virtual_network_name" {
 }
 
 variable "address_prefix" {
-  type = string
+  type        = string
+  description = "(Deprecated in favour of address_prefixes) The address prefix to use for the subnet."
+  default     = null
+}
+
+variable "address_prefixes" {
+  type        = list(string)
+  description = "The address prefixes to use for the subnet."
+  default     = []
 }
 
 variable "delegation" {
