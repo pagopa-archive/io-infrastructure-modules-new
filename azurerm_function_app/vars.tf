@@ -55,6 +55,12 @@ variable "app_service_plan_info" {
   }
 }
 
+variable "pre_warmed_instance_count" {
+  type = number
+
+  default = 1
+}
+
 variable application_insights_instrumentation_key {
   type = string
 }

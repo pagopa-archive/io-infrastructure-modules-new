@@ -28,6 +28,13 @@ output "app_service_plan_id" {
   value = module.app_service_plan.id
 }
 
+output "storage_account" {
+  value = {
+    name               = module.storage_account.resource_name
+    primary_access_key = module.storage_account.primary_access_key
+  }
+}
+
 output "resource_name" {
   value = local.resource_name
 }

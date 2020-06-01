@@ -27,20 +27,6 @@ variable "runtime_version" {
   default = "~2"
 }
 
-variable "storage_account_info" {
-  type = object({
-    account_tier             = string
-    account_replication_type = string
-    access_tier              = string
-  })
-
-  default = {
-    account_tier             = "Standard"
-    account_replication_type = "LRS"
-    access_tier              = "Hot"
-  }
-}
-
 variable "function_app_name" {
   type = string
 }
@@ -51,6 +37,20 @@ variable "function_app_resource_name" {
 
 variable "app_service_plan_id" {
   type = string
+}
+
+variable "storage_account_name" {
+  type = string
+}
+
+variable "storage_account_access_key" {
+  type = string
+}
+
+variable "pre_warmed_instance_count" {
+  type = number
+
+  default = 1
 }
 
 variable application_insights_instrumentation_key {

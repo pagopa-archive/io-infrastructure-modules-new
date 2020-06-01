@@ -15,21 +15,6 @@ data "azurerm_key_vault_secret" "allowed_ips_secret" {
   key_vault_id = var.allowed_ips_secret.key_vault_id
 }
 
-module "storage_account" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_account?ref=v2.0.25"
-
-  global_prefix     = var.global_prefix
-  environment       = var.environment
-  environment_short = var.environment_short
-  region            = var.region
-
-  name                     = "f${var.function_app_name}${var.name}"
-  resource_group_name      = var.resource_group_name
-  account_tier             = var.storage_account_info.account_tier
-  account_replication_type = var.storage_account_info.account_replication_type
-  access_tier              = var.storage_account_info.access_tier
-}
-
 module "secrets_from_keyvault" {
   source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault?ref=v2.0.25"
 
@@ -38,17 +23,19 @@ module "secrets_from_keyvault" {
 }
 
 resource "azurerm_function_app_slot" "function_app_slot" {
-  name                      = var.name
-  resource_group_name       = var.resource_group_name
-  location                  = var.region
-  version                   = var.runtime_version
-  function_app_name         = var.function_app_resource_name
-  app_service_plan_id       = var.app_service_plan_id
-  storage_connection_string = module.storage_account.primary_connection_string
+  name                       = var.name
+  resource_group_name        = var.resource_group_name
+  location                   = var.region
+  version                    = var.runtime_version
+  function_app_name          = var.function_app_resource_name
+  app_service_plan_id        = var.app_service_plan_id
+  storage_account_name       = var.storage_account_name
+  storage_account_access_key = var.storage_account_access_key
 
   site_config {
-    min_tls_version = "1.2"
-    ftps_state      = "Disabled"
+    min_tls_version           = "1.2"
+    ftps_state                = "Disabled"
+    pre_warmed_instance_count = var.pre_warmed_instance_count
 
     dynamic "ip_restriction" {
       for_each = var.allowed_ips
@@ -81,6 +68,8 @@ resource "azurerm_function_app_slot" "function_app_slot" {
   app_settings = merge(
     {
       APPINSIGHTS_INSTRUMENTATIONKEY = var.application_insights_instrumentation_key
+      # No downtime on slots swap
+      WEBSITE_ADD_SITENAME_BINDINGS_IN_APPHOST_CONFIG = 1
     },
     var.app_settings,
     module.secrets_from_keyvault.secrets_with_value

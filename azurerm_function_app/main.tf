@@ -53,17 +53,19 @@ module "secrets_from_keyvault" {
 }
 
 resource "azurerm_function_app" "function_app" {
-  name                      = local.resource_name
-  resource_group_name       = var.resource_group_name
-  location                  = var.region
-  version                   = var.runtime_version
-  app_service_plan_id       = module.app_service_plan.id
-  storage_connection_string = module.storage_account.primary_connection_string
+  name                       = local.resource_name
+  resource_group_name        = var.resource_group_name
+  location                   = var.region
+  version                    = var.runtime_version
+  app_service_plan_id        = module.app_service_plan.id
+  storage_account_name       = module.storage_account.resource_name
+  storage_account_access_key = module.storage_account.primary_access_key
 
   site_config {
-    min_tls_version = "1.2"
-    ftps_state = "Disabled"
-    
+    min_tls_version           = "1.2"
+    ftps_state                = "Disabled"
+    pre_warmed_instance_count = var.pre_warmed_instance_count
+
     dynamic "ip_restriction" {
       for_each = var.allowed_ips
       iterator = ip
@@ -95,6 +97,8 @@ resource "azurerm_function_app" "function_app" {
   app_settings = merge(
     {
       APPINSIGHTS_INSTRUMENTATIONKEY = var.application_insights_instrumentation_key
+      # No downtime on slots swap
+      WEBSITE_ADD_SITENAME_BINDINGS_IN_APPHOST_CONFIG = 1
     },
     var.app_settings,
     module.secrets_from_keyvault.secrets_with_value
@@ -146,7 +150,7 @@ resource "azurerm_app_service_virtual_network_swift_connection" "app_service_vir
 resource "azurerm_template_deployment" "function_keys" {
   count = var.export_default_key ? 1 : 0
 
-  name  = "javafunckeys"
+  name = "javafunckeys"
   parameters = {
     functionApp = azurerm_function_app.function_app.name
   }
