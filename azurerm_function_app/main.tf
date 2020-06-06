@@ -23,7 +23,7 @@ module "storage_account" {
   environment_short = var.environment_short
   region            = var.region
 
-  name                     = "f${var.name}"
+  name                     = "${var.resources_prefix.storage_account}${var.name}"
   resource_group_name      = var.resource_group_name
   account_tier             = var.storage_account_info.account_tier
   account_replication_type = var.storage_account_info.account_replication_type
@@ -38,7 +38,7 @@ module "app_service_plan" {
   environment_short = var.environment_short
   region            = var.region
 
-  name                = "f${var.name}"
+  name                = "${var.resources_prefix.app_service_plan}${var.name}"
   resource_group_name = var.resource_group_name
   kind                = var.app_service_plan_info.kind
   sku_tier            = var.app_service_plan_info.sku_tier
