@@ -18,6 +18,20 @@ variable "name" {
   type = string
 }
 
+variable "resources_prefix" {
+  type = object({
+    function_app     = string
+    app_service_plan = string
+    storage_account  = string
+  })
+
+  default = {
+    function_app     = "func"
+    app_service_plan = "f"
+    storage_account  = "f"
+  }
+}
+
 variable "resource_group_name" {
   type = string
 }
@@ -128,5 +142,5 @@ variable export_default_key {
 }
 
 locals {
-  resource_name = "${var.global_prefix}-${var.environment_short}-func-${var.name}"
+  resource_name = "${var.global_prefix}-${var.environment_short}-${var.resources_prefix.function_app}-${var.name}"
 }
