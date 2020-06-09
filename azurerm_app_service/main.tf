@@ -22,14 +22,14 @@ data "azurerm_key_vault_secret" "secret_sas_url" {
 }
 
 module "secrets_from_keyvault" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault?ref=v2.0.25"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault?ref=v2.0.28"
 
   key_vault_id = var.app_settings_secrets.key_vault_id
   secrets_map  = var.app_settings_secrets.map
 }
 
 module "app_service_plan" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_app_service_plan?ref=v2.0.25"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_app_service_plan?ref=v2.0.28"
 
   global_prefix     = var.global_prefix
   environment       = var.environment
@@ -55,7 +55,7 @@ resource "azurerm_app_service" "app_service" {
   site_config {
     always_on       = var.always_on
     min_tls_version = "1.2"
-    ftps_state = "Disabled"
+    ftps_state      = "Disabled"
 
     dynamic "ip_restriction" {
       for_each = var.allowed_ips
@@ -122,7 +122,7 @@ resource "azurerm_app_service" "app_service" {
 module "subnet" {
   module_disabled = var.subnet_id != null || var.virtual_network_info == null
 
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v2.0.25"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v2.0.28"
 
   global_prefix     = var.global_prefix
   environment       = var.environment
@@ -132,7 +132,7 @@ module "subnet" {
   name                 = "app${var.name}"
   resource_group_name  = var.virtual_network_info != null ? var.virtual_network_info.resource_group_name : "none"
   virtual_network_name = var.virtual_network_info != null ? var.virtual_network_info.name : "none"
-  address_prefix       = var.virtual_network_info != null ? var.virtual_network_info.subnet_address_prefix : "none"
+  address_prefixes     = var.virtual_network_info != null ? [var.virtual_network_info.subnet_address_prefix] : ["none"]
 
   delegation = {
     name = "default"
