@@ -110,13 +110,14 @@ resource "azurerm_application_gateway" "application_gateway" {
     iterator = service
 
     content {
-      name                = "probe-${service.value.name}"
-      host                = service.value.probe.host
-      protocol            = service.value.probe.protocol
-      path                = service.value.probe.path
-      interval            = service.value.probe.interval
-      timeout             = service.value.probe.timeout
-      unhealthy_threshold = service.value.probe.unhealthy_threshold
+      name                                      = "probe-${service.value.name}"
+      host                                      = service.value.probe.host
+      protocol                                  = service.value.probe.protocol
+      path                                      = service.value.probe.path
+      interval                                  = service.value.probe.interval
+      timeout                                   = service.value.probe.timeout
+      unhealthy_threshold                       = service.value.probe.unhealthy_threshold
+      pick_host_name_from_backend_http_settings = service.value.probe.host == null ? true : false
     }
   }
 
