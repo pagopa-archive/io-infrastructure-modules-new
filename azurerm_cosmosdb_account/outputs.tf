@@ -32,3 +32,8 @@ output "primary_readonly_master_key" {
   value     = azurerm_cosmosdb_account.cosmosdb_account.primary_readonly_master_key
   sensitive = true
 }
+
+output "connection_strings" {
+  value     = azurerm_cosmosdb_account.cosmosdb_account.connection_strings
+  sensitive = true
+}
