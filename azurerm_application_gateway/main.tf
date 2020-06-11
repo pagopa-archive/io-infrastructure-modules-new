@@ -126,14 +126,15 @@ resource "azurerm_application_gateway" "application_gateway" {
     iterator = service
 
     content {
-      name                  = "backendhttpsettings-${service.value.name}"
-      protocol              = service.value.backend_http_settings.protocol
-      port                  = service.value.backend_http_settings.port
-      path                  = service.value.backend_http_settings.path
-      cookie_based_affinity = service.value.backend_http_settings.cookie_based_affinity
-      request_timeout       = service.value.backend_http_settings.request_timeout
-      probe_name            = "probe-${service.value.name}"
-      host_name             = service.value.backend_http_settings.host_name
+      name                                = "backendhttpsettings-${service.value.name}"
+      protocol                            = service.value.backend_http_settings.protocol
+      port                                = service.value.backend_http_settings.port
+      path                                = service.value.backend_http_settings.path
+      cookie_based_affinity               = service.value.backend_http_settings.cookie_based_affinity
+      request_timeout                     = service.value.backend_http_settings.request_timeout
+      probe_name                          = "probe-${service.value.name}"
+      host_name                           = service.value.backend_http_settings.host_name
+      pick_host_name_from_backend_address = service.value.backend_http_settings.host_name == null ? true : false
     }
   }
 
