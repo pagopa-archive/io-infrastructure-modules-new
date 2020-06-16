@@ -23,6 +23,34 @@ resource "azurerm_cdn_endpoint" "cdn_endpoint" {
     host_name = var.origin_host_name
   }
 
+  dynamic "global_delivery_rule" {
+    iterator = l
+    for_each = var.global_delivery_rule_cache_expiration_action
+    content {
+      cache_expiration_action {
+        behavior = l.value.behavior
+        duration = l.value.duration
+      }
+    }
+  }
+
+  dynamic "delivery_rule" {
+    iterator = l
+    for_each = var.delivery_rule_url_path_condition_cache_expiration_action
+    content {
+      name  = l.value.name
+      order = l.value.order
+      url_path_condition {
+        operator     = l.value.operator
+        match_values = l.value.match_values
+      }
+      cache_expiration_action {
+        behavior = l.value.behavior
+        duration = l.value.duration
+      }      
+    }
+  }
+
   tags = {
     environment = var.environment
   }
