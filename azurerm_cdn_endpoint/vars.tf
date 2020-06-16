@@ -51,11 +51,10 @@ variable "origin_host_name" {
 }
 
 variable "global_delivery_rule_cache_expiration_action" {
-  type = list(object({
+  type = object({
     behavior = string
     duration = string
-  }))
-  default = []
+  })
 }
 
 variable "delivery_rule_url_path_condition_cache_expiration_action" {
