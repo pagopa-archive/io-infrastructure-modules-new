@@ -50,6 +50,26 @@ variable "origin_host_name" {
   type = string
 }
 
+variable "global_delivery_rule_cache_expiration_action" {
+  type = object({
+    behavior = string
+    duration = string
+  })
+  default = null
+}
+
+variable "delivery_rule_url_path_condition_cache_expiration_action" {
+  type = list(object({
+    name         = string
+    order        = number
+    operator     = string
+    match_values = list(string)
+    behavior     = string
+    duration     = string
+  }))
+  default = []
+}
+
 locals {
   resource_name = "${var.global_prefix}-${var.environment_short}-cdnendpoint-${var.name}"
 }
