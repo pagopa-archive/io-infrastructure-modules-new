@@ -55,6 +55,7 @@ variable "global_delivery_rule_cache_expiration_action" {
     behavior = string
     duration = string
   })
+  default = null
 }
 
 variable "delivery_rule_url_path_condition_cache_expiration_action" {

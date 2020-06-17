@@ -23,10 +23,13 @@ resource "azurerm_cdn_endpoint" "cdn_endpoint" {
     host_name = var.origin_host_name
   }
 
-  global_delivery_rule {
-    cache_expiration_action {
-      behavior = var.global_delivery_rule_cache_expiration_action.behavior
-      duration = var.global_delivery_rule_cache_expiration_action.duration
+  dynamic "global_delivery_rule" {
+    for_each = var.global_delivery_rule_cache_expiration_action == null ? [] : ["dummy"]
+    content {
+      cache_expiration_action {
+        behavior = var.global_delivery_rule_cache_expiration_action.behavior
+        duration = var.global_delivery_rule_cache_expiration_action.duration
+      }
     }
   }
 
