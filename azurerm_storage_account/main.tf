@@ -28,6 +28,17 @@ resource "azurerm_storage_account" "storage_account" {
     }
   }
 
+  dynamic "network_rules" {
+    for_each = var.network_rules == null ? [] : [var.network_rules]
+
+    content {
+      default_action             = length(network_rules.value.ip_rules) == 0 && length(network_rules.value.virtual_network_subnet_ids) == 0 ? network_rules.value.default_action : "Deny"
+      bypass                     = network_rules.value.bypass
+      ip_rules                   = network_rules.value.ip_rules
+      virtual_network_subnet_ids = network_rules.value.virtual_network_subnet_ids
+    }
+  }
+
   tags = {
     environment = var.environment
   }

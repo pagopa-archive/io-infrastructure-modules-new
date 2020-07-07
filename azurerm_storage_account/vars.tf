@@ -45,6 +45,20 @@ variable "blob_properties_delete_retention_policy_days" {
   default     = null
 }
 
+
+# Note: If specifying network_rules, one of either ip_rules or virtual_network_subnet_ids must be specified
+# and default_action must be set to Deny.
+
+variable "network_rules" {
+  type = object({
+    default_action             = string # Valid option Deny Allow
+    bypass                     = set(string)
+    ip_rules                   = list(string)
+    virtual_network_subnet_ids = list(string)
+  })
+  default = null
+}
+
 locals {
   resource_name = "${var.global_prefix}${var.environment_short}st${var.name}"
 }
