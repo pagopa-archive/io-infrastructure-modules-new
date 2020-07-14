@@ -1,5 +1,5 @@
 provider "azurerm" {
-  version = "=2.11.0"
+  version = "=2.18.0"
   features {}
 }
 
@@ -19,4 +19,3 @@ resource "azurerm_app_service_certificate" "app_service_certificate" {
   location            = var.region
   key_vault_secret_id = data.azurerm_key_vault_secret.certificate_secret.id
 }
-

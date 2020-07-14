@@ -1,5 +1,5 @@
 provider "azurerm" {
-  version = "=2.11.0"
+  version = "=2.18.0"
   features {}
 }
 
@@ -21,8 +21,8 @@ resource "azurerm_monitor_diagnostic_setting" "monitor_diagnostic_setting" {
   # required due to this issue: https://github.com/terraform-providers/terraform-provider-azurerm/issues/6356
   eventhub_authorization_rule_id = var.eventhub_authorization_rule != null ? "/subscriptions/${data.azurerm_subscription.subscription.subscription_id}/resourceGroups/${var.eventhub_resource_group_name}/providers/Microsoft.EventHub/namespaces/${var.eventhub_namespace_name}/authorizationrules/${var.eventhub_authorization_rule}" : null
 
-  # Note: retention_policies are still required even if it is not useful 
-  #       when we use the log analytics workspace.  
+  # Note: retention_policies are still required even if it is not useful
+  #       when we use the log analytics workspace.
   dynamic "log" {
     iterator = l
     for_each = var.logs

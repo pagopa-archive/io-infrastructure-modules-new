@@ -1,5 +1,5 @@
 provider "azurerm" {
-  version = "=2.11.0"
+  version = "=2.18.0"
   features {}
 }
 
@@ -45,7 +45,7 @@ resource "azurerm_cdn_endpoint" "cdn_endpoint" {
       cache_expiration_action {
         behavior = delivery_rule.value.behavior
         duration = delivery_rule.value.duration
-      }      
+      }
     }
   }
 
