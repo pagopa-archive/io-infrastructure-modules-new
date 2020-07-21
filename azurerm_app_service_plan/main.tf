@@ -1,5 +1,5 @@
 provider "azurerm" {
-  version = "=2.11.0"
+  version = "=2.18.0"
   features {}
 }
 
@@ -30,5 +30,3 @@ resource "azurerm_app_service_plan" "app_service_plan" {
     environment = var.environment
   }
 }
-
-

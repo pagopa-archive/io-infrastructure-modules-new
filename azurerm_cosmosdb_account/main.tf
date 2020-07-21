@@ -1,5 +1,5 @@
 provider "azurerm" {
-  version = "=2.11.0"
+  version = "=2.18.0"
   features {}
 }
 
@@ -60,5 +60,3 @@ resource "azurerm_cosmosdb_account" "cosmosdb_account" {
   ip_range_filter = var.ip_range
 
 }
-
-

@@ -1,5 +1,5 @@
 provider "azurerm" {
-  version = "=2.11.0"
+  version = "=2.18.0"
   features {}
 }
 
@@ -24,4 +24,3 @@ resource "azurerm_app_service_custom_hostname_binding" "hostname_binding" {
   ssl_state           = var.ssl_state
   thumbprint          = var.custom_domain.certificate_thumbprint
 }
-

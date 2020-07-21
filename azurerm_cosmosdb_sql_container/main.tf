@@ -1,5 +1,5 @@
 provider "azurerm" {
-  version = "=2.11.0"
+  version = "=2.18.0"
   features {}
 }
 
@@ -25,5 +25,3 @@ resource "azurerm_cosmosdb_sql_container" "cosmosdb_sql_container" {
      }
   }
 }
-
-
