@@ -53,6 +53,12 @@ variable "reserved" {
   default = false
 }
 
+variable "module_disabled" {
+  type        = bool
+  description = "Resource not created when disabled"
+  default     = false
+}
+
 locals {
   resource_name = "${var.global_prefix}-${var.environment_short}-plan-${var.name}"
 }

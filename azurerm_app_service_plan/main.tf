@@ -11,11 +11,12 @@ terraform {
 # New infrastructure
 
 resource "azurerm_app_service_plan" "app_service_plan" {
+  count               = var.module_disabled ? 0 : 1
   name                = local.resource_name
   resource_group_name = var.resource_group_name
   location            = var.region
 
-  kind                = var.kind
+  kind = var.kind
 
   sku {
     tier     = var.sku_tier
