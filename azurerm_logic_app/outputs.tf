@@ -3,11 +3,7 @@ output "id" {
 }
 
 output "name" {
-  value = var.name
-}
-
-output "resource_name" {
-  value = local.resource_name
+  value = azurerm_logic_app_workflow.logic_app.name
 }
 
 output "access_endpoint" {
