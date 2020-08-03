@@ -67,13 +67,12 @@ variable "frontend_port" {
   type = number
 }
 
-variable "custom_domains" {
+variable "custom_domain" {
   type = object({
     zone_name                = string
     zone_resource_group_name = string
     identity_id              = string
     keyvault_id              = string
-    certificate_name         = string
   })
 }
 
@@ -83,8 +82,9 @@ variable "services" {
     a_record_name = string
 
     http_listener = object({
-      protocol  = string
-      host_name = string
+      protocol             = string
+      host_name            = string
+      ssl_certificate_name = string
     })
 
     backend_address_pool = object({

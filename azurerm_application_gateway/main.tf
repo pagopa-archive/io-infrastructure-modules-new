@@ -8,8 +8,9 @@ terraform {
 }
 
 data "azurerm_key_vault_secret" "certificate_secret" {
-  name         = var.custom_domains.certificate_name
-  key_vault_id = var.custom_domains.keyvault_id
+  for_each     = { for s in var.services : s.http_listener.ssl_certificate_name => s }
+  name         = each.key
+  key_vault_id = var.custom_domain.keyvault_id
 }
 
 module "subnet" {
@@ -45,7 +46,7 @@ resource "azurerm_application_gateway" "application_gateway" {
 
   identity {
     type         = "UserAssigned"
-    identity_ids = [var.custom_domains.identity_id]
+    identity_ids = [var.custom_domain.identity_id]
   }
 
   ssl_policy {
@@ -74,9 +75,13 @@ resource "azurerm_application_gateway" "application_gateway" {
     port = var.frontend_port
   }
 
-  ssl_certificate {
-    name                = "sslcertificate"
-    key_vault_secret_id = trimsuffix(data.azurerm_key_vault_secret.certificate_secret.id, "${data.azurerm_key_vault_secret.certificate_secret.version}")
+  dynamic "ssl_certificate" {
+    for_each = { for s in var.services : s.http_listener.ssl_certificate_name => s }
+    iterator = cert
+    content {
+      name                = cert.key
+      key_vault_secret_id = trimsuffix(data.azurerm_key_vault_secret.certificate_secret[cert.key].id, data.azurerm_key_vault_secret.certificate_secret[cert.key].version)
+    }
   }
 
   dynamic "http_listener" {
@@ -89,7 +94,7 @@ resource "azurerm_application_gateway" "application_gateway" {
       frontend_port_name             = local.frontend_port_name
       protocol                       = service.value.http_listener.protocol
       host_name                      = service.value.http_listener.host_name
-      ssl_certificate_name           = "sslcertificate"
+      ssl_certificate_name           = service.value.http_listener.ssl_certificate_name
       require_sni                    = true
     }
   }
@@ -188,8 +193,8 @@ resource "azurerm_dns_a_record" "dns_a_record" {
   for_each = { for service in var.services : service.name => service.a_record_name }
 
   name                = each.value
-  zone_name           = var.custom_domains.zone_name
-  resource_group_name = var.custom_domains.zone_resource_group_name
+  zone_name           = var.custom_domain.zone_name
+  resource_group_name = var.custom_domain.zone_resource_group_name
   ttl                 = 300
   records = [
     var.public_ip_info.ip
