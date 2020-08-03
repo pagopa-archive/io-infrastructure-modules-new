@@ -31,6 +31,8 @@ module "storage_account" {
 }
 
 module "app_service_plan" {
+  module_disabled = var.app_service_plan_id == null ? false : true
+
   source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_app_service_plan?ref=v2.0.33"
 
   global_prefix     = var.global_prefix
@@ -57,7 +59,7 @@ resource "azurerm_function_app" "function_app" {
   resource_group_name        = var.resource_group_name
   location                   = var.region
   version                    = var.runtime_version
-  app_service_plan_id        = module.app_service_plan.id
+  app_service_plan_id        = var.app_service_plan_id != null ? var.app_service_plan_id : module.app_service_plan.id
   storage_account_name       = module.storage_account.resource_name
   storage_account_access_key = module.storage_account.primary_access_key
 
