@@ -55,6 +55,12 @@ variable "storage_account_info" {
   }
 }
 
+variable "app_service_plan_id" {
+  type        = string
+  description = "The app service plan id to associate to the function. If null a new plan is created, if not null the app_service_plan_info is not relevant."
+  default     = null
+}
+
 variable "app_service_plan_info" {
   type = object({
     kind     = string
@@ -139,12 +145,6 @@ variable "avoid_old_subnet_delete" {
 variable export_default_key {
   type    = bool
   default = false
-}
-
-variable "app_service_plan_id" {
-  type        = string
-  description = "The app service plan id to associate to the function. If null a new plan is created, if not null the app_service_plan_info is not relevant."
-  default     = null
 }
 
 locals {
