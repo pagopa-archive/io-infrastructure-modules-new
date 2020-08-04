@@ -147,12 +147,6 @@ variable export_default_key {
   default = false
 }
 
-variable "app_service_plan_id" {
-  type        = string
-  description = "The app service plan id to associate to the function. If null a new plan is created, if not null the app_service_plan_info is not relevant."
-  default     = null
-}
-
 locals {
   resource_name = "${var.global_prefix}-${var.environment_short}-${var.resources_prefix.function_app}-${var.name}"
 }
