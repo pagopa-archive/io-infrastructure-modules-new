@@ -16,8 +16,7 @@ data "azurerm_key_vault_secret" "allowed_ips_secret" {
 }
 
 module "secrets_from_keyvault" {
-  #source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault?ref=v2.0.35"
-  source = "/home/uolter/src/pagopa/io-infrastructure-modules-new/azurerm_secrets_from_keyvault"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault?ref=v2.0.36"
 
   key_vault_id = var.app_settings_secrets.key_vault_id
   secrets_map  = var.app_settings_secrets.map
