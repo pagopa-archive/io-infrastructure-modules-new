@@ -16,7 +16,7 @@ data "azurerm_key_vault_secret" "certificate_secret" {
 module "subnet" {
   module_disabled = var.avoid_old_subnet_delete == false && (var.subnet_id != null || var.virtual_network_info == null)
 
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v2.0.33"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v2.0.36"
 
   global_prefix     = var.global_prefix
   environment       = var.environment
