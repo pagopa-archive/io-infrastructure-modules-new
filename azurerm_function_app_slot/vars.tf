@@ -30,7 +30,7 @@ variable "runtime_version" {
 variable "function_app_id" {
   type        = string
   default     = null
-  description = "This is required when we set the subnet id for vNet integration."
+  description = "This is required when it's set the subnet id for vNet integration."
 }
 
 variable "function_app_name" {
