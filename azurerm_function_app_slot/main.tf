@@ -82,11 +82,12 @@ resource "azurerm_function_app_slot" "function_app_slot" {
   }
 }
 
-resource "azurerm_app_service_virtual_network_swift_connection" "app_service_virtual_network_swift_connection" {
-  count = var.subnet_id == null ? 0 : 1
-
-  app_service_id = azurerm_function_app_slot.function_app_slot.id
+resource "azurerm_app_service_slot_virtual_network_swift_connection" "app_service_slot_virtual_network_swift_connection" {
+  count          = var.subnet_id == null ? 0 : 1
+  app_service_id = var.function_app_id
   subnet_id      = var.subnet_id
+  slot_name      = azurerm_function_app_slot.function_app_slot.name
+
 }
 
 resource "azurerm_template_deployment" "function_keys" {
