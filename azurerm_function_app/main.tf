@@ -1,5 +1,5 @@
 provider "azurerm" {
-  version = "=2.11.0"
+  version = "=2.18.0"
   features {}
 }
 
@@ -16,7 +16,7 @@ data "azurerm_key_vault_secret" "allowed_ips_secret" {
 }
 
 module "storage_account" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_account?ref=v2.0.25"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_account?ref=v2.0.33"
 
   global_prefix     = var.global_prefix
   environment       = var.environment
@@ -31,7 +31,9 @@ module "storage_account" {
 }
 
 module "app_service_plan" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_app_service_plan?ref=v2.0.25"
+  module_disabled = var.app_service_plan_id == null ? false : true
+
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_app_service_plan?ref=v2.0.35"
 
   global_prefix     = var.global_prefix
   environment       = var.environment
@@ -46,7 +48,7 @@ module "app_service_plan" {
 }
 
 module "secrets_from_keyvault" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault?ref=v2.0.25"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault?ref=v2.0.35"
 
   key_vault_id = var.app_settings_secrets.key_vault_id
   secrets_map  = var.app_settings_secrets.map
@@ -57,7 +59,7 @@ resource "azurerm_function_app" "function_app" {
   resource_group_name        = var.resource_group_name
   location                   = var.region
   version                    = var.runtime_version
-  app_service_plan_id        = module.app_service_plan.id
+  app_service_plan_id        = var.app_service_plan_id != null ? var.app_service_plan_id : module.app_service_plan.id
   storage_account_name       = module.storage_account.resource_name
   storage_account_access_key = module.storage_account.primary_access_key
 
@@ -114,7 +116,7 @@ resource "azurerm_function_app" "function_app" {
 module "subnet" {
   module_disabled = var.avoid_old_subnet_delete == false && (var.subnet_id != null || var.virtual_network_info == null)
 
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v2.0.25"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v2.0.33"
 
   global_prefix     = var.global_prefix
   environment       = var.environment

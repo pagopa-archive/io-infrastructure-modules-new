@@ -1,5 +1,5 @@
 provider "azurerm" {
-  version = "=2.11.0"
+  version = "=2.18.0"
   features {}
 }
 
@@ -9,7 +9,7 @@ terraform {
 }
 
 module "public_ip" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_public_ip?ref=v2.0.25"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_public_ip?ref=v2.0.33"
 
   global_prefix       = var.global_prefix
   environment         = var.environment
@@ -37,7 +37,7 @@ resource "azurerm_virtual_network_gateway" "virtual_network_gateway" {
 
   #Note: the public ip address would be the same for all the ip_configuration occurences
   # and it is not the expected behaviour. If needed fix it! The simplest approach it might be
-  # to use the resuorce ip_address with the attribute count in place of the module. 
+  # to use the resuorce ip_address with the attribute count in place of the module.
   dynamic "ip_configuration" {
     for_each = var.ip_configurations
     content {

@@ -1,5 +1,5 @@
 provider "azurerm" {
-  version = "=2.11.0"
+  version = "=2.18.0"
   features {}
 }
 
@@ -18,11 +18,10 @@ resource "azurerm_storage_account" "storage_account" {
   access_tier               = var.access_tier
   enable_https_traffic_only = true
 
-  blob_properties {
-    dynamic "delete_retention_policy" {
-      for_each = var.blob_properties_delete_retention_policy_days == null ? [] : ["dummy"]
-
-      content {
+  dynamic "blob_properties" {
+    for_each = var.blob_properties_delete_retention_policy_days == null ? [] : ["dummy"]
+    content {
+      delete_retention_policy {
         days = var.blob_properties_delete_retention_policy_days
       }
     }
