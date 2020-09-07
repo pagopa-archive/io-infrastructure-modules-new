@@ -16,7 +16,7 @@ data "azurerm_key_vault_secret" "allowed_ips_secret" {
 }
 
 module "secrets_from_keyvault" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault?ref=v2.0.36"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault?ref=v2.0.38"
 
   key_vault_id = var.app_settings_secrets.key_vault_id
   secrets_map  = var.app_settings_secrets.map
@@ -84,11 +84,12 @@ resource "azurerm_function_app_slot" "function_app_slot" {
   }
 }
 
-resource "azurerm_app_service_virtual_network_swift_connection" "app_service_virtual_network_swift_connection" {
-  count = var.subnet_id == null ? 0 : 1
-
-  app_service_id = azurerm_function_app_slot.function_app_slot.id
+resource "azurerm_app_service_slot_virtual_network_swift_connection" "app_service_slot_virtual_network_swift_connection" {
+  count          = var.subnet_id == null ? 0 : 1
+  app_service_id = var.function_app_id
   subnet_id      = var.subnet_id
+  slot_name      = azurerm_function_app_slot.function_app_slot.name
+
 }
 
 resource "azurerm_template_deployment" "function_keys" {
