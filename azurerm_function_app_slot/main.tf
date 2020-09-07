@@ -16,7 +16,7 @@ data "azurerm_key_vault_secret" "allowed_ips_secret" {
 }
 
 module "secrets_from_keyvault" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault?ref=v2.0.37"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault?ref=v2.0.38"
 
   key_vault_id = var.app_settings_secrets.key_vault_id
   secrets_map  = var.app_settings_secrets.map
@@ -63,6 +63,8 @@ resource "azurerm_function_app_slot" "function_app_slot" {
         subnet_id = subnet.value
       }
     }
+
+    auto_swap_slot_name = var.auto_swap_slot_name
   }
 
   app_settings = merge(

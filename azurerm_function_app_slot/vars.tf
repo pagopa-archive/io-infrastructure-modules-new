@@ -59,6 +59,12 @@ variable "pre_warmed_instance_count" {
   default = 1
 }
 
+variable "auto_swap_slot_name" {
+  type        = string
+  description = "The name of the slot to automatically swap to during deployment"
+  default     = null
+}
+
 variable application_insights_instrumentation_key {
   type = string
 }
