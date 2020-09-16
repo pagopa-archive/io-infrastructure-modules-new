@@ -117,6 +117,16 @@ variable "key_vault_id" {
   default = null
 }
 
+variable "dns_record" {
+  type = object({
+    name                     = string
+    zone_name                = string
+    zone_resource_group_name = string
+    ttl                      = number
+  })
+  default = null
+}
+
 locals {
   resource_name               = "${var.global_prefix}-${var.environment_short}-vm-${var.name}"
   network_security_group_name = "${var.global_prefix}-${var.environment_short}-nsg-${var.name}"

@@ -136,3 +136,16 @@ resource "azurerm_linux_virtual_machine" "linux_virtual_machine" {
     environment = var.environment
   }
 }
+
+resource "azurerm_dns_a_record" "dns_a_record" {
+
+  count = var.dns_record != null ? 1 : 0
+
+  name                = var.dns_record.name
+  zone_name           = var.dns_record.zone_name
+  resource_group_name = var.dns_record.zone_resource_group_name
+  ttl                 = var.dns_record.ttl
+  records = [
+    azurerm_public_ip.public_ip[0].ip_address
+  ]
+}
