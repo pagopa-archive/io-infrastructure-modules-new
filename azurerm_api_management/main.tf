@@ -85,7 +85,7 @@ resource "azurerm_api_management_logger" "api_management_logger" {
   }
 }
 
-resource "azurerm_api_management_property" "api_management_property" {
+resource "azurerm_api_management_named_value" "api_management_named_value" {
   for_each = merge(var.named_values_map, module.secrets_from_keyvault.secrets_with_value)
 
   name                = each.key
