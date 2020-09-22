@@ -19,3 +19,6 @@ output "public_ip_address" {
   value = azurerm_public_ip.public_ip[*].ip_address
 }
 
+output "public_fqdn" {
+  value = var.dns_record != null ? azurerm_dns_a_record.dns_a_record[0].fqdn : null
+}

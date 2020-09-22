@@ -64,7 +64,8 @@ resource "azurerm_api_management" "api_management" {
       content {
         default_ssl_binding = domain.value.default
         host_name           = domain.value.name
-        key_vault_id        = data.azurerm_key_vault_secret.certificate_secret.id
+        # remove the certificate version from certifcate id url.
+        key_vault_id = replace(data.azurerm_key_vault_secret.certificate_secret.id, "/${data.azurerm_key_vault_secret.certificate_secret.version}", "")
       }
     }
   }
