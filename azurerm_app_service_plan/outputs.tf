@@ -1,7 +1,7 @@
 output "id" {
-  value = var.module_disabled == true ? null : azurerm_app_service_plan.app_service_plan[0].id
+  value = azurerm_app_service_plan.app_service_plan.id
 }
 
 output "name" {
-  value = var.module_disabled == true ? null : azurerm_app_service_plan.app_service_plan[0].name
+  value = azurerm_app_service_plan.app_service_plan.name
 }

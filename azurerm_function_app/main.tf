@@ -26,7 +26,7 @@ module "storage_account" {
 }
 
 module "app_service_plan" {
-  module_disabled = var.app_service_plan_id == null ? false : true
+  count  = var.app_service_plan_id == null ? 1 : 0
   source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_app_service_plan?ref=v2.1.0"
 
   global_prefix     = var.global_prefix
@@ -53,7 +53,7 @@ resource "azurerm_function_app" "function_app" {
   resource_group_name        = var.resource_group_name
   location                   = var.region
   version                    = var.runtime_version
-  app_service_plan_id        = var.app_service_plan_id != null ? var.app_service_plan_id : module.app_service_plan.id
+  app_service_plan_id        = var.app_service_plan_id != null ? var.app_service_plan_id : module.app_service_plan[0].id
   storage_account_name       = module.storage_account.resource_name
   storage_account_access_key = module.storage_account.primary_access_key
 
@@ -108,8 +108,7 @@ resource "azurerm_function_app" "function_app" {
 }
 
 module "subnet" {
-  module_disabled = var.avoid_old_subnet_delete == false && (var.subnet_id != null || var.virtual_network_info == null)
-
+  count  = var.avoid_old_subnet_delete == false && (var.subnet_id != null || var.virtual_network_info == null) ? 0 : 1
   source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v2.1.0"
 
   global_prefix     = var.global_prefix
@@ -140,7 +139,7 @@ resource "azurerm_app_service_virtual_network_swift_connection" "app_service_vir
   count = var.subnet_id == null && var.virtual_network_info == null ? 0 : 1
 
   app_service_id = azurerm_function_app.function_app.id
-  subnet_id      = var.subnet_id != null ? var.subnet_id : module.subnet.id
+  subnet_id      = var.subnet_id != null ? var.subnet_id : module.subnet[0].id
 }
 
 resource "azurerm_template_deployment" "function_keys" {
