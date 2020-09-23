@@ -1,11 +1,11 @@
 output "id" {
-  value = var.module_disabled ? null : azurerm_subnet.subnet[0].id
+  value = azurerm_subnet.subnet.id
 }
 
 output "name" {
-  value = var.module_disabled ? null : azurerm_subnet.subnet[0].name
+  value = azurerm_subnet.subnet.name
 }
 
 output "address_prefix" {
-  value = var.module_disabled ? null : azurerm_subnet.subnet[0].address_prefix
+  value = azurerm_subnet.subnet.address_prefix
 }
