@@ -40,7 +40,7 @@ variable "access_tier" {
 }
 
 variable "index_document" {
-  type    = string
+  type = string
 }
 
 variable "error_404_document" {
