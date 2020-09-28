@@ -1,8 +1,3 @@
-provider "azurerm" {
-  version = "=2.22.0"
-  features {}
-}
-
 terraform {
   # The configuration for this backend will be filled in by Terragrunt
   backend "azurerm" {}
@@ -14,14 +9,14 @@ data "azurerm_key_vault_secret" "certificate_secret" {
 }
 
 module "secrets_from_keyvault" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault?ref=v2.0.37"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault?ref=v2.1.0"
 
   key_vault_id = var.named_values_secrets.key_vault_id
   secrets_map  = var.named_values_secrets.map
 }
 
 module "subnet" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v2.0.37"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v2.1.0"
 
   global_prefix     = var.global_prefix
   environment       = var.environment

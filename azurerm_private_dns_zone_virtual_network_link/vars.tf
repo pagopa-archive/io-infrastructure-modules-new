@@ -39,8 +39,3 @@ variable "registration_enabled" {
   description = "Is auto-registration of virtual machine records in the virtual network in the Private DNS zone enabled?"
   default     = false
 }
-
-variable "module_disabled" {
-  type    = bool
-  default = false
-}

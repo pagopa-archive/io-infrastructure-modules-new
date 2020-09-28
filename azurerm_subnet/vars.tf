@@ -55,12 +55,6 @@ variable "service_endpoints" {
   default = []
 }
 
-variable "module_disabled" {
-  type = bool
-
-  default = false
-}
-
 variable "enforce_private_link_endpoint_network_policies" {
   type        = bool
   description = "Enable or Disable network policies for the private link endpoint on the subnet."

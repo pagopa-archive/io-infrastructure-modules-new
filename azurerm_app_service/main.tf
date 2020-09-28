@@ -1,8 +1,3 @@
-provider "azurerm" {
-  version = "=2.22.0"
-  features {}
-}
-
 terraform {
   # The configuration for this backend will be filled in by Terragrunt
   backend "azurerm" {}
@@ -22,14 +17,14 @@ data "azurerm_key_vault_secret" "secret_sas_url" {
 }
 
 module "secrets_from_keyvault" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault?ref=v2.0.37"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault?ref=v2.1.0"
 
   key_vault_id = var.app_settings_secrets.key_vault_id
   secrets_map  = var.app_settings_secrets.map
 }
 
 module "app_service_plan" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_app_service_plan?ref=v2.0.37"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_app_service_plan?ref=v2.1.0"
 
   global_prefix     = var.global_prefix
   environment       = var.environment
@@ -120,9 +115,9 @@ resource "azurerm_app_service" "app_service" {
 }
 
 module "subnet" {
-  module_disabled = var.subnet_id != null || var.virtual_network_info == null
+  count = var.subnet_id == var.subnet_id != null || var.virtual_network_info == null ? 1 : 0
 
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v2.0.37"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v2.1.0"
 
   global_prefix     = var.global_prefix
   environment       = var.environment
@@ -152,5 +147,5 @@ resource "azurerm_app_service_virtual_network_swift_connection" "app_service_vir
   count = var.subnet_id == null && var.virtual_network_info == null ? 0 : 1
 
   app_service_id = azurerm_app_service.app_service.id
-  subnet_id      = var.subnet_id != null ? var.subnet_id : module.subnet.id
+  subnet_id      = var.subnet_id != null ? var.subnet_id : module.subnet[0].id
 }

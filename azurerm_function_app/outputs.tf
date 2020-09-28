@@ -21,11 +21,11 @@ output "default_key" {
 }
 
 output "subnet_id" {
-  value = module.subnet.id
+  value = length(module.subnet) > 0 ? module.subnet[0].id : null
 }
 
 output "app_service_plan_id" {
-  value = module.app_service_plan.id
+  value = length(module.app_service_plan) > 0 ? module.app_service_plan[0].id : null
 }
 
 output "storage_account" {

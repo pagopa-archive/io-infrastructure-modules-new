@@ -23,8 +23,3 @@ variable "name" {
 variable "resource_group_name" {
   type = string
 }
-
-variable "module_disabled" {
-  type    = bool
-  default = false
-}
