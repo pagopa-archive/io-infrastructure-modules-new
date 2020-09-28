@@ -115,7 +115,7 @@ resource "azurerm_app_service" "app_service" {
 }
 
 module "subnet" {
-  count = var.subnet_id == var.subnet_id != null || var.virtual_network_info == null ? 1 : 0
+  count = var.subnet_id != null || var.virtual_network_info == null ? 0 : 1
 
   source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v2.1.0"
 
