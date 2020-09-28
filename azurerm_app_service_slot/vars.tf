@@ -18,6 +18,10 @@ variable "name" {
   type = string
 }
 
+variable "app_service_id" {
+  type = string
+}
+
 variable "app_service_name" {
   type = string
 }
