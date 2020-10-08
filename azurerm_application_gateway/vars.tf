@@ -112,6 +112,11 @@ variable "services" {
   }))
 }
 
+variable "firewall_policy_id" {
+  type    = string
+  default = null
+}
+
 variable "waf_configuration" {
   type = object({
     enabled          = bool

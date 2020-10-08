@@ -151,6 +151,8 @@ resource "azurerm_application_gateway" "application_gateway" {
     }
   }
 
+  firewall_policy_id = var.firewall_policy_id
+
   dynamic "waf_configuration" {
     for_each = var.waf_configuration == null ? [] : ["dummy"]
 
