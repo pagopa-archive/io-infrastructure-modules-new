@@ -31,15 +31,16 @@ variable "custom_rules" {
     action    = string
 
     match_conditions = list(object({
+      operator     = string
+      match_values = list(string)
+
       match_variables = list(object({
         variable_name = string
         selector      = string
       }))
-      match_values       = list(string)
-      operator           = string
-      negation_condition = string
-      transforms         = list(string)
+
     }))
+
   }))
   default = []
 }

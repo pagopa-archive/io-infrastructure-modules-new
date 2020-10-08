@@ -20,24 +20,21 @@ resource "azurerm_web_application_firewall_policy" "web_application_firewall_pol
       dynamic "match_conditions" {
         for_each = custom_rules.value.match_conditions
         content {
-          operator           = match_conditions.value.operator
-          negation_condition = looup(match_conditions.value, "negation_condition", null)
-          match_values       = match_conditions.value.match_values
-          transforms         = looup(match_conditions.value, "transforms", null)
+          operator     = match_conditions.value.operator
+          match_values = match_conditions.value.match_values
 
           dynamic "match_variables" {
-            for_each = match_variables.value.match_variables
+            for_each = match_conditions.value.match_variables
             content {
               variable_name = match_variables.value.variable_name
               selector      = lookup(match_variables.value, "selector", null)
             }
           }
+
         }
       }
-
     }
   }
-
 
   policy_settings {
     enabled                     = lookup(var.policy_settings, "enabled", "Enabled")
