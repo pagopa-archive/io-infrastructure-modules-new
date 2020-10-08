@@ -28,6 +28,7 @@ variable "custom_rules" {
     name      = string
     priority  = number
     rule_type = string
+    action    = string
 
     match_conditions = list(object({
       match_variables = list(object({
@@ -39,7 +40,6 @@ variable "custom_rules" {
       negation_condition = string
       transforms         = list(string)
     }))
-    action = string
   }))
   default = []
 }
