@@ -4,7 +4,7 @@ terraform {
 }
 
 resource "azurerm_web_application_firewall_policy" "web_application_firewall_policy" {
-  name                = var.policy_name
+  name                = local.resource_name
   resource_group_name = var.resource_group_name
   location            = var.region
 
@@ -30,7 +30,6 @@ resource "azurerm_web_application_firewall_policy" "web_application_firewall_pol
               selector      = match_variables.value.selector
             }
           }
-
         }
       }
     }

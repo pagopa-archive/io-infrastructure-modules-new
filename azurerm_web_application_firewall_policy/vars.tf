@@ -18,7 +18,7 @@ variable "resource_group_name" {
   type = string
 }
 
-variable "policy_name" {
+variable "name" {
   type        = string
   description = "The name of the policy."
 }
@@ -72,4 +72,8 @@ variable "managed_rules" {
       }))
     }))
   })
+}
+
+locals {
+  resource_name = "${var.global_prefix}-${var.environment_short}-rg-${var.name}"
 }
