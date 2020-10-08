@@ -12,7 +12,7 @@ resource "azurerm_web_application_firewall_policy" "web_application_firewall_pol
   dynamic "custom_rules" {
     for_each = var.custom_rules
     content {
-      name      = lookup(custom_rules.value, "name", null)
+      name      = custom_rules.value.name
       priority  = custom_rules.value.priority
       rule_type = custom_rules.value.rule_type
       action    = custom_rules.value.action
@@ -27,7 +27,7 @@ resource "azurerm_web_application_firewall_policy" "web_application_firewall_pol
             for_each = match_conditions.value.match_variables
             content {
               variable_name = match_variables.value.variable_name
-              selector      = lookup(match_variables.value, "selector", null)
+              selector      = match_variables.value.selector
             }
           }
 
@@ -37,20 +37,20 @@ resource "azurerm_web_application_firewall_policy" "web_application_firewall_pol
   }
 
   policy_settings {
-    enabled                     = lookup(var.policy_settings, "enabled", "Enabled")
-    mode                        = lookup(var.policy_settings, "mode", "Prevention")
-    file_upload_limit_in_mb     = lookup(var.policy_settings, "file_upload_limit_in_mb", 100)
-    request_body_check          = lookup(var.policy_settings, "request_body_check", true)
-    max_request_body_size_in_kb = lookup(var.policy_settings, "max_request_body_size_in_kb", 128)
+    enabled                     = var.policy_settings.enabled
+    mode                        = var.policy_settings.mode
+    file_upload_limit_in_mb     = var.policy_settings.file_upload_limit_in_mb
+    request_body_check          = var.policy_settings.request_body_check
+    max_request_body_size_in_kb = var.policy_settings.max_request_body_size_in_kb
   }
 
   managed_rules {
 
     dynamic "exclusion" {
-      for_each = lookup(var.managed_rules, "exclusion", [])
+      for_each = var.managed_rules.exclusion
       content {
         match_variable          = exclusion.value.match_variable
-        selector                = lookup(exclusion.value, "selector", null)
+        selector                = exclusion.value.selector
         selector_match_operator = exclusion.value.selector_match_operator
       }
     }
@@ -59,14 +59,14 @@ resource "azurerm_web_application_firewall_policy" "web_application_firewall_pol
     dynamic "managed_rule_set" {
       for_each = var.managed_rules.managed_rule_set
       content {
-        type    = lookup(managed_rule_set.value, "type", null)
+        type    = managed_rule_set.value.type
         version = managed_rule_set.value.version
 
         dynamic "rule_group_override" {
-          for_each = lookup(managed_rule_set.value, "rule_group_override", [])
+          for_each = managed_rule_set.value.rule_group_override
           content {
             rule_group_name = rule_group_override.value.rule_group_name
-            disabled_rules  = lookup(rule_group_override.value, "disabled_rules", null)
+            disabled_rules  = rule_group_override.value.disabled_rules
           }
         }
 
