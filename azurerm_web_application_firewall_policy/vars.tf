@@ -75,5 +75,5 @@ variable "managed_rules" {
 }
 
 locals {
-  resource_name = "${var.global_prefix}-${var.environment_short}-rg-${var.name}"
+  resource_name = "${var.global_prefix}-${var.environment_short}-waf-${var.name}"
 }
