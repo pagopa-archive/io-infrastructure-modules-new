@@ -195,6 +195,7 @@ resource "azurerm_application_gateway" "application_gateway" {
       backend_address_pool_name  = "backendaddresspool-${service.value.name}"
       backend_http_settings_name = "backendhttpsettings-${service.value.name}"
       rule_type                  = "Basic"
+      rewrite_rule_set_name      = length(var.rewrite_rule_sets) == 0 ? null : service.value.rewrite_rule_set_name
     }
   }
 
