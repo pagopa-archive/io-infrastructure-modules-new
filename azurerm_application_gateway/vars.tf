@@ -112,6 +112,35 @@ variable "services" {
   }))
 }
 
+variable "rewrite_rule_sets" {
+  type = list(object({
+    name = string
+    rewrite_rules = list(object({
+      name          = string
+      rule_sequence = number
+      condition = object({
+        variable    = string
+        pattern     = string
+        ignore_case = bool
+        negate      = bool
+      })
+
+      request_header_configurations = list(object({
+        header_name  = string
+        header_value = string
+      }))
+
+      response_header_configurations = list(object({
+        header_name  = string
+        header_value = string
+      }))
+
+    }))
+  }))
+  default = []
+}
+
+
 variable "firewall_policy_id" {
   type    = string
   default = null
