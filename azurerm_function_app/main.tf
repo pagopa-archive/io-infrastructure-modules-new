@@ -107,6 +107,11 @@ resource "azurerm_function_app" "function_app" {
   }
 }
 
+data "azurerm_function_app_host_keys" "app_host_keys" {
+  name                = local.resource_name
+  resource_group_name = var.resource_group_name
+}
+
 module "subnet" {
   count  = var.avoid_old_subnet_delete == false && (var.subnet_id != null || var.virtual_network_info == null) ? 0 : 1
   source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v2.1.0"
@@ -140,35 +145,4 @@ resource "azurerm_app_service_virtual_network_swift_connection" "app_service_vir
 
   app_service_id = azurerm_function_app.function_app.id
   subnet_id      = var.subnet_id != null ? var.subnet_id : module.subnet[0].id
-}
-
-resource "azurerm_template_deployment" "function_keys" {
-  count = var.export_default_key ? 1 : 0
-
-  name = "javafunckeys"
-  parameters = {
-    functionApp = azurerm_function_app.function_app.name
-  }
-  resource_group_name = var.resource_group_name
-  deployment_mode     = "Incremental"
-
-  template_body = <<BODY
-  {
-      "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-      "contentVersion": "1.0.0.0",
-      "parameters": {
-          "functionApp": {"type": "string", "defaultValue": ""}
-      },
-      "variables": {
-          "functionAppId": "[resourceId('Microsoft.Web/sites', parameters('functionApp'))]"
-      },
-      "resources": [
-      ],
-      "outputs": {
-          "functionkey": {
-              "type": "string",
-              "value": "[listkeys(concat(variables('functionAppId'), '/host/default'), '2018-11-01').functionKeys.default]"                                                                                }
-      }
-  }
-  BODY
 }

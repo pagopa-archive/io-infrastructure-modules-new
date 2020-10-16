@@ -16,7 +16,12 @@ output "possible_outbound_ip_addresses" {
 }
 
 output "default_key" {
-  value     = var.export_default_key ? azurerm_template_deployment.function_keys[0].outputs.functionkey : null
+  value     = data.azurerm_function_app_host_keys.app_host_keys.default_function_key
+  sensitive = true
+}
+
+output "master_key" {
+  value     = data.azurerm_function_app_host_keys.app_host_keys.master_key
   sensitive = true
 }
 
