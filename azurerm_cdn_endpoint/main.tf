@@ -19,14 +19,41 @@ resource "azurerm_cdn_endpoint" "cdn_endpoint" {
   }
 
   dynamic "global_delivery_rule" {
-    for_each = var.global_delivery_rule_cache_expiration_action == null ? [] : ["dummy"]
+    for_each = var.global_delivery_rule == null ? [] : [var.global_delivery_rule]
+    iterator = gdr
     content {
-      cache_expiration_action {
-        behavior = var.global_delivery_rule_cache_expiration_action.behavior
-        duration = var.global_delivery_rule_cache_expiration_action.duration
+
+      dynamic "cache_expiration_action" {
+        for_each = gdr.value.cache_expiration_action == null ? [] : [gdr.value.cache_expiration_action]
+        iterator = cea
+        content {
+          behavior = cea.value.behavior
+          duration = cea.value.duration
+        }
+      }
+
+      dynamic "modify_request_header_action" {
+        for_each = gdr.value.modify_request_header_action == null ? [] : [gdr.value.modify_request_header_action]
+        iterator = mrha
+        content {
+          action = mrha.value.action
+          name   = mrha.value.name
+          value  = mrha.value.value
+        }
+      }
+
+      dynamic "modify_response_header_action" {
+        for_each = gdr.value.modify_response_header_action == null ? [] : [gdr.value.modify_response_header_action]
+        iterator = mrha
+        content {
+          action = mrha.value.action
+          name   = mrha.value.name
+          value  = mhra.value.value
+        }
       }
     }
   }
+
 
   dynamic "delivery_rule" {
     for_each = { for d in var.delivery_rule_url_path_condition_cache_expiration_action : d.order => d }
