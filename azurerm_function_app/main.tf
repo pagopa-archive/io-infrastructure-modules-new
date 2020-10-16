@@ -106,7 +106,7 @@ resource "azurerm_function_app" "function_app" {
     environment = var.environment
   }
 }
-
+# this datasource has been introduced within version 2.27.0
 data "azurerm_function_app_host_keys" "app_host_keys" {
   name                = local.resource_name
   resource_group_name = var.resource_group_name
