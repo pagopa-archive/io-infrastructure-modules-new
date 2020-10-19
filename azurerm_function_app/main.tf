@@ -110,6 +110,7 @@ resource "azurerm_function_app" "function_app" {
 data "azurerm_function_app_host_keys" "app_host_keys" {
   name                = local.resource_name
   resource_group_name = var.resource_group_name
+  depends_on          = [azurerm_function_app.function_app]
 }
 
 module "subnet" {
