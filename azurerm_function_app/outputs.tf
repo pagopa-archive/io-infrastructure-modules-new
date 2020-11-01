@@ -16,12 +16,12 @@ output "possible_outbound_ip_addresses" {
 }
 
 output "default_key" {
-  value     = data.azurerm_function_app_host_keys.app_host_keys.default_function_key
+  value     = var.export_keys ? data.azurerm_function_app_host_keys.app_host_keys[0].default_function_key : null
   sensitive = true
 }
 
 output "master_key" {
-  value     = data.azurerm_function_app_host_keys.app_host_keys.master_key
+  value     = var.export_keys ? data.azurerm_function_app_host_keys.app_host_keys[0].master_key : null
   sensitive = true
 }
 

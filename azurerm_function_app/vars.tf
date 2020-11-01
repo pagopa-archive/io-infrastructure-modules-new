@@ -142,7 +142,7 @@ variable "avoid_old_subnet_delete" {
   default = false
 }
 
-variable export_default_key {
+variable "export_keys" {
   type    = bool
   default = false
 }
