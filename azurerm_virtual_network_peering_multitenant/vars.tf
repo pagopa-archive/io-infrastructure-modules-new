@@ -40,13 +40,6 @@ variable "remote_virtual_network_secret_name" {
   description = "The secret name where the remote virtual network id is stored."
 }
 
-/*
-variable "remote_virtual_network_id" {
-  type        = string
-  description = "The full Azure resource ID of the remote virtual network from which the peering starts."
-}
-*/
-
 variable "allow_virtual_network_access" {
   type        = bool
   description = "Controls if the VMs in the remote virtual network can access VMs in the local virtual network."
