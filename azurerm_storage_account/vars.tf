@@ -59,6 +59,12 @@ variable "network_rules" {
   default = null
 }
 
+variable "enable_versioning" {
+  type        = bool
+  description = "Enable versioning in the blob storage account."
+  default     = false
+}
+
 locals {
   resource_name = "${var.global_prefix}${var.environment_short}st${var.name}"
 }
