@@ -28,3 +28,12 @@ resource "azurerm_advanced_threat_protection" "advanced_threat_protection" {
   target_resource_id = azurerm_storage_account.storage_account.id
   enabled            = true
 }
+
+resource "azurerm_dns_cname_record" "dns_cname_record" {
+  count               = var.dns_cname_record == null ? 0 : 1
+  name                = var.name
+  zone_name           = var.dns_cname_record.zone_name
+  resource_group_name = var.dns_cname_record.zone_resource_group_name
+  ttl                 = var.dns_cname_record.ttl
+  record              = azurerm_storage_account.storage_account.primary_web_host
+}

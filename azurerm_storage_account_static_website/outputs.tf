@@ -24,6 +24,10 @@ output "primary_web_endpoint" {
   value = azurerm_storage_account.storage_account.primary_web_endpoint
 }
 
+output "fqdn" {
+  value = var.dns_cname_record == null ? null : azurerm_dns_cname_record.dns_cname_record[0].fqdn
+}
+
 output "resource_name" {
   value = local.resource_name
 }
