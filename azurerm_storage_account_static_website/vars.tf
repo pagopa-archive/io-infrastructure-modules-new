@@ -48,6 +48,12 @@ variable "error_404_document" {
   default = null
 }
 
+variable "enable_versioning" {
+  type        = bool
+  default     = false
+  description = "Enable versioning"
+}
+
 locals {
   resource_name = "${var.global_prefix}${var.environment_short}st${var.name}"
 }
