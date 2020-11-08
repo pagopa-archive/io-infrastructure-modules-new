@@ -87,6 +87,24 @@ variable "delivery_rule_url_path_condition_cache_expiration_action" {
   default = []
 }
 
+variable "delivery_rule_request_scheme_condition" {
+  type = list(object({
+    name         = string
+    order        = number
+    operator     = string
+    match_values = list(string)
+    url_redirect_action = object({
+      redirect_type = string
+      protocol      = string
+      hostname      = string
+      path          = string
+      fragment      = string
+      query_string  = string
+    })
+  }))
+  default = []
+}
+
 locals {
   resource_name = "${var.global_prefix}-${var.environment_short}-cdnendpoint-${var.name}"
 }
