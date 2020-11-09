@@ -85,7 +85,7 @@ resource "azurerm_function_app" "function_app" {
       iterator = subnet
 
       content {
-        subnet_id = subnet.value
+        virtual_network_subnet_id = subnet.value
       }
     }
   }
