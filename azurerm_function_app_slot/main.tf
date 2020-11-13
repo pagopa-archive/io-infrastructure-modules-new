@@ -59,6 +59,13 @@ resource "azurerm_function_app_slot" "function_app_slot" {
       }
     }
 
+    dynamic "cors" {
+      for_each = var.cors != null ? [var.cors] : []
+      content {
+        allowed_origins = cors.value.allowed_origins
+      }
+    }
+
     auto_swap_slot_name = var.auto_swap_slot_name
   }
 
