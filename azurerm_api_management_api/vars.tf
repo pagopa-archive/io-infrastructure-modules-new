@@ -47,3 +47,9 @@ variable "product_ids" {
 
   default = []
 }
+
+variable "subscription_required" {
+  type        = bool
+  default     = true
+  description = "Should this API require a subscription key?"
+}
