@@ -11,14 +11,15 @@ data "template_file" "swagger_json" {
 }
 
 resource "azurerm_api_management_api" "api_management_api" {
-  name                = var.name
-  resource_group_name = var.resource_group_name
-  api_management_name = var.api_management_name
-  revision            = var.revision
-  display_name        = var.display_name
-  description         = var.description
-  path                = var.path
-  protocols           = var.protocols
+  name                  = var.name
+  resource_group_name   = var.resource_group_name
+  api_management_name   = var.api_management_name
+  revision              = var.revision
+  display_name          = var.display_name
+  description           = var.description
+  path                  = var.path
+  protocols             = var.protocols
+  subscription_required = var.subscription_required
 
   import {
     content_format = "swagger-json"
