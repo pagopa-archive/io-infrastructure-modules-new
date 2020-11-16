@@ -88,6 +88,13 @@ resource "azurerm_function_app" "function_app" {
         virtual_network_subnet_id = subnet.value
       }
     }
+
+    dynamic "cors" {
+      for_each = var.cors != null ? [var.cors] : []
+      content {
+        allowed_origins = cors.value.allowed_origins
+      }
+    }
   }
 
   app_settings = merge(

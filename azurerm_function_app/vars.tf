@@ -114,6 +114,13 @@ variable "allowed_ips_secret" {
   default = null
 }
 
+variable "cors" {
+  type = object({
+    allowed_origins = list(string)
+  })
+  default = null
+}
+
 variable "allowed_subnets" {
   // List of subnet id
   type    = list(string)
