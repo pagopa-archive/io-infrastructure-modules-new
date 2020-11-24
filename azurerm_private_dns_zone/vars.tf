@@ -1,18 +1,5 @@
 # General variables
-
-variable "global_prefix" {
-  type = string
-}
-
 variable "environment" {
-  type = string
-}
-
-variable "environment_short" {
-  type = string
-}
-
-variable "region" {
   type = string
 }
 
@@ -22,4 +9,13 @@ variable "name" {
 
 variable "resource_group_name" {
   type = string
+}
+
+variable "dns_a_records" {
+  type = list(object({
+    name    = string
+    ttl     = number
+    records = list(string)
+  }))
+  default = []
 }
