@@ -48,7 +48,7 @@ resource "azurerm_cdn_endpoint" "cdn_endpoint" {
         content {
           action = mrha.value.action
           name   = mrha.value.name
-          value  = mhra.value.value
+          value  = mrha.value.value
         }
       }
     }
