@@ -3,6 +3,13 @@ terraform {
   backend "azurerm" {}
 }
 
+
+data "azurerm_key_vault_secret" "key_vault_secret" {
+  count        = var.notification.key_vault_id == null ? 0 : length(var.notification.email.custom_emails)
+  name         = var.notification.email.custom_emails[count.index]
+  key_vault_id = var.notification.key_vault_id
+}
+
 resource "azurerm_monitor_autoscale_setting" "monitor_autoscale_setting" {
   name                = var.name
   resource_group_name = var.resource_group_name
@@ -68,7 +75,7 @@ resource "azurerm_monitor_autoscale_setting" "monitor_autoscale_setting" {
       email {
         send_to_subscription_administrator    = notification.value.email.send_to_subscription_administrator
         send_to_subscription_co_administrator = notification.value.email.send_to_subscription_co_administrator
-        custom_emails                         = notification.value.email.custom_emails
+        custom_emails                         = notification.value.key_vault_id != null ? split(", ", join(",", data.azurerm_key_vault_secret.key_vault_secret.*.value)) : notification.value.email.custom_emails
       }
     }
   }
