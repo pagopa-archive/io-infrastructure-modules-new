@@ -87,6 +87,8 @@ variable "notification" {
       send_to_subscription_co_administrator = bool
       custom_emails                         = list(string)
     })
+    key_vault_id = string
   })
-  default = null
+  default     = null
+  description = "Autoscaling notification. If the key_vault_id is not null custom email  is a secret in key vault."
 }
