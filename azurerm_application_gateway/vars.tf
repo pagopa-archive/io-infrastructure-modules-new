@@ -113,6 +113,12 @@ variable "services" {
     # To associate a rule set whether it is required.
     # Set to null if not needed, one of the rule_set's name instead.
     rewrite_rule_set_name = string
+
+    connection_draining = object({
+      enabled           = bool
+      drain_timeout_sec = number
+    })
+
   }))
 
 }
