@@ -11,7 +11,7 @@ data "azurerm_key_vault_secret" "certificate_secret" {
 module "subnet" {
   count = var.avoid_old_subnet_delete == false && (var.subnet_id != null || var.virtual_network_info == null) ? 0 : 1
 
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v2.1.0"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v2.1.15"
 
   global_prefix     = var.global_prefix
   environment       = var.environment
@@ -182,7 +182,18 @@ resource "azurerm_application_gateway" "application_gateway" {
       probe_name                          = "probe-${service.value.name}"
       host_name                           = service.value.backend_http_settings.host_name
       pick_host_name_from_backend_address = service.value.backend_http_settings.host_name == null ? true : false
+
+      dynamic "connection_draining" {
+        for_each = service.value.connection_draining != null ? [service.value.connection_draining] : []
+
+        content {
+          enabled           = connection_draining.value.enabled
+          drain_timeout_sec = connection_draining.value.drain_timeout_sec
+        }
+      }
+
     }
+
   }
 
   dynamic "request_routing_rule" {
