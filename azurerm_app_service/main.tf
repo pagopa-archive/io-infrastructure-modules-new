@@ -36,6 +36,7 @@ module "app_service_plan" {
   kind                = var.app_service_plan_info.kind
   sku_tier            = var.app_service_plan_info.sku_tier
   sku_size            = var.app_service_plan_info.sku_size
+  reserved            = var.app_service_plan_info.reserved
 }
 
 resource "azurerm_app_service" "app_service" {

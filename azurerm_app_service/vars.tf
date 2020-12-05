@@ -27,12 +27,14 @@ variable "app_service_plan_info" {
     kind     = string
     sku_tier = string
     sku_size = string
+    reserved = bool
   })
 
   default = {
     kind     = "elastic"
     sku_tier = "ElasticPremium"
     sku_size = "EP1"
+    reserved = null
   }
 }
 
