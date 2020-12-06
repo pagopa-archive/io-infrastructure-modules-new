@@ -24,17 +24,19 @@ variable "resource_group_name" {
 
 variable "app_service_plan_info" {
   type = object({
-    kind     = string
-    sku_tier = string
-    sku_size = string
-    reserved = bool
+    kind             = string
+    sku_tier         = string
+    sku_size         = string
+    reserved         = bool
+    per_site_scaling = bool
   })
 
   default = {
-    kind     = "elastic"
-    sku_tier = "ElasticPremium"
-    sku_size = "EP1"
-    reserved = null
+    kind             = "elastic"
+    sku_tier         = "ElasticPremium"
+    sku_size         = "EP1"
+    reserved         = null
+    per_site_scaling = null
   }
 }
 
