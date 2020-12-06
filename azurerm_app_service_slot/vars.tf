@@ -69,13 +69,13 @@ variable "always_on" {
 
 # Ex. for linux "NODE|10-lts"
 variable "linux_fx_version" {
-  type = string
+  type    = string
   default = null
 }
 
 # Ex. for linux "node /home/site/wwwroot/src/server.js"
 variable "app_command_line" {
-  type = string
+  type    = string
   default = null
 }
 
