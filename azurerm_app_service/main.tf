@@ -49,9 +49,11 @@ resource "azurerm_app_service" "app_service" {
   client_cert_enabled = var.client_cert_enabled
 
   site_config {
-    always_on       = var.always_on
-    min_tls_version = "1.2"
-    ftps_state      = "Disabled"
+    always_on        = var.always_on
+    linux_fx_version = var.linux_fx_version
+    app_command_line = var.app_command_line
+    min_tls_version  = "1.2"
+    ftps_state       = "Disabled"
 
     dynamic "ip_restriction" {
       for_each = var.allowed_ips

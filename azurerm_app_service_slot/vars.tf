@@ -67,6 +67,18 @@ variable "always_on" {
   default = true
 }
 
+# Ex. for linux "NODE|10-lts"
+variable "linux_fx_version" {
+  type    = string
+  default = null
+}
+
+# Ex. for linux "node /home/site/wwwroot/src/server.js"
+variable "app_command_line" {
+  type    = string
+  default = null
+}
+
 variable "allowed_ips" {
   // List of ip
   type    = list(string)
