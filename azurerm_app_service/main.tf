@@ -24,7 +24,7 @@ module "secrets_from_keyvault" {
 }
 
 module "app_service_plan" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_app_service_plan?ref=v2.1.0"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_app_service_plan?ref=v2.1.18"
 
   global_prefix     = var.global_prefix
   environment       = var.environment
@@ -37,6 +37,7 @@ module "app_service_plan" {
   sku_tier            = var.app_service_plan_info.sku_tier
   sku_size            = var.app_service_plan_info.sku_size
   reserved            = var.app_service_plan_info.reserved
+  per_site_scaling    = var.app_service_plan_info.per_site_scaling
 }
 
 resource "azurerm_app_service" "app_service" {

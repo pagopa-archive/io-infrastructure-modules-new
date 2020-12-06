@@ -20,6 +20,7 @@ resource "azurerm_app_service_plan" "app_service_plan" {
 
   maximum_elastic_worker_count = var.maximum_elastic_worker_count
   reserved                     = var.reserved
+  per_site_scaling             = var.per_site_scaling
 
   tags = {
     environment = var.environment

@@ -53,6 +53,11 @@ variable "reserved" {
   default = false
 }
 
+variable "per_site_scaling" {
+  type    = bool
+  default = null
+}
+
 locals {
   resource_name = "${var.global_prefix}-${var.environment_short}-plan-${var.name}"
 }
