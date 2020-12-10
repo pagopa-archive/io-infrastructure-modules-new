@@ -52,24 +52,24 @@ variable "origin_host_name" {
 
 variable "global_delivery_rule" {
   type = object({
-    cache_expiration_action = object({
+    cache_expiration_action = list(object({
       behavior = string
       duration = string
-    })
-    cache_key_query_string_action = object({
+    }))
+    cache_key_query_string_action = list(object({
       behavior   = string
       parameters = string
-    })
-    modify_request_header_action = object({
+    }))
+    modify_request_header_action = list(object({
       action = string
       name   = string
       value  = string
-    })
-    modify_response_header_action = object({
+    }))
+    modify_response_header_action = list(object({
       action = string
       name   = string
       value  = string
-    })
+    }))
   })
   default = null
 }
