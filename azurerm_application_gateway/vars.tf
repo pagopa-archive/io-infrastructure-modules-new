@@ -34,13 +34,6 @@ variable "sku" {
   })
 }
 
-variable "public_ip_info" {
-  type = object({
-    id = string
-    ip = string
-  })
-}
-
 variable "subnet_id" {
   type = string
 
@@ -58,13 +51,8 @@ variable "virtual_network_info" {
 }
 
 variable "avoid_old_subnet_delete" {
-  type = bool
-
+  type    = bool
   default = false
-}
-
-variable "frontend_port" {
-  type = number
 }
 
 variable "custom_domain" {
@@ -76,52 +64,94 @@ variable "custom_domain" {
   })
 }
 
-variable "services" {
-  type = list(object({
-    name          = string
-    a_record_name = string
-
-    http_listener = object({
-      protocol             = string
-      host_name            = string
-      ssl_certificate_name = string
-    })
-
-    backend_address_pool = object({
-      ip_addresses = list(string)
+variable "backend_address_pools" {
+  type = list(object(
+    {
+      name         = string
       fqdns        = list(string)
-    })
+      ip_addresses = list(string)
+    }
+  ))
+}
 
-    probe = object({
-      host                = string
-      protocol            = string
-      path                = string
-      interval            = number
-      timeout             = number
-      unhealthy_threshold = number
-    })
 
-    backend_http_settings = object({
-      protocol              = string
-      port                  = number
-      path                  = string
-      cookie_based_affinity = string
-      request_timeout       = number
-      host_name             = string
-    })
-
-    # To associate a rule set whether it is required.
-    # Set to null if not needed, one of the rule_set's name instead.
-    rewrite_rule_set_name = string
-
+variable "backend_http_settings" {
+  type = list(object({
+    cookie_based_affinity               = string
+    affinity_cookie_name                = string
+    name                                = string
+    path                                = string
+    port                                = number
+    probe_name                          = string
+    protocol                            = string
+    request_timeout                     = number
+    host_name                           = string
+    pick_host_name_from_backend_address = bool
+    trusted_root_certificate_names      = list(string)
     connection_draining = object({
       enabled           = bool
       drain_timeout_sec = number
     })
-
   }))
-
 }
+
+variable "probes" {
+  type = list(object({
+    name                                      = string
+    host                                      = string
+    protocol                                  = string
+    path                                      = string
+    interval                                  = number
+    timeout                                   = number
+    unhealthy_threshold                       = number
+    pick_host_name_from_backend_http_settings = bool
+  }))
+  default = []
+}
+variable "frontend_ip_configurations" {
+
+  type = list(object({
+    name                          = string
+    subnet_id                     = string
+    private_ip_address            = string
+    public_ip_address_id          = string
+    public_ip_address             = string
+    private_ip_address_allocation = string
+    a_record_name                 = string
+  }))
+}
+
+variable "gateway_ip_configurations" {
+  type = list(object({
+    name      = string
+    subnet_id = string
+  }))
+}
+
+variable "frontend_ports" {
+  type = list(object({
+    name = string
+    port = number
+  }))
+  default = [{
+    name = "frontendport"
+    port = 443
+  }]
+}
+
+
+variable "http_listeners" {
+  type = list(object({
+    name                           = string
+    frontend_ip_configuration_name = string
+    frontend_port_name             = string
+    protocol                       = string
+    host_name                      = string
+    ssl_certificate_name           = string
+    require_sni                    = bool
+  }))
+}
+
 
 variable "rewrite_rule_sets" {
   type = list(object({
@@ -151,6 +181,19 @@ variable "rewrite_rule_sets" {
   default = []
 }
 
+variable "request_routing_rules" {
+  type = list(object({
+    name                        = string
+    rule_type                   = string
+    http_listener_name          = string
+    backend_address_pool_name   = string
+    backend_http_settings_name  = string
+    redirect_configuration_name = string
+    rewrite_rule_set_name       = string
+    url_path_map_name           = string
+  }))
+
+}
 
 variable "firewall_policy_id" {
   type    = string
@@ -185,8 +228,5 @@ variable "autoscale_configuration" {
 }
 
 locals {
-  resource_name                  = "${var.global_prefix}-${var.environment_short}-ag-${var.name}"
-  gateway_ip_configuration_name  = "gatewayipconfiguration"
-  frontend_ip_configuration_name = "frontendipconfiguration"
-  frontend_port_name             = "frontendport"
+  resource_name = "${var.global_prefix}-${var.environment_short}-ag-${var.name}"
 }
