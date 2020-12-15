@@ -11,7 +11,7 @@ output "primary_access_key" {
 }
 
 output "hostname" {
-  value = azurerm_redis_cache.redis_cache.hostname  
+  value = azurerm_redis_cache.redis_cache.hostname
 }
 
 output "port" {
