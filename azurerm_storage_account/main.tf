@@ -1,8 +1,3 @@
-provider "azurerm" {
-  version = "=2.22.0"
-  features {}
-}
-
 terraform {
   # The configuration for this backend will be filled in by Terragrunt
   backend "azurerm" {}
@@ -47,4 +42,12 @@ resource "azurerm_storage_account" "storage_account" {
 resource "azurerm_advanced_threat_protection" "advanced_threat_protection" {
   target_resource_id = azurerm_storage_account.storage_account.id
   enabled            = true
+}
+
+module "storage_account_versioning" {
+  source               = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_account_versioning?ref=v2.1.9"
+  name                 = format("%s-versioning", local.resource_name)
+  resource_group_name  = var.resource_group_name
+  storage_account_name = local.resource_name
+  enable               = var.enable_versioning
 }

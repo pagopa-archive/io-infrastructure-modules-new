@@ -1,8 +1,3 @@
-provider "azurerm" {
-  version = "=2.22.0"
-  features {}
-}
-
 terraform {
   # The configuration for this backend will be filled in by Terragrunt
   backend "azurerm" {}
@@ -16,7 +11,7 @@ data "azurerm_key_vault_secret" "allowed_ips_secret" {
 }
 
 module "secrets_from_keyvault" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault?ref=v2.0.38"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault?ref=v2.1.0"
 
   key_vault_id = var.app_settings_secrets.key_vault_id
   secrets_map  = var.app_settings_secrets.map
@@ -60,7 +55,14 @@ resource "azurerm_function_app_slot" "function_app_slot" {
       iterator = subnet
 
       content {
-        subnet_id = subnet.value
+        virtual_network_subnet_id = subnet.value
+      }
+    }
+
+    dynamic "cors" {
+      for_each = var.cors != null ? [var.cors] : []
+      content {
+        allowed_origins = cors.value.allowed_origins
       }
     }
 

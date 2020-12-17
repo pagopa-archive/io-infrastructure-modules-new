@@ -40,12 +40,18 @@ variable "access_tier" {
 }
 
 variable "index_document" {
-  type    = string
+  type = string
 }
 
 variable "error_404_document" {
   type    = string
   default = null
+}
+
+variable "enable_versioning" {
+  type        = bool
+  default     = false
+  description = "Enable versioning"
 }
 
 locals {

@@ -53,10 +53,9 @@ variable "reserved" {
   default = false
 }
 
-variable "module_disabled" {
-  type        = bool
-  description = "Resource not created when disabled"
-  default     = false
+variable "per_site_scaling" {
+  type    = bool
+  default = null
 }
 
 locals {

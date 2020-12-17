@@ -1,8 +1,3 @@
-provider "azurerm" {
-  version = "=2.22.0"
-  features {}
-}
-
 terraform {
   # The configuration for this backend will be filled in by Terragrunt
   backend "azurerm" {}
@@ -11,7 +6,6 @@ terraform {
 # New infrastructure
 
 resource "azurerm_app_service_plan" "app_service_plan" {
-  count               = var.module_disabled ? 0 : 1
   name                = local.resource_name
   resource_group_name = var.resource_group_name
   location            = var.region
@@ -26,6 +20,7 @@ resource "azurerm_app_service_plan" "app_service_plan" {
 
   maximum_elastic_worker_count = var.maximum_elastic_worker_count
   reserved                     = var.reserved
+  per_site_scaling             = var.per_site_scaling
 
   tags = {
     environment = var.environment

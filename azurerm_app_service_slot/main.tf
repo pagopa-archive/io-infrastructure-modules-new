@@ -1,8 +1,3 @@
-provider "azurerm" {
-  version = "=2.22.0"
-  features {}
-}
-
 terraform {
   # The configuration for this backend will be filled in by Terragrunt
   backend "azurerm" {}
@@ -22,7 +17,7 @@ data "azurerm_key_vault_secret" "secret_sas_url" {
 }
 
 module "secrets_from_keyvault" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault?ref=v2.0.37"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault?ref=v2.1.0"
 
   key_vault_id = var.app_settings_secrets.key_vault_id
   secrets_map  = var.app_settings_secrets.map
@@ -40,6 +35,8 @@ resource "azurerm_app_service_slot" "app_service_slot" {
 
   site_config {
     always_on           = var.always_on
+    linux_fx_version    = var.linux_fx_version
+    app_command_line    = var.app_command_line
     min_tls_version     = "1.2"
     ftps_state          = "Disabled"
     auto_swap_slot_name = var.auto_swap_slot_name

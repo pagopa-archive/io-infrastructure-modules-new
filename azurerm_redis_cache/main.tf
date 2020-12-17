@@ -1,9 +1,3 @@
-provider "azurerm" {
-  version = "=2.22.0"
-  features {}
-}
-
-
 terraform {
   # The configuration for this backend will be filled in by Terragrunt
   backend "azurerm" {}
@@ -29,6 +23,15 @@ resource "azurerm_redis_cache" "redis_cache" {
     rdb_backup_frequency          = var.backup_configuration != null ? var.backup_configuration.frequency : null
     rdb_backup_max_snapshot_count = var.backup_configuration != null ? var.backup_configuration.max_snapshot_count : null
     rdb_storage_connection_string = var.backup_configuration != null ? var.backup_configuration.storage_connection_string : null
+  }
+
+  dynamic "patch_schedule" {
+    for_each = var.patch_schedules
+    iterator = schedule
+    content {
+      day_of_week    = schedule.value.day_of_week
+      start_hour_utc = schedule.value.start_hour_utc
+    }
   }
 
   tags = {

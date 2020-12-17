@@ -114,6 +114,13 @@ variable "allowed_ips_secret" {
   default = null
 }
 
+variable "cors" {
+  type = object({
+    allowed_origins = list(string)
+  })
+  default = null
+}
+
 variable "allowed_subnets" {
   // List of subnet id
   type    = list(string)
@@ -142,7 +149,7 @@ variable "avoid_old_subnet_delete" {
   default = false
 }
 
-variable export_default_key {
+variable "export_keys" {
   type    = bool
   default = false
 }

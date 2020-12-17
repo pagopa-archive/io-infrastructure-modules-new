@@ -7,5 +7,5 @@ output "name" {
 }
 
 output "subnet_id" {
-  value = module.subnet.id
+  value = length(module.subnet) > 0 ? module.subnet[0].id : null
 }

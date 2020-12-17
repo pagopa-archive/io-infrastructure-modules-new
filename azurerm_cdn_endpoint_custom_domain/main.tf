@@ -1,8 +1,3 @@
-provider "azurerm" {
-  version = "=2.22.0"
-  features {}
-}
-
 provider "null" {
   version = "=2.1.2"
 }
@@ -16,7 +11,7 @@ resource "azurerm_dns_cname_record" "dns_cname_record" {
   name                = var.name
   zone_name           = var.dns_zone.name
   resource_group_name = var.dns_zone.resource_group_name
-  ttl                 = 300
+  ttl                 = var.ttl
   record              = var.endpoint.hostname
 }
 

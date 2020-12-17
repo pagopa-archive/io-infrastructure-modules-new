@@ -24,15 +24,19 @@ variable "resource_group_name" {
 
 variable "app_service_plan_info" {
   type = object({
-    kind     = string
-    sku_tier = string
-    sku_size = string
+    kind             = string
+    sku_tier         = string
+    sku_size         = string
+    reserved         = bool
+    per_site_scaling = bool
   })
 
   default = {
-    kind     = "elastic"
-    sku_tier = "ElasticPremium"
-    sku_size = "EP1"
+    kind             = "elastic"
+    sku_tier         = "ElasticPremium"
+    sku_size         = "EP1"
+    reserved         = null
+    per_site_scaling = null
   }
 }
 
@@ -71,6 +75,18 @@ variable "app_settings_secrets" {
 variable "always_on" {
   type    = bool
   default = true
+}
+
+# Ex. for linux "NODE|10-lts"
+variable "linux_fx_version" {
+  type    = string
+  default = null
+}
+
+# Ex. for linux "node /home/site/wwwroot/src/server.js"
+variable "app_command_line" {
+  type    = string
+  default = null
 }
 
 variable "allowed_ips" {

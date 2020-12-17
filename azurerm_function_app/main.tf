@@ -1,8 +1,3 @@
-provider "azurerm" {
-  version = "=2.22.0"
-  features {}
-}
-
 terraform {
   # The configuration for this backend will be filled in by Terragrunt
   backend "azurerm" {}
@@ -16,7 +11,7 @@ data "azurerm_key_vault_secret" "allowed_ips_secret" {
 }
 
 module "storage_account" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_account?ref=v2.0.37"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_account?ref=v2.1.0"
 
   global_prefix     = var.global_prefix
   environment       = var.environment
@@ -31,8 +26,8 @@ module "storage_account" {
 }
 
 module "app_service_plan" {
-  module_disabled = var.app_service_plan_id == null ? false : true
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_app_service_plan?ref=v2.0.37"
+  count  = var.app_service_plan_id == null ? 1 : 0
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_app_service_plan?ref=v2.1.0"
 
   global_prefix     = var.global_prefix
   environment       = var.environment
@@ -47,7 +42,7 @@ module "app_service_plan" {
 }
 
 module "secrets_from_keyvault" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault?ref=v2.0.37"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault?ref=v2.1.0"
 
   key_vault_id = var.app_settings_secrets.key_vault_id
   secrets_map  = var.app_settings_secrets.map
@@ -58,7 +53,7 @@ resource "azurerm_function_app" "function_app" {
   resource_group_name        = var.resource_group_name
   location                   = var.region
   version                    = var.runtime_version
-  app_service_plan_id        = var.app_service_plan_id != null ? var.app_service_plan_id : module.app_service_plan.id
+  app_service_plan_id        = var.app_service_plan_id != null ? var.app_service_plan_id : module.app_service_plan[0].id
   storage_account_name       = module.storage_account.resource_name
   storage_account_access_key = module.storage_account.primary_access_key
 
@@ -90,7 +85,14 @@ resource "azurerm_function_app" "function_app" {
       iterator = subnet
 
       content {
-        subnet_id = subnet.value
+        virtual_network_subnet_id = subnet.value
+      }
+    }
+
+    dynamic "cors" {
+      for_each = var.cors != null ? [var.cors] : []
+      content {
+        allowed_origins = cors.value.allowed_origins
       }
     }
   }
@@ -112,10 +114,17 @@ resource "azurerm_function_app" "function_app" {
   }
 }
 
-module "subnet" {
-  module_disabled = var.avoid_old_subnet_delete == false && (var.subnet_id != null || var.virtual_network_info == null)
+# this datasource has been introduced within version 2.27.0
+data "azurerm_function_app_host_keys" "app_host_keys" {
+  count               = var.export_keys ? 1 : 0
+  name                = local.resource_name
+  resource_group_name = var.resource_group_name
+  depends_on          = [azurerm_function_app.function_app]
+}
 
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v2.0.37"
+module "subnet" {
+  count  = var.avoid_old_subnet_delete == false && (var.subnet_id != null || var.virtual_network_info == null) ? 0 : 1
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v2.1.0"
 
   global_prefix     = var.global_prefix
   environment       = var.environment
@@ -145,36 +154,5 @@ resource "azurerm_app_service_virtual_network_swift_connection" "app_service_vir
   count = var.subnet_id == null && var.virtual_network_info == null ? 0 : 1
 
   app_service_id = azurerm_function_app.function_app.id
-  subnet_id      = var.subnet_id != null ? var.subnet_id : module.subnet.id
-}
-
-resource "azurerm_template_deployment" "function_keys" {
-  count = var.export_default_key ? 1 : 0
-
-  name = "javafunckeys"
-  parameters = {
-    functionApp = azurerm_function_app.function_app.name
-  }
-  resource_group_name = var.resource_group_name
-  deployment_mode     = "Incremental"
-
-  template_body = <<BODY
-  {
-      "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-      "contentVersion": "1.0.0.0",
-      "parameters": {
-          "functionApp": {"type": "string", "defaultValue": ""}
-      },
-      "variables": {
-          "functionAppId": "[resourceId('Microsoft.Web/sites', parameters('functionApp'))]"
-      },
-      "resources": [
-      ],
-      "outputs": {
-          "functionkey": {
-              "type": "string",
-              "value": "[listkeys(concat(variables('functionAppId'), '/host/default'), '2018-11-01').functionKeys.default]"                                                                                }
-      }
-  }
-  BODY
+  subnet_id      = var.subnet_id != null ? var.subnet_id : module.subnet[0].id
 }

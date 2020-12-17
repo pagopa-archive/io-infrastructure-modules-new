@@ -16,16 +16,21 @@ output "possible_outbound_ip_addresses" {
 }
 
 output "default_key" {
-  value     = var.export_default_key ? azurerm_template_deployment.function_keys[0].outputs.functionkey : null
+  value     = var.export_keys ? data.azurerm_function_app_host_keys.app_host_keys[0].default_function_key : null
+  sensitive = true
+}
+
+output "master_key" {
+  value     = var.export_keys ? data.azurerm_function_app_host_keys.app_host_keys[0].master_key : null
   sensitive = true
 }
 
 output "subnet_id" {
-  value = module.subnet.id
+  value = length(module.subnet) > 0 ? module.subnet[0].id : null
 }
 
 output "app_service_plan_id" {
-  value = module.app_service_plan.id
+  value = length(module.app_service_plan) > 0 ? module.app_service_plan[0].id : null
 }
 
 output "storage_account" {

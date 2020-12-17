@@ -22,6 +22,12 @@ variable "name" {
   type = string
 }
 
+variable "ttl" {
+  type        = string
+  default     = 300
+  description = "The Time To Live (TTL) of the DNS record in seconds."
+}
+
 variable "resource_group_name" {
   type = string
 }
