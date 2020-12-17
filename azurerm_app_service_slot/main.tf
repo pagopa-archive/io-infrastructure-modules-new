@@ -103,9 +103,10 @@ resource "azurerm_app_service_slot" "app_service_slot" {
   }
 }
 
-resource "azurerm_app_service_virtual_network_swift_connection" "app_service_virtual_network_swift_connection" {
+resource "azurerm_app_service_slot_virtual_network_swift_connection" "app_service_slot_virtual_network_swift_connection" {
   count = var.subnet_id == null ? 0 : 1
 
-  app_service_id = azurerm_app_service_slot.app_service_slot.id
+  slot_name      = azurerm_app_service_slot.app_service_slot.name
+  app_service_id = var.app_service_id
   subnet_id      = var.subnet_id
 }
