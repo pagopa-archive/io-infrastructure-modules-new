@@ -24,7 +24,7 @@ resource "azurerm_cdn_endpoint" "cdn_endpoint" {
     content {
 
       dynamic "cache_expiration_action" {
-        for_each = gdr.value.cache_expiration_action == null ? [] : [gdr.value.cache_expiration_action]
+        for_each = gdr.value.cache_expiration_action
         iterator = cea
         content {
           behavior = cea.value.behavior
@@ -33,7 +33,7 @@ resource "azurerm_cdn_endpoint" "cdn_endpoint" {
       }
 
       dynamic "modify_request_header_action" {
-        for_each = gdr.value.modify_request_header_action == null ? [] : [gdr.value.modify_request_header_action]
+        for_each = gdr.value.modify_request_header_action
         iterator = mrha
         content {
           action = mrha.value.action
@@ -43,7 +43,7 @@ resource "azurerm_cdn_endpoint" "cdn_endpoint" {
       }
 
       dynamic "modify_response_header_action" {
-        for_each = gdr.value.modify_response_header_action == null ? [] : [gdr.value.modify_response_header_action]
+        for_each = gdr.value.modify_response_header_action
         iterator = mrha
         content {
           action = mrha.value.action
