@@ -154,6 +154,11 @@ variable "export_keys" {
   default = false
 }
 
+variable "health_check_path" {
+  type    = string
+  default = null
+}
+
 locals {
   resource_name = "${var.global_prefix}-${var.environment_short}-${var.resources_prefix.function_app}-${var.name}"
 }

@@ -95,13 +95,18 @@ resource "azurerm_function_app" "function_app" {
         allowed_origins = cors.value.allowed_origins
       }
     }
+
+    health_check_path = var.health_check_path != null ? var.health_check_path : null
+
   }
 
   app_settings = merge(
     {
-      APPINSIGHTS_INSTRUMENTATIONKEY = var.application_insights_instrumentation_key
+      APPINSIGHTS_INSTRUMENTATIONKEY                  = var.application_insights_instrumentation_key
       # No downtime on slots swap
       WEBSITE_ADD_SITENAME_BINDINGS_IN_APPHOST_CONFIG = 1
+      # default value for health_check_path, override it in var.app_settings if needed
+      WEBSITE_HEALTHCHECK_MAXPINGFAILURES             = var.health_check_path != null ? 10 : null
     },
     var.app_settings,
     module.secrets_from_keyvault.secrets_with_value
