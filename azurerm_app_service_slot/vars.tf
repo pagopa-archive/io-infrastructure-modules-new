@@ -94,6 +94,11 @@ variable "allowed_ips" {
   default = []
 }
 
+variable "health_check_maxpingfailures" {
+  type    = number
+  default = 10
+}
+
 variable "allowed_ips_secret" {
   // List of ip from a keyvault secret
   type = object({

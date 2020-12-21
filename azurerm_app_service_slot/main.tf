@@ -74,7 +74,7 @@ resource "azurerm_app_service_slot" "app_service_slot" {
     {
       APPINSIGHTS_INSTRUMENTATIONKEY                  = var.application_insights_instrumentation_key
       # default value for health_check_path, override it in var.app_settings if needed
-      WEBSITE_HEALTHCHECK_MAXPINGFAILURES             = var.health_check_path != null ? 10 : null
+      WEBSITE_HEALTHCHECK_MAXPINGFAILURES             = var.health_check_path != null ? var.health_check_maxpingfailures : null
     },
     var.app_settings,
     module.secrets_from_keyvault.secrets_with_value
