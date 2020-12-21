@@ -158,7 +158,10 @@ variable "health_check_path" {
   type    = string
   default = null
 }
-
+variable "health_check_maxpingfailures" {
+  type     = number
+  default = 10
+}
 locals {
   resource_name = "${var.global_prefix}-${var.environment_short}-${var.resources_prefix.function_app}-${var.name}"
 }
