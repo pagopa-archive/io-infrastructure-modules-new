@@ -121,3 +121,13 @@ variable export_default_key {
   type    = bool
   default = false
 }
+
+variable "health_check_path" {
+  type    = string
+  default = null
+}
+
+variable "health_check_maxpingfailures" {
+  type     = number
+  default = 10
+}
