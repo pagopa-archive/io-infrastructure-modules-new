@@ -88,15 +88,15 @@ variable "health_check_path" {
   default = null
 }
 
+variable "health_check_maxpingfailures" {
+  type    = number
+  default = 10
+}
+
 variable "allowed_ips" {
   // List of ip
   type    = list(string)
   default = []
-}
-
-variable "health_check_maxpingfailures" {
-  type    = number
-  default = 10
 }
 
 variable "allowed_ips_secret" {
