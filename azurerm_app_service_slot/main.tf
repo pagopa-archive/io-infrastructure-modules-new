@@ -40,6 +40,7 @@ resource "azurerm_app_service_slot" "app_service_slot" {
     min_tls_version     = "1.2"
     ftps_state          = "Disabled"
     auto_swap_slot_name = var.auto_swap_slot_name
+    health_check_path   = var.health_check_path != null ? var.health_check_path : null
 
     dynamic "ip_restriction" {
       for_each = var.allowed_ips
@@ -71,7 +72,9 @@ resource "azurerm_app_service_slot" "app_service_slot" {
 
   app_settings = merge(
     {
-      APPINSIGHTS_INSTRUMENTATIONKEY = var.application_insights_instrumentation_key
+      APPINSIGHTS_INSTRUMENTATIONKEY                  = var.application_insights_instrumentation_key
+      # default value for health_check_path, override it in var.app_settings if needed
+      WEBSITE_HEALTHCHECK_MAXPINGFAILURES             = var.health_check_path != null ? var.health_check_maxpingfailures : null
     },
     var.app_settings,
     module.secrets_from_keyvault.secrets_with_value

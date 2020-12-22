@@ -89,6 +89,16 @@ variable "app_command_line" {
   default = null
 }
 
+variable "health_check_path" {
+  type    = string
+  default = null
+}
+
+variable "health_check_maxpingfailures" {
+  type    = number
+  default = 10
+}
+
 variable "allowed_ips" {
   // List of ip
   type    = list(string)

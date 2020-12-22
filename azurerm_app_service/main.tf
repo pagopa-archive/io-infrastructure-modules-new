@@ -50,12 +50,13 @@ resource "azurerm_app_service" "app_service" {
   client_cert_enabled = var.client_cert_enabled
 
   site_config {
-    always_on        = var.always_on
-    linux_fx_version = var.linux_fx_version
-    app_command_line = var.app_command_line
-    min_tls_version  = "1.2"
-    ftps_state       = "Disabled"
-
+    always_on         = var.always_on
+    linux_fx_version  = var.linux_fx_version
+    app_command_line  = var.app_command_line
+    min_tls_version   = "1.2"
+    ftps_state        = "Disabled"
+    health_check_path = var.health_check_path != null ? var.health_check_path : null
+    
     dynamic "ip_restriction" {
       for_each = var.allowed_ips
       iterator = ip
@@ -86,7 +87,9 @@ resource "azurerm_app_service" "app_service" {
 
   app_settings = merge(
     {
-      APPINSIGHTS_INSTRUMENTATIONKEY = var.application_insights_instrumentation_key
+      APPINSIGHTS_INSTRUMENTATIONKEY                  = var.application_insights_instrumentation_key
+      # default value for health_check_path, override it in var.app_settings if needed
+      WEBSITE_HEALTHCHECK_MAXPINGFAILURES             = var.health_check_path != null ? var.health_check_maxpingfailures : null
     },
     var.app_settings,
     module.secrets_from_keyvault.secrets_with_value
