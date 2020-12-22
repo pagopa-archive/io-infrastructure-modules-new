@@ -4,15 +4,7 @@ variable "global_prefix" {
   type = string
 }
 
-variable "environment" {
-  type = string
-}
-
 variable "environment_short" {
-  type = string
-}
-
-variable "region" {
   type = string
 }
 
@@ -24,7 +16,6 @@ variable "scope" {
   type        = string
   description = "Specifies the scope at which the Management Lock should be created. Usually this is the resource id."
 }
-
 
 variable "lock_level" {
   type        = string

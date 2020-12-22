@@ -39,6 +39,15 @@ variable "ddos_protection_plan" {
   default = null
 }
 
+variable "lock" {
+  type = object({
+    name       = string
+    lock_level = string
+    notes      = string
+  })
+  default = null
+}
+
 locals {
   resource_name = "${var.global_prefix}-${var.environment_short}-vnet-${var.name}"
 }

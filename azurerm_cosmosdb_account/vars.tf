@@ -19,7 +19,7 @@ variable "name" {
   type = string
 }
 
-// Resource Group 
+// Resource Group
 variable "resource_group_name" {
   type = string
 }
@@ -95,6 +95,15 @@ variable "capabilities" {
   type        = map(string)
   description = "The capabilities which should be enabled for this Cosmos DB account."
   default     = {}
+}
+
+variable "lock" {
+  type = object({
+    name       = string
+    lock_level = string
+    notes      = string
+  })
+  default = null
 }
 
 locals {
