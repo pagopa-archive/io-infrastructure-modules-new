@@ -37,3 +37,7 @@ output "connection_strings" {
   value     = azurerm_cosmosdb_account.cosmosdb_account.connection_strings
   sensitive = true
 }
+
+output "lock_id" {
+  value = var.lock != null ? module.lock[0].id : null
+}

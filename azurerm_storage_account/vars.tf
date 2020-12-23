@@ -65,6 +65,15 @@ variable "enable_versioning" {
   default     = false
 }
 
+variable "lock" {
+  type = object({
+    name       = string
+    lock_level = string
+    notes      = string
+  })
+  default = null
+}
+
 locals {
   resource_name = "${var.global_prefix}${var.environment_short}st${var.name}"
 }

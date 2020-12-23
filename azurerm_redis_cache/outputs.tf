@@ -21,3 +21,7 @@ output "port" {
 output "ssl_port" {
   value = azurerm_redis_cache.redis_cache.ssl_port
 }
+
+output "lock_id" {
+  value = var.lock != null ? module.lock[0].id : null
+}

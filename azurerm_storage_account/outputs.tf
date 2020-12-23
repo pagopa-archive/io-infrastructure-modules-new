@@ -27,3 +27,7 @@ output "primary_web_host" {
 output "resource_name" {
   value = local.resource_name
 }
+
+output "lock_id" {
+  value = var.lock != null ? module.lock[0].id : null
+}
