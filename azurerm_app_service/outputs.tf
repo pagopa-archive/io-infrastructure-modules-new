@@ -19,5 +19,5 @@ output "possible_outbound_ip_addresses" {
 }
 
 output "app_service_plan_id" {
-  value = module.app_service_plan.id
+  value = var.app_service_plan_id != null ? var.app_service_plan_id : module.app_service_plan[0].id
 }
