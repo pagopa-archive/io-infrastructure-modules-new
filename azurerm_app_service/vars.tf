@@ -22,6 +22,12 @@ variable "resource_group_name" {
   type = string
 }
 
+variable "app_service_plan_id" {
+  type        = string
+  default     = null
+  description = "App service plan id: it overwrites the all the app_service_plan_info."
+}
+
 variable "app_service_plan_info" {
   type = object({
     kind             = string

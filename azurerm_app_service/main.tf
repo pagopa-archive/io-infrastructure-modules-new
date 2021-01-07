@@ -17,14 +17,15 @@ data "azurerm_key_vault_secret" "secret_sas_url" {
 }
 
 module "secrets_from_keyvault" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault?ref=v2.1.0"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault?ref=v2.1.26"
 
   key_vault_id = var.app_settings_secrets.key_vault_id
   secrets_map  = var.app_settings_secrets.map
 }
 
 module "app_service_plan" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_app_service_plan?ref=v2.1.18"
+  count  = var.app_service_plan_id != null ? 0 : 1
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_app_service_plan?ref=v2.1.26"
 
   global_prefix     = var.global_prefix
   environment       = var.environment
@@ -44,7 +45,7 @@ resource "azurerm_app_service" "app_service" {
   name                = local.resource_name
   resource_group_name = var.resource_group_name
   location            = var.region
-  app_service_plan_id = module.app_service_plan.id
+  app_service_plan_id = var.app_service_plan_id != null ? var.app_service_plan_id : module.app_service_plan[0].id
   enabled             = var.app_enabled
   https_only          = var.https_only
   client_cert_enabled = var.client_cert_enabled
@@ -56,7 +57,7 @@ resource "azurerm_app_service" "app_service" {
     min_tls_version   = "1.2"
     ftps_state        = "Disabled"
     health_check_path = var.health_check_path != null ? var.health_check_path : null
-    
+
     dynamic "ip_restriction" {
       for_each = var.allowed_ips
       iterator = ip
@@ -87,9 +88,9 @@ resource "azurerm_app_service" "app_service" {
 
   app_settings = merge(
     {
-      APPINSIGHTS_INSTRUMENTATIONKEY                  = var.application_insights_instrumentation_key
+      APPINSIGHTS_INSTRUMENTATIONKEY = var.application_insights_instrumentation_key
       # default value for health_check_path, override it in var.app_settings if needed
-      WEBSITE_HEALTHCHECK_MAXPINGFAILURES             = var.health_check_path != null ? var.health_check_maxpingfailures : null
+      WEBSITE_HEALTHCHECK_MAXPINGFAILURES = var.health_check_path != null ? var.health_check_maxpingfailures : null
     },
     var.app_settings,
     module.secrets_from_keyvault.secrets_with_value
@@ -124,7 +125,7 @@ resource "azurerm_app_service" "app_service" {
 module "subnet" {
   count = var.subnet_id != null || var.virtual_network_info == null ? 0 : 1
 
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v2.1.0"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v2.1.26"
 
   global_prefix     = var.global_prefix
   environment       = var.environment
