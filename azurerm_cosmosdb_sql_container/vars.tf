@@ -55,3 +55,11 @@ variable "unique_key_paths" {
   description = "A list of paths to use for this unique key."
   default     = []
 }
+
+variable "autoscale_settings" {
+  type = object({
+    max_throughput = number
+  })
+  default = null
+
+}
