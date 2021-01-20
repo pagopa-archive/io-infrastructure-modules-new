@@ -17,7 +17,9 @@ resource "azurerm_application_insights_web_test" "application_insights_web_test"
   geo_locations = var.geo_locations
   configuration = templatefile(var.configuration, { name = local.web_test_resource_name,
                                                     url = var.url,
-                                                    timeout = var.timeout, })
+                                                    timeout = var.timeout,
+                                                    timeout = var.http_method,
+                                                    timeout = var.http_status_code, })
 
   tags = {
     environment                                 = var.environment

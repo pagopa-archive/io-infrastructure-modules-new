@@ -86,6 +86,18 @@ variable "url" {
   description = "The url to be pinged for a WebTest."
 }
 
+variable "http_method" {
+  type        = string
+  description = "The http method used for a WebTest."
+  default     = "GET"
+}
+
+variable "http_status_code" {
+  type        = string
+  description = "The status code expected for a WebTest."
+  default     = "200"
+}
+
 locals {
   resource_name = "${var.global_prefix}-${var.environment_short}-wt-${var.name}"
 }
