@@ -164,7 +164,7 @@ resource "azurerm_app_service_virtual_network_swift_connection" "app_service_vir
 
 module "application_insights_web_test" {
   count  = var.web_test != null && var.health_check_path != null ? 1 : 0
-  source = "/Users/pasqualedevita/Documents/github/io-infrastructure-modules-new/azurerm_application_insights_web_test"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_function_app?ref=v2.1.29"
 
   global_prefix     = var.global_prefix
   environment       = var.environment
