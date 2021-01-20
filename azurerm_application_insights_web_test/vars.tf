@@ -83,7 +83,7 @@ variable "configuration" {
 
 variable "url" {
   type        = string
-  description = "An XML configuration specification for a WebTest."
+  description = "The url to be pinged for a WebTest."
 }
 
 locals {
