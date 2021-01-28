@@ -4,7 +4,7 @@ terraform {
 }
 
 resource "azurerm_application_insights_web_test" "application_insights_web_test" {
-  name                    = local.web_test_resource_name
+  name                    = local.resource_name
   resource_group_name     = var.resource_group_name
   location                = var.region
   application_insights_id = var.application_insights_id
@@ -15,14 +15,14 @@ resource "azurerm_application_insights_web_test" "application_insights_web_test"
   enabled       = var.enabled
   retry_enabled = var.retry_enabled
   geo_locations = var.geo_locations
-  configuration = templatefile(var.configuration, { name = local.web_test_resource_name,
-                                                    url = var.url,
-                                                    timeout = var.timeout,
-                                                    http_method = var.http_method,
-                                                    http_status_code = var.http_status_code, })
+  configuration = templatefile(var.configuration, { name = local.resource_name,
+    url         = var.url,
+    timeout     = var.timeout,
+    http_method = var.http_method,
+  http_status_code = var.http_status_code, })
 
   tags = {
-    environment                                 = var.environment
+    environment = var.environment
     # https://github.com/terraform-providers/terraform-provider-azurerm/issues/7026
     # azurerm_application_insights_web_test creates hidden tag that always reflects a "change"
     # A reference to a resource type must be followed by at least one attribute access, specifying the resource name.
