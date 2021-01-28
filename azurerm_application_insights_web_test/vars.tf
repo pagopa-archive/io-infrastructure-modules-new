@@ -18,12 +18,13 @@ variable "name" {
   type = string
 }
 
-variable "resource_group_name" {
+variable "application_insights_id" {
   type = string
 }
 
-variable "application_insights_id" {
-  type = string
+variable "resource_group_name" {
+  type        = string
+  description = "Application insight resource group."
 }
 
 variable "kind" {
@@ -36,7 +37,7 @@ variable "kind" {
       var.kind == "ping" ||
       var.kind == "multistep"
     )
-    error_message = "Lock level can be ping or multistep."
+    error_message = "Kind can be ping or multistep."
   }
 }
 
@@ -68,11 +69,11 @@ variable "geo_locations" {
   description = "A list of where to physically run the tests from to give global coverage for accessibility of your application."
   # https://docs.microsoft.com/en-us/azure/azure-monitor/app/monitor-web-app-availability#azure full list
   # France South (Formerly France Central), France Central, North Europe, West Europe, UK South
-  default     = ["emea-ch-zrh-edge",
-                "emea-fr-pra-edge",
-                "emea-gb-db3-azr",
-                "emea-nl-ams-azr",
-                "emea-ru-msa-edge"]
+  default = ["emea-ch-zrh-edge",
+    "emea-fr-pra-edge",
+    "emea-gb-db3-azr",
+    "emea-nl-ams-azr",
+  "emea-ru-msa-edge"]
 }
 
 variable "configuration" {
