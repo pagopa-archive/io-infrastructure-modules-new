@@ -43,11 +43,22 @@ resource "azurerm_app_service_slot" "app_service_slot" {
     health_check_path   = var.health_check_path != null ? var.health_check_path : null
 
     dynamic "ip_restriction" {
+      for_each = var.allowed_subnets
+      iterator = subnet
+
+      content {
+        ip_address                = null
+        virtual_network_subnet_id = subnet.value
+      }
+    }
+
+    dynamic "ip_restriction" {
       for_each = var.allowed_ips
       iterator = ip
 
       content {
-        ip_address = ip.value
+        ip_address                = ip.value
+        virtual_network_subnet_id = null
       }
     }
 
@@ -56,25 +67,17 @@ resource "azurerm_app_service_slot" "app_service_slot" {
       iterator = ip
 
       content {
-        ip_address = ip.value
-      }
-    }
-
-    dynamic "ip_restriction" {
-      for_each = var.allowed_subnets
-      iterator = subnet
-
-      content {
-        virtual_network_subnet_id = subnet.value
+        ip_address                = ip.value
+        virtual_network_subnet_id = null
       }
     }
   }
 
   app_settings = merge(
     {
-      APPINSIGHTS_INSTRUMENTATIONKEY                  = var.application_insights_instrumentation_key
+      APPINSIGHTS_INSTRUMENTATIONKEY = var.application_insights_instrumentation_key
       # default value for health_check_path, override it in var.app_settings if needed
-      WEBSITE_HEALTHCHECK_MAXPINGFAILURES             = var.health_check_path != null ? var.health_check_maxpingfailures : null
+      WEBSITE_HEALTHCHECK_MAXPINGFAILURES = var.health_check_path != null ? var.health_check_maxpingfailures : null
     },
     var.app_settings,
     module.secrets_from_keyvault.secrets_with_value
