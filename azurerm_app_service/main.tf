@@ -59,11 +59,22 @@ resource "azurerm_app_service" "app_service" {
     health_check_path = var.health_check_path != null ? var.health_check_path : null
 
     dynamic "ip_restriction" {
+      for_each = var.allowed_subnets
+      iterator = subnet
+
+      content {
+        ip_address                = null
+        virtual_network_subnet_id = subnet.value
+      }
+    }
+
+    dynamic "ip_restriction" {
       for_each = var.allowed_ips
       iterator = ip
 
       content {
-        ip_address = ip.value
+        ip_address                = ip.value
+        virtual_network_subnet_id = null
       }
     }
 
@@ -72,18 +83,11 @@ resource "azurerm_app_service" "app_service" {
       iterator = ip
 
       content {
-        ip_address = ip.value
+        ip_address                = ip.value
+        virtual_network_subnet_id = null
       }
     }
 
-    dynamic "ip_restriction" {
-      for_each = var.allowed_subnets
-      iterator = subnet
-
-      content {
-        virtual_network_subnet_id = subnet.value
-      }
-    }
   }
 
   app_settings = merge(
