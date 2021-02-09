@@ -128,6 +128,6 @@ variable "health_check_path" {
 }
 
 variable "health_check_maxpingfailures" {
-  type     = number
+  type    = number
   default = 10
 }

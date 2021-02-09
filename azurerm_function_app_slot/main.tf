@@ -72,11 +72,11 @@ resource "azurerm_function_app_slot" "function_app_slot" {
 
   app_settings = merge(
     {
-      APPINSIGHTS_INSTRUMENTATIONKEY                  = var.application_insights_instrumentation_key
+      APPINSIGHTS_INSTRUMENTATIONKEY = var.application_insights_instrumentation_key
       # No downtime on slots swap
       WEBSITE_ADD_SITENAME_BINDINGS_IN_APPHOST_CONFIG = 1
       # default value for health_check_path, override it in var.app_settings if needed
-      WEBSITE_HEALTHCHECK_MAXPINGFAILURES             = var.health_check_path != null ? var.health_check_maxpingfailures : null
+      WEBSITE_HEALTHCHECK_MAXPINGFAILURES = var.health_check_path != null ? var.health_check_maxpingfailures : null
     },
     var.app_settings,
     module.secrets_from_keyvault.secrets_with_value
@@ -86,6 +86,12 @@ resource "azurerm_function_app_slot" "function_app_slot" {
 
   tags = {
     environment = var.environment
+  }
+
+  lifecycle {
+    ignore_changes = [
+      app_settings["WEBSITE_CONTENTSHARE"],
+    ]
   }
 }
 
