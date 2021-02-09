@@ -48,6 +48,13 @@ module "secrets_from_keyvault" {
   secrets_map  = var.app_settings_secrets.map
 }
 
+locals {
+  allowed_ips        = [for ip in var.allowed_ips : { ip_address = ip, virtual_network_subnet_id = null }]
+  allowed_subnets    = [for s in var.allowed_subnets : { ip_address = null, virtual_network_subnet_id = s }]
+  allowed_ips_secret = [for ip in var.allowed_ips_secret == null ? [] : split(";", data.azurerm_key_vault_secret.allowed_ips_secret[0].value) : { ip_address = ip, virtual_network_subnet_id = null }]
+  ip_restrictions    = concat(local.allowed_subnets, local.allowed_ips_secret, local.allowed_ips)
+}
+
 resource "azurerm_function_app" "function_app" {
   name                       = local.resource_name
   resource_group_name        = var.resource_group_name
@@ -63,29 +70,12 @@ resource "azurerm_function_app" "function_app" {
     pre_warmed_instance_count = var.pre_warmed_instance_count
 
     dynamic "ip_restriction" {
-      for_each = var.allowed_ips
+      for_each = local.ip_restrictions
       iterator = ip
 
       content {
-        ip_address = ip.value
-      }
-    }
-
-    dynamic "ip_restriction" {
-      for_each = var.allowed_ips_secret == null ? [] : split(";", data.azurerm_key_vault_secret.allowed_ips_secret[0].value)
-      iterator = ip
-
-      content {
-        ip_address = ip.value
-      }
-    }
-
-    dynamic "ip_restriction" {
-      for_each = var.allowed_subnets
-      iterator = subnet
-
-      content {
-        virtual_network_subnet_id = subnet.value
+        ip_address                = ip.value.ip_address
+        virtual_network_subnet_id = ip.value.virtual_network_subnet_id
       }
     }
 
