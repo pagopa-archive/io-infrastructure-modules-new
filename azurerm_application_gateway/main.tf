@@ -264,7 +264,7 @@ resource "azurerm_application_gateway" "application_gateway" {
 }
 
 resource "azurerm_dns_a_record" "dns_a_record" {
-  for_each = { for ip_config in var.frontend_ip_configurations : ip_config.name => { a_record_name = ip_config.a_record_name, records = ip_config.public_ip_address } }
+  for_each = { for ip_config in concat(var.frontend_ip_configurations, var.optional_dns_a_records) : ip_config.name => { a_record_name = ip_config.a_record_name, records = ip_config.public_ip_address } }
 
   name                = each.value.a_record_name
   zone_name           = var.custom_domain.zone_name

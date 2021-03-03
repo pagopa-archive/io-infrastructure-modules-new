@@ -121,6 +121,16 @@ variable "frontend_ip_configurations" {
   }))
 }
 
+variable "optional_dns_a_records" {
+  type = list(object({
+    name              = string
+    public_ip_address = string
+    a_record_name     = string
+    })
+  )
+  default = []
+}
+
 variable "gateway_ip_configurations" {
   type = list(object({
     name      = string
