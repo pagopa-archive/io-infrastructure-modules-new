@@ -1,8 +1,14 @@
 terraform {
-  # The configuration for this backend will be filled in by Terragrunt
+  required_version = ">= 0.14.5"
+
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "2.46.1"
+    }
+  }
   backend "azurerm" {}
 }
-
 
 data "azurerm_key_vault_secret" "key_vault_secret" {
   count        = var.notification.key_vault_id == null ? 0 : length(var.notification.email.custom_emails)
