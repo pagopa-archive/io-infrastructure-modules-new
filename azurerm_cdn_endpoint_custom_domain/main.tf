@@ -1,9 +1,16 @@
-provider "null" {
-  version = "=2.1.2"
-}
-
 terraform {
-  # The configuration for this backend will be filled in by Terragrunt
+  required_version = ">= 0.14.5"
+
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "2.46.1"
+    }
+    null = {
+      source  = "hashicorp/null"
+      version = "=3.1.10"
+    }
+  }
   backend "azurerm" {}
 }
 
