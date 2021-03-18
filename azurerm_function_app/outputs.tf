@@ -38,6 +38,8 @@ output "storage_account" {
     name               = module.storage_account.resource_name
     primary_access_key = module.storage_account.primary_access_key
   }
+
+  sensitive = true
 }
 
 output "resource_name" {
