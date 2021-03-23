@@ -52,7 +52,8 @@ resource "azurerm_advanced_threat_protection" "advanced_threat_protection" {
 }
 
 module "storage_account_versioning" {
-  source               = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_account_versioning?ref=v3.0.0"
+  depends_on           = [azurerm_storage_account.storage_account]
+  source               = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_account_versioning?ref=v3.0.3"
   name                 = format("%s-versioning", local.resource_name)
   resource_group_name  = var.resource_group_name
   storage_account_name = local.resource_name
@@ -61,7 +62,7 @@ module "storage_account_versioning" {
 
 module "lock" {
   count             = var.lock != null ? 1 : 0
-  source            = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_management_lock?ref=v3.0.0"
+  source            = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_management_lock?ref=v3.0.3"
   global_prefix     = var.global_prefix
   environment_short = var.environment_short
   name              = var.lock.name
