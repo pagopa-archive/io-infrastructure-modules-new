@@ -37,6 +37,7 @@ resource "azurerm_advanced_threat_protection" "advanced_threat_protection" {
 }
 
 module "storage_account_versioning" {
+  depends_on           = [azurerm_storage_account.storage_account]
   source               = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_account_versioning?ref=v3.0.0"
   name                 = format("%s-versioning", local.resource_name)
   resource_group_name  = var.resource_group_name
