@@ -36,7 +36,7 @@ module "lock" {
   global_prefix     = var.global_prefix
   environment_short = var.environment_short
   name              = var.lock.name
-  scope             = azurerm_storage_account.storage_account.id
+  scope             = azurerm_virtual_network.virtual_network.id
   lock_level        = var.lock.lock_level
   notes             = var.lock.notes
 }
