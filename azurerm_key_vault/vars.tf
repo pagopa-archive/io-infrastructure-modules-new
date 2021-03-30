@@ -36,11 +36,6 @@ variable "sku_name" {
   default = "standard"
 }
 
-variable "soft_delete_enabled" {
-  type    = bool
-  default = false
-}
-
 locals {
   resource_name = "${var.global_prefix}-${var.environment_short}-kv-${var.name}"
   tenant_id     = var.tenant_id != null ? var.tenant_id : var.global_tenant_id
