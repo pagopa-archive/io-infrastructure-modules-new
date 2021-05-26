@@ -45,6 +45,12 @@ variable "blob_properties_delete_retention_policy_days" {
   default     = null
 }
 
+variable "allow_blob_public_access" {
+  type        = bool
+  description = "Allow or disallow public access to all blobs or containers in the storage account"
+  default     = false
+}
+
 
 # Note: If specifying network_rules, one of either ip_rules or virtual_network_subnet_ids must be specified
 # and default_action must be set to Deny.
