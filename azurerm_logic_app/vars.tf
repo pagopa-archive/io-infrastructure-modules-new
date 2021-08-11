@@ -28,6 +28,13 @@ variable "parameters" {
   default     = {}
 }
 
+variable "parameters_secrets" {
+  type = object({
+    key_vault_id = string
+    map          = map(string)
+  })
+}
+
 locals {
   resource_name = "${var.global_prefix}-${var.environment_short}-lapp-${var.name}"
 }
