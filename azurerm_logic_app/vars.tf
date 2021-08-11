@@ -22,6 +22,12 @@ variable "resource_group_name" {
   type = string
 }
 
+variable "parameters" {
+  description = "(Optional) A map of Key-Value pairs"
+  type        = map(string)
+  default     = {}
+}
+
 locals {
   resource_name = "${var.global_prefix}-${var.environment_short}-lapp-${var.name}"
 }

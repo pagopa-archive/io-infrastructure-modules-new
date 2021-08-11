@@ -1,12 +1,10 @@
-terraform {
-  required_version = ">= 0.14.5"
+provider "azurerm" {
+  version = "=2.18.0"
+  features {}
+}
 
-  required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = "2.46.1"
-    }
-  }
+terraform {
+  # The configuration for this backend will be filled in by Terragrunt
   backend "azurerm" {}
 }
 
@@ -14,4 +12,7 @@ resource "azurerm_logic_app_workflow" "logic_app" {
   name                = local.resource_name
   resource_group_name = var.resource_group_name
   location            = var.region
+  
+  parameters = var.parameters
+
 }
