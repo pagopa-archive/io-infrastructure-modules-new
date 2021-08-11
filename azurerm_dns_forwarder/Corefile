@@ -1,0 +1,9 @@
+.:53 {
+    errors
+    ready
+    health
+    forward . 168.63.129.16
+    cache 30
+    loop
+    reload
+}
