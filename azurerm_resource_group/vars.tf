@@ -17,12 +17,6 @@ variable "region" {
 variable "name" {
   type    = string
   default = null
-
-}
-variable "resource_group_name" {
-  type        = string
-  description = "DEPRECATED: resource group name without prefix and environment. Use just name whenever it is possible."
-  default     = null
 }
 
 locals {
