@@ -1,12 +1,10 @@
-terraform {
-  required_version = "= 0.12.26"
+provider "azurerm" {
+  version = "=2.18.0"
+  features {}
+}
 
-  required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = "2.18.0"
-    }
-  }
+terraform {
+  # The configuration for this backend will be filled in by Terragrunt
   backend "azurerm" {}
 }
 
