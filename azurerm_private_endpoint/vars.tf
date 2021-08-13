@@ -38,3 +38,9 @@ variable "private_service_connection" {
     }
   )
 }
+
+variable "private_dns_zone_ids" {
+  type    = list(string)
+  default = null
+  description = "(Optional) Specifies the list of Private DNS Zones to write DNS records"
+}
