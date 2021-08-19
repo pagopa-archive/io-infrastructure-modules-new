@@ -45,6 +45,11 @@ variable "blob_properties_delete_retention_policy_days" {
   default     = null
 }
 
+variable "advanced_threat_protection_enable" {
+  type        = bool
+  description = "Enable advanced threat protection"
+  default     = true
+}
 
 # Note: If specifying network_rules, one of either ip_rules or virtual_network_subnet_ids must be specified
 # and default_action must be set to Deny.
