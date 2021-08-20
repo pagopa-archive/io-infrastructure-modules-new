@@ -48,7 +48,7 @@ resource "azurerm_storage_account" "storage_account" {
 # Enable advanced threat protection
 resource "azurerm_advanced_threat_protection" "advanced_threat_protection" {
   target_resource_id = azurerm_storage_account.storage_account.id
-  enabled            = true
+  enabled            = var.advanced_threat_protection_enable
 }
 
 module "storage_account_versioning" {
