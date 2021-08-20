@@ -53,6 +53,10 @@ variable "storage_account_access_key" {
   type = string
 }
 
+variable "storage_account_durable_function_connection_string" {
+  type = string
+}
+
 variable "pre_warmed_instance_count" {
   type = number
 

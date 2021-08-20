@@ -35,10 +35,19 @@ output "app_service_plan_id" {
 
 output "storage_account" {
   value = {
-    name               = module.storage_account.resource_name
-    primary_access_key = module.storage_account.primary_access_key
+    name                      = module.storage_account.resource_name
+    primary_access_key        = module.storage_account.primary_access_key
+    primary_connection_string = module.storage_account.primary_connection_string
   }
+  sensitive = true
+}
 
+output "storage_account_durable_function" {
+  value = {
+    name                      = module.storage_account_durable_function.resource_name
+    primary_access_key        = module.storage_account_durable_function.primary_access_key
+    primary_connection_string = module.storage_account_durable_function.primary_connection_string
+  }
   sensitive = true
 }
 
