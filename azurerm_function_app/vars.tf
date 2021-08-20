@@ -143,15 +143,22 @@ variable "virtual_network_info" {
   default = null
 }
 
-variable "storage_durable_function_private_endpoint" {
+variable "durable_function" {
   type = object({
-    subnet_id                  = string
+    enable                     = bool
+    private_endpoint_subnet_id = string
     private_dns_zone_blob_ids  = list(string)
     private_dns_zone_queue_ids = list(string)
     private_dns_zone_table_ids = list(string)
   })
 
-  default = null
+  default = {
+    enable                     = false
+    private_endpoint_subnet_id = "dummy"
+    private_dns_zone_blob_ids  = []
+    private_dns_zone_queue_ids = []
+    private_dns_zone_table_ids = []
+  }
 }
 
 variable "avoid_old_subnet_delete" {

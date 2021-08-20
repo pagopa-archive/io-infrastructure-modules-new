@@ -43,11 +43,11 @@ output "storage_account" {
 }
 
 output "storage_account_durable_function" {
-  value = {
-    name                      = module.storage_account_durable_function.resource_name
-    primary_access_key        = module.storage_account_durable_function.primary_access_key
-    primary_connection_string = module.storage_account_durable_function.primary_connection_string
-  }
+  value = var.durable_function.enable ? {
+    name                      = module.storage_account_durable_function[0].resource_name
+    primary_access_key        = module.storage_account_durable_function[0].primary_access_key
+    primary_connection_string = module.storage_account_durable_function[0].primary_connection_string
+  } : null
   sensitive = true
 }
 

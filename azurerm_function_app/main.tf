@@ -30,10 +30,11 @@ module "storage_account" {
   account_tier                      = var.storage_account_info.account_tier
   account_replication_type          = var.storage_account_info.account_replication_type
   access_tier                       = var.storage_account_info.access_tier
-  advanced_threat_protection_enable = true
+  advanced_threat_protection_enable = var.durable_function.enable ? false : true
 }
 
 module "storage_account_durable_function" {
+  count  = var.durable_function.enable ? 1 : 0
   source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_account?ref=v3.0.11"
 
   global_prefix     = var.global_prefix
@@ -63,6 +64,7 @@ module "storage_account_durable_function" {
 }
 
 module "storage_account_durable_function_private_endpoint_blob" {
+  count  = var.durable_function.enable ? 1 : 0
   source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_private_endpoint?ref=v3.0.10"
 
   global_prefix     = var.global_prefix
@@ -70,21 +72,22 @@ module "storage_account_durable_function_private_endpoint_blob" {
   environment_short = var.environment_short
   region            = var.region
 
-  name                = "${module.storage_account_durable_function.resource_name}-blob-endpoint"
+  name                = "${module.storage_account_durable_function[0].resource_name}-blob-endpoint"
   resource_group_name = var.resource_group_name
-  subnet_id           = var.storage_durable_function_private_endpoint.subnet_id
+  subnet_id           = var.durable_function.private_endpoint_subnet_id
 
   private_service_connection = {
-    name                           = "${module.storage_account_durable_function.resource_name}-blob"
-    private_connection_resource_id = module.storage_account_durable_function.id
+    name                           = "${module.storage_account_durable_function[0].resource_name}-blob"
+    private_connection_resource_id = module.storage_account_durable_function[0].id
     is_manual_connection           = false
     subresource_names              = ["blob"]
   }
 
-  private_dns_zone_ids = var.storage_durable_function_private_endpoint.private_dns_zone_blob_ids
+  private_dns_zone_ids = var.durable_function.private_dns_zone_blob_ids
 }
 
 module "storage_account_durable_function_private_endpoint_queue" {
+  count  = var.durable_function.enable ? 1 : 0
   source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_private_endpoint?ref=v3.0.10"
 
   global_prefix     = var.global_prefix
@@ -92,21 +95,22 @@ module "storage_account_durable_function_private_endpoint_queue" {
   environment_short = var.environment_short
   region            = var.region
 
-  name                = "${module.storage_account_durable_function.resource_name}-queue-endpoint"
+  name                = "${module.storage_account_durable_function[0].resource_name}-queue-endpoint"
   resource_group_name = var.resource_group_name
-  subnet_id           = var.storage_durable_function_private_endpoint.subnet_id
+  subnet_id           = var.durable_function.private_endpoint_subnet_id
 
   private_service_connection = {
-    name                           = "${module.storage_account_durable_function.resource_name}-queue"
-    private_connection_resource_id = module.storage_account_durable_function.id
+    name                           = "${module.storage_account_durable_function[0].resource_name}-queue"
+    private_connection_resource_id = module.storage_account_durable_function[0].id
     is_manual_connection           = false
     subresource_names              = ["queue"]
   }
 
-  private_dns_zone_ids = var.storage_durable_function_private_endpoint.private_dns_zone_queue_ids
+  private_dns_zone_ids = var.durable_function.private_dns_zone_queue_ids
 }
 
 module "storage_account_durable_function_private_endpoint_table" {
+  count  = var.durable_function.enable ? 1 : 0
   source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_private_endpoint?ref=v3.0.10"
 
   global_prefix     = var.global_prefix
@@ -114,18 +118,18 @@ module "storage_account_durable_function_private_endpoint_table" {
   environment_short = var.environment_short
   region            = var.region
 
-  name                = "${module.storage_account_durable_function.resource_name}-table-endpoint"
+  name                = "${module.storage_account_durable_function[0].resource_name}-table-endpoint"
   resource_group_name = var.resource_group_name
-  subnet_id           = var.storage_durable_function_private_endpoint.subnet_id
+  subnet_id           = var.durable_function.private_endpoint_subnet_id
 
   private_service_connection = {
-    name                           = "${module.storage_account_durable_function.resource_name}-table"
-    private_connection_resource_id = module.storage_account_durable_function.id
+    name                           = "${module.storage_account_durable_function[0].resource_name}-table"
+    private_connection_resource_id = module.storage_account_durable_function[0].id
     is_manual_connection           = false
     subresource_names              = ["table"]
   }
 
-  private_dns_zone_ids = var.storage_durable_function_private_endpoint.private_dns_zone_table_ids
+  private_dns_zone_ids = var.durable_function.private_dns_zone_table_ids
 }
 
 module "app_service_plan" {
@@ -152,11 +156,12 @@ module "secrets_from_keyvault" {
 }
 
 locals {
-  allowed_ips        = [for ip in var.allowed_ips : { ip_address = ip, virtual_network_subnet_id = null }]
-  allowed_subnets    = [for s in var.allowed_subnets : { ip_address = null, virtual_network_subnet_id = s }]
-  allowed_ips_secret = [for ip in var.allowed_ips_secret == null ? [] : split(";", data.azurerm_key_vault_secret.allowed_ips_secret[0].value) : { ip_address = ip, virtual_network_subnet_id = null }]
-  ip_restrictions    = concat(local.allowed_subnets, local.allowed_ips_secret, local.allowed_ips)
-  subnet_id          = var.subnet_id != null ? var.subnet_id : module.subnet[0].id
+  allowed_ips                                = [for ip in var.allowed_ips : { ip_address = ip, virtual_network_subnet_id = null }]
+  allowed_subnets                            = [for s in var.allowed_subnets : { ip_address = null, virtual_network_subnet_id = s }]
+  allowed_ips_secret                         = [for ip in var.allowed_ips_secret == null ? [] : split(";", data.azurerm_key_vault_secret.allowed_ips_secret[0].value) : { ip_address = ip, virtual_network_subnet_id = null }]
+  ip_restrictions                            = concat(local.allowed_subnets, local.allowed_ips_secret, local.allowed_ips)
+  subnet_id                                  = var.subnet_id != null ? var.subnet_id : module.subnet[0].id
+  durable_function_storage_connection_string = var.durable_function.enable ? module.storage_account_durable_function[0].primary_connection_string : "dummy"
 }
 
 resource "azurerm_function_app" "function_app" {
@@ -202,7 +207,7 @@ resource "azurerm_function_app" "function_app" {
       # default value for health_check_path, override it in var.app_settings if needed
       WEBSITE_HEALTHCHECK_MAXPINGFAILURES = var.health_check_path != null ? var.health_check_maxpingfailures : null
       # https://docs.microsoft.com/en-us/samples/azure-samples/azure-functions-private-endpoints/connect-to-private-endpoints-with-azure-functions/
-      DURABLE_FUNCTION_STORAGE_CONNECTION_STRING = module.storage_account_durable_function.primary_connection_string
+      DURABLE_FUNCTION_STORAGE_CONNECTION_STRING = local.durable_function_storage_connection_string
       SLOT_TASK_HUBNAME                          = "ProductionTaskHub"
       WEBSITE_RUN_FROM_PACKAGE                   = 1
       WEBSITE_VNET_ROUTE_ALL                     = 1
