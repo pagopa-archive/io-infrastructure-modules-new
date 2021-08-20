@@ -18,7 +18,7 @@ data "azurerm_key_vault_secret" "allowed_ips_secret" {
 }
 
 module "storage_account" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_account?ref=optional-storage-account-advanced_threat_protection"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_account?ref=v3.0.11"
 
   global_prefix     = var.global_prefix
   environment       = var.environment
@@ -34,7 +34,7 @@ module "storage_account" {
 }
 
 module "storage_account_durable_function" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_account?ref=optional-storage-account-advanced_threat_protection"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_account?ref=v3.0.11"
 
   global_prefix     = var.global_prefix
   environment       = var.environment
