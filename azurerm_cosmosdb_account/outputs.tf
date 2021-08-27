@@ -28,6 +28,16 @@ output "primary_master_key" {
   sensitive = true
 }
 
+output "primary_key" {
+  value     = azurerm_cosmosdb_account.cosmosdb_account.primary_key
+  sensitive = true
+}
+
+output "secondary_key" {
+  value     = azurerm_cosmosdb_account.cosmosdb_account.secondary_key
+  sensitive = true
+}
+
 output "primary_readonly_master_key" {
   value     = azurerm_cosmosdb_account.cosmosdb_account.primary_readonly_master_key
   sensitive = true
