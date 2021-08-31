@@ -43,16 +43,16 @@ variable "runtime_version" {
 
 variable "storage_account_info" {
   type = object({
-    account_tier             = string
-    account_replication_type = string
-    access_tier              = string
+    account_tier                      = string
+    account_replication_type          = string
+    access_tier                       = string
     advanced_threat_protection_enable = bool
   })
 
   default = {
-    account_tier             = "Standard"
-    account_replication_type = "LRS"
-    access_tier              = "Hot"
+    account_tier                      = "Standard"
+    account_replication_type          = "LRS"
+    access_tier                       = "Hot"
     advanced_threat_protection_enable = false
   }
 }

@@ -207,17 +207,17 @@ resource "azurerm_function_app" "function_app" {
       # default value for health_check_path, override it in var.app_settings if needed
       WEBSITE_HEALTHCHECK_MAXPINGFAILURES = var.health_check_path != null ? var.health_check_maxpingfailures : null
       # https://docs.microsoft.com/en-us/samples/azure-samples/azure-functions-private-endpoints/connect-to-private-endpoints-with-azure-functions/
-      SLOT_TASK_HUBNAME                          = "ProductionTaskHub"
-      WEBSITE_RUN_FROM_PACKAGE                   = 1
-      WEBSITE_VNET_ROUTE_ALL                     = 1
-      WEBSITE_DNS_SERVER                         = "168.63.129.16"
+      SLOT_TASK_HUBNAME        = "ProductionTaskHub"
+      WEBSITE_RUN_FROM_PACKAGE = 1
+      WEBSITE_VNET_ROUTE_ALL   = 1
+      WEBSITE_DNS_SERVER       = "168.63.129.16"
       # this app settings is required to solve the issue:
       # https://github.com/terraform-providers/terraform-provider-azurerm/issues/10499
       WEBSITE_CONTENTSHARE = "${local.resource_name}-content"
     },
     var.app_settings,
     module.secrets_from_keyvault.secrets_with_value,
-    var.durable_function.enable ? {DURABLE_FUNCTION_STORAGE_CONNECTION_STRING = local.durable_function_storage_connection_string} : {}
+    var.durable_function.enable ? { DURABLE_FUNCTION_STORAGE_CONNECTION_STRING = local.durable_function_storage_connection_string } : {}
   )
 
   enable_builtin_logging = false
