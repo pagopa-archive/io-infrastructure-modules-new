@@ -30,7 +30,7 @@ module "storage_account" {
   account_tier                      = var.storage_account_info.account_tier
   account_replication_type          = var.storage_account_info.account_replication_type
   access_tier                       = var.storage_account_info.access_tier
-  advanced_threat_protection_enable = var.advanced_threat_protection_enable
+  advanced_threat_protection_enable = var.storage_account_info.advanced_threat_protection_enable
 }
 
 module "storage_account_durable_function" {
@@ -47,7 +47,7 @@ module "storage_account_durable_function" {
   account_tier                      = var.storage_account_info.account_tier
   account_replication_type          = var.storage_account_info.account_replication_type
   access_tier                       = var.storage_account_info.access_tier
-  advanced_threat_protection_enable = var.advanced_threat_protection_enable
+  advanced_threat_protection_enable = false
 
   network_rules = {
     default_action = "Deny"
@@ -207,7 +207,6 @@ resource "azurerm_function_app" "function_app" {
       # default value for health_check_path, override it in var.app_settings if needed
       WEBSITE_HEALTHCHECK_MAXPINGFAILURES = var.health_check_path != null ? var.health_check_maxpingfailures : null
       # https://docs.microsoft.com/en-us/samples/azure-samples/azure-functions-private-endpoints/connect-to-private-endpoints-with-azure-functions/
-      DURABLE_FUNCTION_STORAGE_CONNECTION_STRING = local.durable_function_storage_connection_string
       SLOT_TASK_HUBNAME                          = "ProductionTaskHub"
       WEBSITE_RUN_FROM_PACKAGE                   = 1
       WEBSITE_VNET_ROUTE_ALL                     = 1
@@ -217,7 +216,8 @@ resource "azurerm_function_app" "function_app" {
       WEBSITE_CONTENTSHARE = "${local.resource_name}-content"
     },
     var.app_settings,
-    module.secrets_from_keyvault.secrets_with_value
+    module.secrets_from_keyvault.secrets_with_value,
+    var.durable_function.enable ? {DURABLE_FUNCTION_STORAGE_CONNECTION_STRING = local.durable_function_storage_connection_string} : {}
   )
 
   enable_builtin_logging = false
