@@ -30,7 +30,7 @@ module "storage_account" {
   account_tier                      = var.storage_account_info.account_tier
   account_replication_type          = var.storage_account_info.account_replication_type
   access_tier                       = var.storage_account_info.access_tier
-  advanced_threat_protection_enable = var.durable_function.enable ? false : true
+  advanced_threat_protection_enable = var.advanced_threat_protection_enable
 }
 
 module "storage_account_durable_function" {
@@ -47,7 +47,7 @@ module "storage_account_durable_function" {
   account_tier                      = var.storage_account_info.account_tier
   account_replication_type          = var.storage_account_info.account_replication_type
   access_tier                       = var.storage_account_info.access_tier
-  advanced_threat_protection_enable = false
+  advanced_threat_protection_enable = var.advanced_threat_protection_enable
 
   network_rules = {
     default_action = "Deny"

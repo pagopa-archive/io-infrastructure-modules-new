@@ -190,6 +190,12 @@ variable "web_test" {
   default = null
 }
 
+variable "advanced_threat_protection_enable" {
+  type        = bool
+  default     = false
+  description = "Enable advanced threat protection on the storage accounts"
+}
+
 locals {
   resource_name = "${var.global_prefix}-${var.environment_short}-${var.resources_prefix.function_app}-${var.name}"
 }
