@@ -45,15 +45,16 @@ variable "profiles" {
       rules = list(object({
         name = string # it should be unique among rules ensure sorting.
         metric_trigger = object({
-          metric_name        = string
-          metric_resource_id = string
-          metric_namespace   = string
-          operator           = string
-          statistic          = string
-          time_aggregation   = string
-          time_grain         = string
-          time_window        = string
-          threshold          = string
+          metric_name              = string
+          metric_resource_id       = string
+          metric_namespace         = string
+          operator                 = string
+          statistic                = string
+          time_aggregation         = string
+          time_grain               = string
+          time_window              = string
+          threshold                = string
+          divide_by_instance_count = string
         })
         scale_action = object({
           cooldown  = string

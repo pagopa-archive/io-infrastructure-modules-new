@@ -36,15 +36,16 @@ resource "azurerm_monitor_autoscale_setting" "monitor_autoscale_setting" {
         for_each = { for r in profile.value.rules : r.name => r }
         content {
           metric_trigger {
-            metric_name        = rule.value.metric_trigger.metric_name
-            metric_resource_id = rule.value.metric_trigger.metric_resource_id
-            metric_namespace   = rule.value.metric_trigger.metric_namespace
-            time_grain         = rule.value.metric_trigger.time_grain
-            statistic          = rule.value.metric_trigger.statistic
-            time_window        = rule.value.metric_trigger.time_window
-            time_aggregation   = rule.value.metric_trigger.time_aggregation
-            operator           = rule.value.metric_trigger.operator
-            threshold          = rule.value.metric_trigger.threshold
+            metric_name              = rule.value.metric_trigger.metric_name
+            metric_resource_id       = rule.value.metric_trigger.metric_resource_id
+            metric_namespace         = rule.value.metric_trigger.metric_namespace
+            time_grain               = rule.value.metric_trigger.time_grain
+            statistic                = rule.value.metric_trigger.statistic
+            time_window              = rule.value.metric_trigger.time_window
+            time_aggregation         = rule.value.metric_trigger.time_aggregation
+            operator                 = rule.value.metric_trigger.operator
+            threshold                = rule.value.metric_trigger.threshold
+            divide_by_instance_count = rule.value.metric_trigger.divide_by_instance_count
           }
           scale_action {
             direction = rule.value.scale_action.direction
