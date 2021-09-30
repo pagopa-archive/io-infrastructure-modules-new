@@ -47,6 +47,7 @@ variable "profiles" {
         metric_trigger = object({
           metric_name        = string
           metric_resource_id = string
+          metric_namespace   = string
           operator           = string
           statistic          = string
           time_aggregation   = string
