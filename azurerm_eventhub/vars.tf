@@ -72,7 +72,7 @@ variable "network_rulesets" {
 
 variable "eventhub_authorization_rules" {
   description = "The list of eventhub authorization rules. Each rule is expressed as a dictionary. Each dictionary can contain the keys name, eventhub_name ,listen, send, manage"
-  type        = list
+  type        = list(any)
   default     = []
 }
 
