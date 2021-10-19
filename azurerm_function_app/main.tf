@@ -226,11 +226,13 @@ resource "azurerm_function_app" "function_app" {
     environment = var.environment
   }
 
+  /*
   lifecycle {
     ignore_changes = [
       app_settings["WEBSITE_CONTENTSHARE"],
     ]
   }
+  */
 }
 
 # this datasource has been introduced within version 2.27.0
