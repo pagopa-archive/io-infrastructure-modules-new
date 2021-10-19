@@ -11,7 +11,7 @@ terraform {
 }
 
 module "public_ip" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_public_ip?ref=v3.0.3"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_public_ip?ref=update-azurerm-version-2.78.0"
 
   global_prefix       = var.global_prefix
   environment         = var.environment

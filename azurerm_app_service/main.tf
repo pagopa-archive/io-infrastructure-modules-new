@@ -24,7 +24,7 @@ data "azurerm_key_vault_secret" "secret_sas_url" {
 }
 
 module "secrets_from_keyvault" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault?ref=v3.0.3"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault?ref=update-azurerm-version-2.78.0"
 
   key_vault_id = var.app_settings_secrets.key_vault_id
   secrets_map  = var.app_settings_secrets.map
@@ -32,7 +32,7 @@ module "secrets_from_keyvault" {
 
 module "app_service_plan" {
   count  = var.app_service_plan_id != null ? 0 : 1
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_app_service_plan?ref=v3.0.3"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_app_service_plan?ref=update-azurerm-version-2.78.0"
 
   global_prefix     = var.global_prefix
   environment       = var.environment
@@ -136,7 +136,7 @@ resource "azurerm_app_service" "app_service" {
 module "subnet" {
   count = var.subnet_id != null || var.virtual_network_info == null ? 0 : 1
 
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v3.0.3"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=update-azurerm-version-2.78.0"
 
   global_prefix     = var.global_prefix
   environment       = var.environment
