@@ -61,7 +61,7 @@ variable "family" {
   description = "The SKU family/pricing group to use"
 }
 
-variable sku_name {
+variable "sku_name" {
   type        = string
   description = "The SKU of Redis to use"
 }
@@ -71,13 +71,13 @@ variable sku_name {
 
 # NOTE: enable_authentication can only be set to false if a subnet_id is specified; and only works
 # if there aren't existing instances within the subnet with enable_authentication set to true.
-variable enable_authentication {
+variable "enable_authentication" {
   type        = bool
   description = "If set to false, the Redis instance will be accessible without authentication. Defaults to true."
   default     = true
 }
 
-variable backup_configuration {
+variable "backup_configuration" {
   type = object({
     frequency                 = number
     max_snapshot_count        = number

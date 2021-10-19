@@ -4,7 +4,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "2.46.1"
+      version = "2.78.0"
     }
   }
   backend "azurerm" {}
@@ -16,14 +16,14 @@ data "azurerm_key_vault_secret" "certificate_secret" {
 }
 
 module "secrets_from_keyvault" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault?ref=v3.0.3"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault?ref=update-azurerm-version-2.78.0"
 
   key_vault_id = var.named_values_secrets.key_vault_id
   secrets_map  = var.named_values_secrets.map
 }
 
 module "subnet" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v3.0.3"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=update-azurerm-version-2.78.0"
 
   global_prefix     = var.global_prefix
   environment       = var.environment
@@ -59,7 +59,7 @@ resource "azurerm_api_management" "api_management" {
   }
 
   hostname_configuration {
-    dynamic proxy {
+    dynamic "proxy" {
       for_each = toset(var.custom_domains.domains)
       iterator = domain
 
