@@ -66,7 +66,7 @@ resource "azurerm_cosmosdb_account" "cosmosdb_account" {
 
 module "lock" {
   count             = var.lock != null ? 1 : 0
-  source            = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_management_lock?ref=v3.0.3"
+  source            = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_management_lock?ref=v4.0.0"
   global_prefix     = var.global_prefix
   environment_short = var.environment_short
   name              = var.lock.name
