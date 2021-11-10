@@ -69,17 +69,17 @@ variable "auto_swap_slot_name" {
   default     = null
 }
 
-variable application_insights_instrumentation_key {
+variable "application_insights_instrumentation_key" {
   type = string
 }
 
-variable app_settings {
+variable "app_settings" {
   type = map(any)
 
   default = {}
 }
 
-variable app_settings_secrets {
+variable "app_settings_secrets" {
   type = object({
     key_vault_id = string
     map          = map(string)
@@ -121,7 +121,7 @@ variable "subnet_id" {
   default = null
 }
 
-variable export_default_key {
+variable "export_default_key" {
   type    = bool
   default = false
 }

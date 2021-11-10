@@ -4,14 +4,14 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "2.46.1"
+      version = "2.84.0"
     }
   }
   backend "azurerm" {}
 }
 
 resource "azurerm_storage_account" "dns_forwarder" {
-  name                      = "${var.global_prefix}${var.environment_short}st${replace(var.name,"-","")}"
+  name                      = "${var.global_prefix}${var.environment_short}st${replace(var.name, "-", "")}"
   resource_group_name       = var.resource_group_name
   location                  = var.region
   enable_https_traffic_only = true
@@ -26,9 +26,9 @@ resource "azurerm_storage_account" "dns_forwarder" {
 }
 
 resource "azurerm_storage_share" "dns_forwarder" {
-  name = "dns-forwarder-share"
+  name                 = "dns-forwarder-share"
   storage_account_name = azurerm_storage_account.dns_forwarder.name
-  quota = 1
+  quota                = 1
 }
 
 resource "azurerm_network_profile" "dns_forwarder" {
