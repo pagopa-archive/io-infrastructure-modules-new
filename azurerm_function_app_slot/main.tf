@@ -87,6 +87,7 @@ resource "azurerm_function_app_slot" "function_app_slot" {
       # https://docs.microsoft.com/en-us/samples/azure-samples/azure-functions-private-endpoints/connect-to-private-endpoints-with-azure-functions/
       # https://github.com/Azure/Azure-Functions/issues/1349#issuecomment-747476420
       DURABLE_FUNCTION_STORAGE_CONNECTION_STRING = var.storage_account_durable_function_connection_string
+      INTERNAL_STORAGE_CONNECTION_STRING         = var.storage_account_durable_function_connection_string
       SLOT_TASK_HUBNAME                          = "${title(var.name)}TaskHub"
       WEBSITE_RUN_FROM_PACKAGE                   = 1
       WEBSITE_VNET_ROUTE_ALL                     = 1

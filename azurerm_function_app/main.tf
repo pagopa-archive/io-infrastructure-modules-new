@@ -132,6 +132,12 @@ module "storage_account_durable_function_private_endpoint_table" {
   private_dns_zone_ids = var.durable_function.private_dns_zone_table_ids
 }
 
+resource "azurerm_storage_queue" "internal_queue" {
+  for_each             = toset(local.internal_queues)
+  name                 = each.value
+  storage_account_name = module.storage_account_durable_function[0].resource_name
+}
+
 module "app_service_plan" {
   count  = var.app_service_plan_id == null ? 1 : 0
   source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_app_service_plan?ref=v3.0.11"
@@ -162,6 +168,7 @@ locals {
   ip_restrictions                            = concat(local.allowed_subnets, local.allowed_ips_secret, local.allowed_ips)
   subnet_id                                  = var.subnet_id != null ? var.subnet_id : module.subnet[0].id
   durable_function_storage_connection_string = var.durable_function.enable ? module.storage_account_durable_function[0].primary_connection_string : "dummy"
+  internal_queues                            = var.durable_function.enable ? var.durable_function.queues : []
 }
 
 resource "azurerm_function_app" "function_app" {
@@ -211,11 +218,13 @@ resource "azurerm_function_app" "function_app" {
       WEBSITE_RUN_FROM_PACKAGE = 1
       WEBSITE_VNET_ROUTE_ALL   = 1
       WEBSITE_DNS_SERVER       = "168.63.129.16"
-
     },
     var.app_settings,
     module.secrets_from_keyvault.secrets_with_value,
-    var.durable_function.enable ? { DURABLE_FUNCTION_STORAGE_CONNECTION_STRING = local.durable_function_storage_connection_string } : {}
+    var.durable_function.enable ? { 
+      DURABLE_FUNCTION_STORAGE_CONNECTION_STRING = local.durable_function_storage_connection_string
+      INTERNAL_STORAGE_CONNECTION_STRING         = local.durable_function_storage_connection_string
+    } : {},
   )
 
   enable_builtin_logging = false

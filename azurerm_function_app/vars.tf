@@ -152,6 +152,7 @@ variable "durable_function" {
     private_dns_zone_blob_ids  = list(string)
     private_dns_zone_queue_ids = list(string)
     private_dns_zone_table_ids = list(string)
+    queues                     = list(string)
   })
 
   default = {
@@ -160,6 +161,7 @@ variable "durable_function" {
     private_dns_zone_blob_ids  = []
     private_dns_zone_queue_ids = []
     private_dns_zone_table_ids = []
+    queues                     = []
   }
 }
 
