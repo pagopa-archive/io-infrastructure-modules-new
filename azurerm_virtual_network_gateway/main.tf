@@ -4,14 +4,14 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "2.84.0"
+      version = "2.46.1"
     }
   }
   backend "azurerm" {}
 }
 
 module "public_ip" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_public_ip?ref=v4.0.0"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_public_ip?ref=v3.0.11"
 
   global_prefix       = var.global_prefix
   environment         = var.environment

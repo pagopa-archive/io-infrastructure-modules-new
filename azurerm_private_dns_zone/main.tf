@@ -4,7 +4,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "2.84.0"
+      version = "2.46.1"
     }
   }
   backend "azurerm" {}
@@ -22,7 +22,7 @@ resource "azurerm_private_dns_zone" "private_dns_zone" {
 
 module "azurerm_private_dns_a_record" {
   count  = length(var.dns_a_records)
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_private_dns_a_record?ref=v4.0.0"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_private_dns_a_record?ref=v3.0.11"
 
   name                = var.dns_a_records[count.index].name
   zone_name           = azurerm_private_dns_zone.private_dns_zone.name
