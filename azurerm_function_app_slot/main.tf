@@ -92,6 +92,9 @@ resource "azurerm_function_app_slot" "function_app_slot" {
       WEBSITE_RUN_FROM_PACKAGE                   = 1
       WEBSITE_VNET_ROUTE_ALL                     = 1
       WEBSITE_DNS_SERVER                         = "168.63.129.16"
+      # this app settings is required to solve the issue:
+      # https://github.com/terraform-providers/terraform-provider-azurerm/issues/10499
+      WEBSITE_CONTENTSHARE = "${var.name}-content"
     },
     var.app_settings,
     module.secrets_from_keyvault.secrets_with_value
