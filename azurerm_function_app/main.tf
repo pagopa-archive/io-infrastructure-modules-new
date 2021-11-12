@@ -219,12 +219,12 @@ resource "azurerm_function_app" "function_app" {
       WEBSITE_VNET_ROUTE_ALL   = 1
       WEBSITE_DNS_SERVER       = "168.63.129.16"
     },
-    var.durable_function.enable ? {
+    var.app_settings,
+    module.secrets_from_keyvault.secrets_with_value,
+    var.durable_function.enable ? { 
       DURABLE_FUNCTION_STORAGE_CONNECTION_STRING = local.durable_function_storage_connection_string
       INTERNAL_STORAGE_CONNECTION_STRING         = local.durable_function_storage_connection_string
     } : {},
-    var.app_settings,
-    module.secrets_from_keyvault.secrets_with_value
   )
 
   enable_builtin_logging = false
