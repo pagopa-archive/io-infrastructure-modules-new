@@ -4,7 +4,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "2.84.0"
+      version = "2.46.1"
     }
   }
   backend "azurerm" {}
@@ -18,7 +18,7 @@ data "azurerm_key_vault_secret" "allowed_ips_secret" {
 }
 
 module "storage_account" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_account?ref=v4.0.0"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_account?ref=v3.0.11"
 
   global_prefix     = var.global_prefix
   environment       = var.environment
@@ -35,7 +35,7 @@ module "storage_account" {
 
 module "storage_account_durable_function" {
   count  = var.durable_function.enable ? 1 : 0
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_account?ref=v4.0.0"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_account?ref=v3.0.11"
 
   global_prefix     = var.global_prefix
   environment       = var.environment
@@ -65,7 +65,7 @@ module "storage_account_durable_function" {
 
 module "storage_account_durable_function_private_endpoint_blob" {
   count  = var.durable_function.enable ? 1 : 0
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_private_endpoint?ref=v4.0.0"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_private_endpoint?ref=v3.0.11"
 
   global_prefix     = var.global_prefix
   environment       = var.environment
@@ -88,7 +88,7 @@ module "storage_account_durable_function_private_endpoint_blob" {
 
 module "storage_account_durable_function_private_endpoint_queue" {
   count  = var.durable_function.enable ? 1 : 0
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_private_endpoint?ref=v4.0.0"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_private_endpoint?ref=v3.0.11"
 
   global_prefix     = var.global_prefix
   environment       = var.environment
@@ -111,7 +111,7 @@ module "storage_account_durable_function_private_endpoint_queue" {
 
 module "storage_account_durable_function_private_endpoint_table" {
   count  = var.durable_function.enable ? 1 : 0
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_private_endpoint?ref=v4.0.0"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_private_endpoint?ref=v3.0.11"
 
   global_prefix     = var.global_prefix
   environment       = var.environment
@@ -134,7 +134,7 @@ module "storage_account_durable_function_private_endpoint_table" {
 
 module "app_service_plan" {
   count  = var.app_service_plan_id == null ? 1 : 0
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_app_service_plan?ref=v4.0.0"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_app_service_plan?ref=v3.0.11"
 
   global_prefix     = var.global_prefix
   environment       = var.environment
@@ -149,7 +149,7 @@ module "app_service_plan" {
 }
 
 module "secrets_from_keyvault" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault?ref=v4.0.0"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault?ref=v3.0.11"
 
   key_vault_id = var.app_settings_secrets.key_vault_id
   secrets_map  = var.app_settings_secrets.map
@@ -236,7 +236,7 @@ data "azurerm_function_app_host_keys" "app_host_keys" {
 
 module "subnet" {
   count  = var.avoid_old_subnet_delete == false && (var.subnet_id != null || var.virtual_network_info == null) ? 0 : 1
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v4.0.0"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v3.0.11"
 
   global_prefix     = var.global_prefix
   environment       = var.environment

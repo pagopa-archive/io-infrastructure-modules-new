@@ -4,7 +4,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "2.84.0"
+      version = "2.46.1"
     }
   }
   backend "azurerm" {}
@@ -53,7 +53,7 @@ resource "azurerm_advanced_threat_protection" "advanced_threat_protection" {
 
 module "storage_account_versioning" {
   depends_on           = [azurerm_storage_account.storage_account]
-  source               = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_account_versioning?ref=v4.0.0"
+  source               = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_account_versioning?ref=v3.0.11"
   name                 = format("%s-versioning", local.resource_name)
   resource_group_name  = var.resource_group_name
   storage_account_name = local.resource_name
@@ -62,7 +62,7 @@ module "storage_account_versioning" {
 
 module "lock" {
   count             = var.lock != null ? 1 : 0
-  source            = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_management_lock?ref=v4.0.0"
+  source            = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_management_lock?ref=v3.0.11"
   global_prefix     = var.global_prefix
   environment_short = var.environment_short
   name              = var.lock.name
