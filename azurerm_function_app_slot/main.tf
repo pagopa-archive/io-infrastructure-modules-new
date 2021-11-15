@@ -105,6 +105,12 @@ resource "azurerm_function_app_slot" "function_app_slot" {
   tags = {
     environment = var.environment
   }
+
+  lifecycle {
+    ignore_changes = [
+      app_settings["WEBSITE_CONTENTSHARE"],
+    ]
+  }
 }
 
 resource "azurerm_app_service_slot_virtual_network_swift_connection" "app_service_slot_virtual_network_swift_connection" {
