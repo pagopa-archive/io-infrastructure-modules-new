@@ -138,6 +138,44 @@ resource "azurerm_storage_queue" "internal_queue" {
   storage_account_name = module.storage_account_durable_function[0].resource_name
 }
 
+resource "azurerm_storage_container" "internal_container" {
+  for_each              = toset(local.internal_containers)
+  name                  = each.value
+  storage_account_name  = module.storage_account_durable_function[0].resource_name
+  container_access_type = "private"
+}
+
+module "storage_account_durable_function_management_policy" {
+  count  = length(local.internal_containers) == 0 ? 0 : 1
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_management_policy?ref=v3.0.11"
+
+  global_prefix     = var.global_prefix
+  environment       = var.environment
+  environment_short = var.environment_short
+  region            = var.region
+
+  storage_account_id = module.storage_account_durable_function[0].id
+
+  rules = [
+    {
+      name    = "deleteafterdays"
+      enabled = true
+      filters = {
+        prefix_match = local.internal_containers
+        blob_types   = ["blockBlob"]
+      }
+      actions = {
+        base_blob = {
+          tier_to_cool_after_days_since_modification_greater_than    = 0
+          tier_to_archive_after_days_since_modification_greater_than = 0
+          delete_after_days_since_modification_greater_than          = var.durable_function.blobs_retention_days
+        }
+        snapshot = null
+      }
+    },
+  ]
+}
+
 module "app_service_plan" {
   count  = var.app_service_plan_id == null ? 1 : 0
   source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_app_service_plan?ref=v3.0.11"
@@ -169,6 +207,7 @@ locals {
   subnet_id                                  = var.subnet_id != null ? var.subnet_id : module.subnet[0].id
   durable_function_storage_connection_string = var.durable_function.enable ? module.storage_account_durable_function[0].primary_connection_string : "dummy"
   internal_queues                            = var.durable_function.enable ? var.durable_function.queues : []
+  internal_containers                        = var.durable_function.enable ? var.durable_function.containers : []
 }
 
 resource "azurerm_function_app" "function_app" {
