@@ -1,0 +1,50 @@
+name: Release
+
+on:
+  # Trigger the workflow on push or pull request,
+  # but only for the main branch
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'CODEOWNERS'
+      - '**.md'
+      - '.**'
+
+jobs:
+  build:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v2
+        with:
+          ref: 'main'
+          fetch-depth: 0
+
+      - name: Get next version
+        id: next_version
+        run: |
+          VERSION=$(git tag  | grep -E '^v[0-9]' | sort -V | tail -1)
+          NEXTVERSION=$(echo $VERSION | awk -F. -v OFS=. '{$NF++;print}')
+          echo "::set-output name=NEXTVERSION::$NEXTVERSION"
+
+      - name: Changelog
+        id: changelog
+        env:
+          NEXTVERSION: ${{ steps.next_version.outputs.NEXTVERSION }}
+        run: |
+          npx auto-changelog --unreleased-only --latest-version $NEXTVERSION
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.next_version.outputs.NEXTVERSION }}
+          release_name: ${{ steps.next_version.outputs.NEXTVERSION }}
+          draft: false
+          prerelease: false
+          body_path: 'CHANGELOG.md'
