@@ -2,10 +2,10 @@ name: Release
 
 on:
   # Trigger the workflow on push or pull request,
-  # but only for the main branch
+  # but only for the master branch
   push:
     branches:
-      - main
+      - master
     paths-ignore:
       - 'CODEOWNERS'
       - '**.md'
@@ -20,7 +20,7 @@ jobs:
         id: checkout
         uses: actions/checkout@v2
         with:
-          ref: 'main'
+          ref: 'master'
           fetch-depth: 0
 
       - name: Get next version
