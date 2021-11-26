@@ -4,14 +4,14 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "2.46.1"
+      version = "2.87.0"
     }
   }
   backend "azurerm" {}
 }
 
 module "storage_account" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_account?ref=v3.0.11"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_account?ref=v4.0.0"
 
   global_prefix     = var.global_prefix
   environment       = var.environment
@@ -26,7 +26,7 @@ module "storage_account" {
 }
 
 module "storage_share" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_share?ref=v3.0.11"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_storage_share?ref=v4.0.0"
 
   module_depends_on = module.storage_account.id
 

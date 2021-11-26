@@ -4,7 +4,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "2.46.1"
+      version = "2.87.0"
     }
   }
   backend "azurerm" {}
@@ -19,7 +19,7 @@ data "azurerm_key_vault_secret" "certificate_secret" {
 module "subnet" {
   count = var.avoid_old_subnet_delete == false && (var.subnet_id != null || var.virtual_network_info == null) ? 0 : 1
 
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v3.0.11"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_subnet?ref=v4.0.0"
 
   global_prefix     = var.global_prefix
   environment       = var.environment
