@@ -21,7 +21,7 @@ resource "azurerm_logic_app_workflow" "logic_app" {
 }
 
 module "secrets_from_keyvault" {
-  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault?ref=v3.0.11"
+  source = "git::git@github.com:pagopa/io-infrastructure-modules-new.git//azurerm_secrets_from_keyvault?ref=v4.0.0"
 
   key_vault_id = var.parameters_secrets.key_vault_id
   secrets_map  = var.parameters_secrets.map
