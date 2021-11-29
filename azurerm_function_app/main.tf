@@ -263,7 +263,7 @@ resource "azurerm_function_app" "function_app" {
     },
     var.app_settings,
     module.secrets_from_keyvault.secrets_with_value,
-    var.durable_function.enable ? { 
+    var.durable_function.enable ? {
       DURABLE_FUNCTION_STORAGE_CONNECTION_STRING = local.durable_function_storage_connection_string
       INTERNAL_STORAGE_CONNECTION_STRING         = local.durable_function_storage_connection_string
     } : {},
@@ -274,12 +274,7 @@ resource "azurerm_function_app" "function_app" {
   tags = {
     environment = var.environment
   }
-  
-  lifecycle {
-    ignore_changes = [
-      app_settings["WEBSITE_CONTENTSHARE"],
-    ]
-  }
+
 }
 
 # this datasource has been introduced within version 2.27.0
